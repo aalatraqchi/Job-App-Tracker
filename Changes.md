@@ -96,3 +96,24 @@
 - Verified Maven verify before the baseline push: two HTTP integration tests passed, zero failures/errors, executable JAR packaged successfully. Build output, IDE settings, local secret files, logs, and starter archive are ignored.
 - Created Part 3 for Git/GitHub concepts and a small read-only practice exercise; updated README and the outline. Understanding remains unverified until the user attempts the exercise.
 - Next: user inspects status, remotes, and log; then resume DTO learning on a feature branch. No application implementation advanced during GitHub setup.
+
+### Part 3 — Git workflow and remote terminology clarified
+- Expanded Part 3 with each branch/implement/test/commit/push/PR/review/merge step and the saving/staging/committing/pushing distinction.
+- Clarified that Git can commit broken code, keeping main usable is a practice, origin is a remote URL nickname rather than a folder, and origin/main is a local record of a remote branch.
+- Added a staged-content example and a short understanding check. Learning boxes remain unchecked until demonstrated.
+- Documentation edited only; no application code, commits, pushes, branches, or PRs created during this explanation. These note changes remain uncommitted locally for the learning workflow.
+
+### DTO learning resumed; Git operations delegated
+- User demonstrated the saving/staging/commit/push distinction and main/origin roles. User delegates operational Git work to the assistant, with explicit updates; finished features require joint review and user confirmation before merge.
+- Created feature/application-dtos preserving the previously staged Part 3 notes. Main remains unchanged.
+- Added CreateApplicationRequest as a Java record with the six client-supplied model values and no ID/owner. Extended Part 2 with DTO boundaries, record-generated accessors/constructor, immutability limits, and pending mapping/validation responsibilities.
+- Assigned ApplicationResponse as the user exercise: same six values plus service-generated long id. No response record, mapper, service, or application endpoint implemented by the assistant.
+- Verified mvnw.cmd test: request DTO compiled; two existing endpoint tests passed, zero failures/errors. Those tests do not cover DTO JSON contracts yet.
+- Next: user explains why only the response includes ID and attempts the record. Keep this increment on the feature branch; no merge without confirmation.
+
+### DTO milestone — Response record reviewed
+- Reviewed the user's ApplicationResponse record: long id plus company, position, appliedDate, status, jobUrl, and notes, with correct types, order, package, and LocalDate import.
+- User correctly explained that the request excludes an ID because the service generates it; the response returns it after creation. Preserved the user's code.
+- Verified Maven verify: two existing endpoint tests passed with zero failures/errors and executable JAR packaged. These tests do not cover DTO JSON binding or service mapping; contracts were reviewed directly, with HTTP mapping verification deferred to application endpoints.
+- Marked the model/DTO definition checklist item and response exercise reviewed. Service-generated ID, mapping, service, and application endpoints remain pending.
+- Staged, committed (d2c4a31), and pushed the reviewed response and progress notes. Opened [DTO PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) for joint review. Nothing merged; explicit user confirmation is required. Updated stale progress text to match the completed definitions.
