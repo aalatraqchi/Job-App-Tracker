@@ -63,6 +63,12 @@ After review, we will add creation to the service, generate distinct IDs, defaul
 - [ ] Explain why `final` does not stop entries being added to the map.
 - [ ] Explain what the returned list protects and what it does not copy.
 - [ ] Explain why restarting loses these applications.
-- [ ] Add the model ID using the constructor/getter pattern and have the attempt reviewed.
+- [x] Add the model ID using the constructor/getter pattern and have the attempt reviewed.
 
 Verification of the worked example: Maven test passed with two existing health/about endpoint tests and zero failures/errors. The service compiles and the Spring application starts; storage behavior is not covered by those tests. These understanding and exercise boxes remain unchecked until demonstrated.
+
+## Model-ID exercise reviewed
+
+Your private long id, first constructor parameter, this.id = id assignment, and public long getId() are correct. Existing six fields were preserved; no ID setter or request-ID component was added. Your code was reviewed without replacement. Maven test passed: two existing endpoint tests, zero failures/errors. These tests do not assert the model ID or storage behavior; those will be exercised when creation is added. Other understanding checkboxes remain pending demonstration.
+
+Before creation: explain why two applications for the same company and position can still need different IDs, and why a service field can retain stored applications across HTTP requests.

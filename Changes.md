@@ -123,3 +123,9 @@
 - Assigned the familiar model-ID exercise: private long id, first constructor parameter/assignment, and getId(). Understanding and exercise checkboxes remain unchecked. No creation, ID allocation, mapping, or application endpoints implemented yet.
 - Maven test passed: two existing endpoint tests, zero failures/errors. The initial sandbox run could not open Tomcat's loopback connection; rerunning with localhost access passed. These tests verify startup and health/about, not storage behavior.
 - Next: review the user's ID exercise, then introduce creation and ID generation incrementally. The service roadmap checkbox remains unchecked.
+
+### Model-ID exercise reviewed
+- Reviewed the user's private long id, first constructor parameter/assignment, and getId(): all correct. Preserved the user implementation; request DTO unchanged.
+- Maven test passed with two existing endpoint tests, zero failures/errors. These tests do not assert model identity or service storage behavior.
+- Marked only the model-ID exercise reviewed in Part 4; other understanding boxes remain unverified. Creation, ID generation, mapping, and application endpoints remain pending.
+- Next: service/storage understanding check, then creation and ID generation incrementally.
