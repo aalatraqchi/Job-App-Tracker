@@ -61,7 +61,7 @@ Complete and verify each step before moving to the next. Treat each numbered ste
 - [x] **Verify:** `.\mvnw.cmd test` passes and the health endpoint returns HTTP 200.
 
 ### 3. Create and list applications in memory
-In progress: [[Job Apps Tracker/Learning/Part 2|Part 2]] begins with a company-only JobApplication model. Position exercise complete and reviewed: both fields, constructor assignments, and getters are correct; user reported passing tests. ApplicationStatus enum added and compiled; Part 2 now explains LocalDate and enums. Date/status model exercise complete and reviewed: fields, constructor assignments, and getters are correct. Remaining model fields and DTOs are still pending. The combined model/DTO checklist item stays unchecked until all of it is complete.
+In progress: [[Job Apps Tracker/Learning/Part 2|Part 2]] covers the reviewed six-field JobApplication model and both DTO records. Definitions are complete; [DTO PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) awaits joint review and explicit merge confirmation. In-memory storage and application endpoints are next after this milestone.
 
 - [x] Move the application model into the Spring project and define create-request and response DTOs. Six user-supplied model fields and both DTO records complete and reviewed; service-generated ID will be added with storage. DTO feature awaits joint PR review and merge confirmation.
 - [ ] Add a service holding an in-memory collection with generated IDs.
@@ -167,7 +167,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 ## Current Progress
 - Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
 - Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database or application-tracking endpoints yet.
-- In progress: step 3, application model foundations. JobApplication now has company and position, constructor assignments, and getters; user exercise reviewed; compilation and both existing endpoint tests pass. Model behavior is not covered by those endpoint tests. No application storage or application endpoints yet. Step 1 remains an optional refresher.
+- In progress: step 3. The six-field model and request/response DTO definitions are complete and reviewed. No application storage or application endpoints yet. Step 1 remains an optional refresher.
 - Next: jointly review the DTO feature PR and verification, then merge only after explicit user confirmation. Both DTO records and the six-field model are complete; Maven verify passes with two endpoint tests and successful packaging. ID generation, mapping, service, and application endpoints follow after the approved milestone. All six user-supplied model fields and getters are complete and reviewed. ID remains deferred until service-generated identity. The combined model/DTO definition checklist item is complete; feature merge is pending confirmation.
 - This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
 
@@ -182,7 +182,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
 - Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new part when a new topic or milestone begins; keep each part concise and organized by concept, with short capability checklists. [[Job Apps Tracker/Learning/Part 1|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2|Part 2]] is the current application-model lesson.
 - For tasks based on covered concepts, the user attempts the code first; review and offer hints before supplying a complete solution.
-- Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is in progress; current checkpoint is the Part 2 model exercise.
+- Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is in progress; current checkpoint is joint review of the completed Part 2 model/DTO definitions.
 
 
 
@@ -196,7 +196,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Initial baseline 75faa18 contains the current starter, six-field model, two endpoint tests, and learning/progress snapshots. Maven verify passed with two tests and successful packaging before the push.
-- Main tracks origin/main. DTO work is on feature/application-dtos; no pull request yet because the DTO exercise is incomplete. Future features will use small commits on a branch, testing, and pull-request review before merging.
+- Main tracks origin/main. DTO work is on feature/application-dtos; [PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) is open for joint review. Code commits 935fbb4 and d2c4a31 are pushed. Merge requires explicit user confirmation.
 - [[Job Apps Tracker/Learning/Part 3|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
 
 - Git operations are delegated to the assistant, with staged/committed/pushed updates. Finished features require joint review and explicit user merge confirmation. Git practice exercises do not block Java/Spring learning.

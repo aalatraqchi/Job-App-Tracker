@@ -116,4 +116,4 @@
 - User correctly explained that the request excludes an ID because the service generates it; the response returns it after creation. Preserved the user's code.
 - Verified Maven verify: two existing endpoint tests passed with zero failures/errors and executable JAR packaged. These tests do not cover DTO JSON binding or service mapping; contracts were reviewed directly, with HTTP mapping verification deferred to application endpoints.
 - Marked the model/DTO definition checklist item and response exercise reviewed. Service-generated ID, mapping, service, and application endpoints remain pending.
-- Next: commit/push the reviewed response and progress notes, open the DTO pull request, and jointly review. Merge requires explicit user confirmation.
+- Staged, committed (d2c4a31), and pushed the reviewed response and progress notes. Opened [DTO PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) for joint review. Nothing merged; explicit user confirmation is required. Updated stale progress text to match the completed definitions.
