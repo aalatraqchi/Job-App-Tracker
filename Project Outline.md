@@ -168,7 +168,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
 - Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database or application-tracking endpoints yet.
 - In progress: step 3, application model foundations. JobApplication now has company and position, constructor assignments, and getters; user exercise reviewed; compilation and both existing endpoint tests pass. Model behavior is not covered by those endpoint tests. No application storage or application endpoints yet. Step 1 remains an optional refresher.
-- Next: practice the read-only Git commands in [[Job Apps Tracker/Learning/Part 3|Part 3]], then resume request/response DTOs in [[Job Apps Tracker/Learning/Part 2|Part 2]] on a feature branch. All six user-supplied model fields and getters are complete and reviewed. ID remains deferred until service-generated identity. The combined model/DTO checklist item remains incomplete.
+- Next: user explains input/output identity and attempts ApplicationResponse in [[Job Apps Tracker/Learning/Part 2|Part 2]]. CreateApplicationRequest is implemented as a Java record on feature/application-dtos; existing two endpoint tests pass. The assistant handles Git operations and reports them; merge requires user confirmation after joint review. All six user-supplied model fields and getters are complete and reviewed. ID remains deferred until service-generated identity. The combined model/DTO checklist item remains incomplete.
 - This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
 
 ## References
@@ -196,5 +196,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Initial baseline 75faa18 contains the current starter, six-field model, two endpoint tests, and learning/progress snapshots. Maven verify passed with two tests and successful packaging before the push.
-- Main tracks origin/main. No feature branch or pull request created yet. Future features will use small commits on a branch, testing, and pull-request review before merging.
+- Main tracks origin/main. DTO work is on feature/application-dtos; no pull request yet because the DTO exercise is incomplete. Future features will use small commits on a branch, testing, and pull-request review before merging.
 - [[Job Apps Tracker/Learning/Part 3|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
+
+- Git operations are delegated to the assistant, with staged/committed/pushed updates. Finished features require joint review and explicit user merge confirmation. Git practice exercises do not block Java/Spring learning.

@@ -28,3 +28,9 @@ Text-field corrections reviewed: jobUrl and notes are private and getJobUrl is c
 - Part 3 is the Git/GitHub lesson; Part 2 remains the model/DTO lesson. Current practice: user runs git status, git remote -v, and git log --oneline -5 and explains saving versus pushing.
 - For new agreed implementation work, use a feature branch, small coherent commits, appropriate checks, and pull-request review before merging. No feature branch or PR exists yet; demonstrate the workflow with the next DTO milestone rather than inventing historical commits.
 - Vault notes are authoritative. Copy relevant note snapshots to the source Learning folder and root progress documents deliberately before committing; there is no automatic synchronization.
+
+## Latest user agreement and current checkpoint (supersedes earlier Git exercises)
+- User delegates Git operations to the assistant: stage, commit, push, manage feature branches, and create PRs as appropriate; report each action clearly. Do not require the user to execute Git exercises before resuming application learning.
+- User and assistant review finished features and verification together. Merge only after explicit user confirmation for that merge. Push/PR authorization is not merge authorization.
+- Current branch: feature/application-dtos. CreateApplicationRequest.java is implemented as the Part 2 record example; compilation and existing two endpoint tests pass. Current user exercise: explain why response includes an ID and create ApplicationResponse as a record (long id then the six request components). Review with hints before supplying the solution.
+- No response record, mapper, service-generated ID, service, or application endpoints implemented yet. DTO feature is incomplete; no PR or merge yet. Resume Java/Spring learning in Part 2, with Git concepts retained in Part 3.

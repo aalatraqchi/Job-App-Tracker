@@ -210,8 +210,94 @@ These illustrate the future constructor; older examples show earlier model versi
 - [x] My jobUrl/notes implementation has been reviewed. Both fields are now private; constructor assignments and getters are correct.
 
 ### Coming next: separate input, stored data, and output
-A **DTO (Data Transfer Object)** describes data crossing an API boundary. Our planned create-request DTO will contain the values the client may supply; the model represents a tracked application; the response DTO describes what we return, including its generated ID. Keeping those roles separate prevents future internal fields (such as ownership) from automatically becoming writable API input. We will work through a concrete DTO example after reviewing this exercise; no DTO is implemented yet.
+A **DTO (Data Transfer Object)** describes data crossing an API boundary. Our planned create-request DTO will contain the values the client may supply; the model represents a tracked application; the response DTO describes what we return, including its generated ID. Keeping those roles separate prevents future internal fields (such as ownership) from automatically becoming writable API input. We will work through a concrete DTO example after reviewing this exercise; CreateApplicationRequest is now implemented as the worked example below; ApplicationResponse is the next user exercise.
 
 
 ### Text-field review complete
 The initial attempt used package-private fields. The user corrected jobUrl and notes to private and renamed the URL getter to getJobUrl. All six fields, constructor assignments, and getters are correct. The constructor parameter url validly initializes this.jobUrl; parameter and field names need not match. Optional data and field visibility are independent concepts. No user code was replaced. Next: introduce request/response DTOs.
+
+
+
+## DTOs: separate API input, internal data, and output
+Our six-field JobApplication model is reviewed. Next, define the API's data contract before implementing its HTTP handlers. **DTO** means Data Transfer Object: a type describing data crossing a boundary. It is a role, not a Java keyword or Spring annotation.
+
+| Type | Responsibility |
+| --- | --- |
+| CreateApplicationRequest | Values a client can supply when creating an application. No ID or owner supplied by the client. |
+| JobApplication | Our internal representation of a tracked application. It will receive service-generated identity later. |
+| ApplicationResponse | Values returned to the client, including the generated ID. Your next exercise defines this type. |
+
+These types initially share many fields. Their separate roles matter as the project grows: adding internal ownership data should not silently make it accepted input or returned output. A DTO does not enforce those boundaries by itself; the future controller/service must use it and deliberately map values. It also does not automatically validate fields or reject every unknown JSON property.
+
+Planned flow (not wired yet): **request JSON → CreateApplicationRequest → service → JobApplication → ApplicationResponse → response JSON**.
+
+## Java records for small data carriers
+The new project file `application/CreateApplicationRequest.java` is a worked example:
+
+```java
+package com.ashraf.jobapptracker.application;
+
+import java.time.LocalDate;
+
+public record CreateApplicationRequest(
+    String company,
+    String position,
+    LocalDate appliedDate,
+    ApplicationStatus status,
+    String jobUrl,
+    String notes
+) {
+}
+```
+
+A **record** is a Java class designed to carry a fixed group of values. Its header lists **components**. The compiler generates private final fields, a constructor taking those components in order, accessor methods, and value-based equals/hashCode/toString. This removes repetitive data-carrier boilerplate; it is standard Java, not Lombok or Spring magic.
+
+The accessor names differ from the model getters:
+
+```java
+// Illustrative statements inside a method:
+CreateApplicationRequest request = new CreateApplicationRequest(
+    "Acme", "Java Developer", LocalDate.of(2026, 10, 7),
+    ApplicationStatus.APPLIED, null, null
+);
+String company = request.company(); // not getCompany()
+LocalDate date = request.appliedDate();
+```
+
+Records have no generated setters; their component references cannot be reassigned after construction. This is shallow immutability, not a guarantee that every referenced object's internals are immutable. Our components here are strings, LocalDate, and an enum, which are appropriate immutable values. We keep JobApplication as the explicit class you practiced; we are not rewriting the model.
+
+This request record still permits null values and has no validation annotations yet. Omitted status will later be defaulted to APPLIED by creation logic; simply declaring the enum component does not choose a default. We will add required-field validation when that feature is introduced.
+
+It needs no @RestController: it carries data rather than handling requests. Once we add a controller accepting a @RequestBody, Spring's JSON support can construct this record from input; that controller is not implemented yet. Constructor calls use Java values, while an HTTP client sends JSON text. The DTO does not open an endpoint on its own.
+
+**I should be able to...**
+- [ ] Explain why create input should not accept a client-selected application ID.
+- [ ] Distinguish a DTO's role from the record language feature used to implement it.
+- [ ] Read a record component using company() rather than getCompany().
+- [ ] Explain why separate input/output DTOs help us control API changes.
+
+## My response DTO exercise
+Create `ApplicationResponse.java` in the same `application` package, using the request record as your pattern.
+
+Its components, in order, should be:
+
+| Component | Type |
+| --- | --- |
+| id | long |
+| company | String |
+| position | String |
+| appliedDate | LocalDate |
+| status | ApplicationStatus |
+| jobUrl | String |
+| notes | String |
+
+Use a public record with an empty body. Import LocalDate; ApplicationStatus shares the package. Do not manually write fields, getters, constructors, Spring annotations, or mapping logic. The primitive long represents a numeric ID for a created application; the service will supply it. Defining this response type does not generate that ID or add it to the model yet.
+
+Run `.\mvnw.cmd test`, then tell me when your record is ready for review. Existing endpoint tests do not cover these DTO contracts; we will inspect the components directly and verify JSON behavior when application endpoints exist.
+
+- [ ] I have attempted ApplicationResponse.
+- [ ] My response DTO has been reviewed and its purpose explained.
+
+Before editing: why does ApplicationResponse include an ID while CreateApplicationRequest does not?
+
+After review, we will finish this DTO milestone, review its feature diff together, and merge only after your confirmation. The service and endpoints are separate following increments.
