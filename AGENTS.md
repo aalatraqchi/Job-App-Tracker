@@ -22,3 +22,9 @@ Text-field exercise complete and reviewed: all six user-supplied model fields ha
 
 
 Text-field corrections reviewed: jobUrl and notes are private and getJobUrl is correct. The constructor parameter url is valid. Next checkpoint is request/response DTOs; introduce concepts with actual code and assign familiar patterns to the user. DTOs, ID, service, and application endpoints remain unimplemented.
+
+## Version control workflow
+- Private GitHub repository: https://github.com/aalatraqchi/Job-App-Tracker; origin uses the HTTPS .git URL. Main tracks origin/main; initial baseline commit 75faa18.
+- Part 3 is the Git/GitHub lesson; Part 2 remains the model/DTO lesson. Current practice: user runs git status, git remote -v, and git log --oneline -5 and explains saving versus pushing.
+- For new agreed implementation work, use a feature branch, small coherent commits, appropriate checks, and pull-request review before merging. No feature branch or PR exists yet; demonstrate the workflow with the next DTO milestone rather than inventing historical commits.
+- Vault notes are authoritative. Copy relevant note snapshots to the source Learning folder and root progress documents deliberately before committing; there is no automatic synchronization.

@@ -57,7 +57,7 @@ Complete and verify each step before moving to the next. Treat each numbered ste
 - [x] Generate a Maven/Java 21 project with Spring Web and Validation in the source workspace.
 - [x] Add a simple `GET /health` endpoint returning a small JSON response.
 - [x] Run with `.\mvnw.cmd spring-boot:run`, then request the health endpoint from an API client.
-- [x] Initialize Git; ignore build output, IDE-specific files, and local secrets. Working starter saved in the source folder; Git initialized on main, with no commits or remote yet.
+- [x] Initialize Git; ignore build output, IDE-specific files, and local secrets. Working source committed and pushed to private GitHub repository aalatraqchi/Job-App-Tracker. Main tracks origin/main; initial baseline commit 75faa18.
 - [x] **Verify:** `.\mvnw.cmd test` passes and the health endpoint returns HTTP 200.
 
 ### 3. Create and list applications in memory
@@ -168,7 +168,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
 - Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database or application-tracking endpoints yet.
 - In progress: step 3, application model foundations. JobApplication now has company and position, constructor assignments, and getters; user exercise reviewed; compilation and both existing endpoint tests pass. Model behavior is not covered by those endpoint tests. No application storage or application endpoints yet. Step 1 remains an optional refresher.
-- Next: introduce request/response DTOs in [[Job Apps Tracker/Learning/Part 2|Part 2]]. All six user-supplied model fields and getters are complete and reviewed. ID remains deferred until service-generated identity. The combined model/DTO checklist item remains incomplete.
+- Next: practice the read-only Git commands in [[Job Apps Tracker/Learning/Part 3|Part 3]], then resume request/response DTOs in [[Job Apps Tracker/Learning/Part 2|Part 2]] on a feature branch. All six user-supplied model fields and getters are complete and reviewed. ID remains deferred until service-generated identity. The combined model/DTO checklist item remains incomplete.
 - This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
 
 ## References
@@ -183,3 +183,18 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new part when a new topic or milestone begins; keep each part concise and organized by concept, with short capability checklists. [[Job Apps Tracker/Learning/Part 1|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2|Part 2]] is the current application-model lesson.
 - For tasks based on covered concepts, the user attempts the code first; review and offer hints before supplying a complete solution.
 - Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is in progress; current checkpoint is the Part 2 model exercise.
+
+
+
+
+
+
+
+
+
+
+## Version Control
+- Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
+- Initial baseline 75faa18 contains the current starter, six-field model, two endpoint tests, and learning/progress snapshots. Maven verify passed with two tests and successful packaging before the push.
+- Main tracks origin/main. No feature branch or pull request created yet. Future features will use small commits on a branch, testing, and pull-request review before merging.
+- [[Job Apps Tracker/Learning/Part 3|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.

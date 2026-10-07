@@ -88,3 +88,11 @@
 - Reviewed the corrected JobApplication: jobUrl and notes are private; getJobUrl and getNotes return the correct fields. All constructor assignments remain correct, including jobUrl = url.
 - Marked the exercise reviewed and updated the next checkpoint to request/response DTOs. No application code changed or tests rerun during this review.
 - Next: introduce DTOs; service-generated ID, storage, and application endpoints remain pending.
+
+
+### GitHub setup and version-control learning
+- Created private repository https://github.com/aalatraqchi/Job-App-Tracker under the signed-in GitHub account.
+- Committed the existing project as baseline 75faa18 (feat: establish Spring Boot starter and application model), added origin, and pushed main with upstream tracking. Verified the files and Private visibility in Chrome.
+- Verified Maven verify before the baseline push: two HTTP integration tests passed, zero failures/errors, executable JAR packaged successfully. Build output, IDE settings, local secret files, logs, and starter archive are ignored.
+- Created Part 3 for Git/GitHub concepts and a small read-only practice exercise; updated README and the outline. Understanding remains unverified until the user attempts the exercise.
+- Next: user inspects status, remotes, and log; then resume DTO learning on a feature branch. No application implementation advanced during GitHub setup.
