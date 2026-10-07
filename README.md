@@ -47,3 +47,7 @@ Stop the app with Ctrl+C. The starter binds to localhost for local development. 
 The first run downloads Maven and project dependencies; it needs Internet access. Build output goes to ignored `target/`. No credentials should be committed; local `.env` and `application-local.properties` files are ignored.
 
 The roadmap and dated progress live in the Obsidian Job Apps Tracker folder. Next implementation work is request/response DTOs, followed by the in-memory service and create/list API. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy of the notes.
+
+## Version control
+
+Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker). Main tracks `origin/main`. Use a feature branch for new work, review the staged diff, run verification, commit and push, then review a pull request before merging. `Learning/Part 3.md` explains the workflow and commands. Learning notes are copied from the vault deliberately; changes are not synchronized automatically.
