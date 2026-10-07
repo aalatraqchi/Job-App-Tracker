@@ -110,3 +110,10 @@
 - Assigned ApplicationResponse as the user exercise: same six values plus service-generated long id. No response record, mapper, service, or application endpoint implemented by the assistant.
 - Verified mvnw.cmd test: request DTO compiled; two existing endpoint tests passed, zero failures/errors. Those tests do not cover DTO JSON contracts yet.
 - Next: user explains why only the response includes ID and attempts the record. Keep this increment on the feature branch; no merge without confirmation.
+
+### DTO milestone — Response record reviewed
+- Reviewed the user's ApplicationResponse record: long id plus company, position, appliedDate, status, jobUrl, and notes, with correct types, order, package, and LocalDate import.
+- User correctly explained that the request excludes an ID because the service generates it; the response returns it after creation. Preserved the user's code.
+- Verified Maven verify: two existing endpoint tests passed with zero failures/errors and executable JAR packaged. These tests do not cover DTO JSON binding or service mapping; contracts were reviewed directly, with HTTP mapping verification deferred to application endpoints.
+- Marked the model/DTO definition checklist item and response exercise reviewed. Service-generated ID, mapping, service, and application endpoints remain pending.
+- Next: commit/push the reviewed response and progress notes, open the DTO pull request, and jointly review. Merge requires explicit user confirmation.
