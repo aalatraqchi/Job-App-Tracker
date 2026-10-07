@@ -117,3 +117,9 @@
 - Verified Maven verify: two existing endpoint tests passed with zero failures/errors and executable JAR packaged. These tests do not cover DTO JSON binding or service mapping; contracts were reviewed directly, with HTTP mapping verification deferred to application endpoints.
 - Marked the model/DTO definition checklist item and response exercise reviewed. Service-generated ID, mapping, service, and application endpoints remain pending.
 - Staged, committed (d2c4a31), and pushed the reviewed response and progress notes. Opened [DTO PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) for joint review. Nothing merged; explicit user confirmation is required. Updated stale progress text to match the completed definitions.
+### DTO merge and Part 4 — Service/storage foundations
+- User reviewed PR #1 and explicitly authorized merging and moving on. Merged PR #1 on GitHub (0d3628c), synced local main, and created codex/in-memory-applications.
+- Created [[Job Apps Tracker/Learning/Part 4|Part 4]] covering services, Spring-managed shared instances, ID-to-model maps, collection encapsulation, and temporary storage. Added ApplicationService with an empty ConcurrentHashMap and findAll() as the worked example.
+- Assigned the familiar model-ID exercise: private long id, first constructor parameter/assignment, and getId(). Understanding and exercise checkboxes remain unchecked. No creation, ID allocation, mapping, or application endpoints implemented yet.
+- Maven test passed: two existing endpoint tests, zero failures/errors. The initial sandbox run could not open Tomcat's loopback connection; rerunning with localhost access passed. These tests verify startup and health/about, not storage behavior.
+- Next: review the user's ID exercise, then introduce creation and ID generation incrementally. The service roadmap checkbox remains unchecked.
