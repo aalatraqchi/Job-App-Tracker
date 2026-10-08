@@ -91,18 +91,18 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [x] Verify shared UI/API data and desktop/phone layouts; format CSS for readable editing.
 - [x] Add an edit form using the verified update service.
 - [x] Add deletion with a confirmation step after delete behavior is implemented.
-- [ ] Add company/status filter controls when filtering is ready in step 5.
+- [x] Add company/status filter controls, Apply/Clear actions, retained selections, and a no-match state.
 - [ ] Add interview-stage views/forms when step 7 is ready.
 - [ ] Add login/logout and authenticated navigation in step 8.
 - [ ] Verify the complete browser workflow after persistence and ownership are added.
 
 ### 5. Add application filters and initial automated tests
-- [ ] Support optional `status` and `company` query parameters on the list endpoint.
-- [ ] Make company matching case-insensitive and partial; combine filters with AND when both are supplied.
-- [ ] Use a predictable list order, such as applied date descending followed by ID descending.
+- [x] Support optional `status` and `company` query parameters on the list endpoint.
+- [x] Make company matching case-insensitive and partial; combine filters with AND when both are supplied.
+- [x] Use a predictable list order, such as applied date descending followed by ID descending.
 - [x] Add service tests for status defaults and editing, plus HTTP tests for missing IDs.
-- [ ] Add tests for deletion, filter combinations, and REST validation.
-- [ ] **Verify:** a filter with no matches returns an empty list; invalid statuses return HTTP 400; all tests pass.
+- [x] Add tests for deletion, filter combinations, and REST validation.
+- [x] **Verify:** a filter with no matches returns an empty list; invalid statuses return HTTP 400; all tests pass.
 
 ### 6. Replace in-memory storage with PostgreSQL
 - [ ] Install/start PostgreSQL if needed and create a local development database and database user.
@@ -194,9 +194,10 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - [x] Retrieve by ID and consistent missing-ID JSON 404.
 - [x] Thymeleaf list/add/detail interface, form errors, responsive styling, and UI/API integration checks.
 - [x] User's update DTO/service exercise reviewed and verified; old-versus-new-object return issue corrected by the user.
-- Verification: **35 tests pass and JAR packaging succeeds**. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
+- Verification: **41 tests pass and JAR packaging succeeds**. Step 5 filter combinations, ordering, no matches, and invalid status JSON/HTML 400 are verified. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
 - [x] Step 4 API completion and current step 4A edit/delete UI. Future-dependent UI items remain unchecked as explicitly agreed.
-- Current note: [[Job Apps Tracker/Learning/Part 10 - Application CRUD and edit-delete pages|Part 10]], using the requested files/changes/new-content format. Next: joint feature review and explicit merge approval; step 5 filters follow when ready.
+- PR #3 merged with explicit user approval on 10/8/26 (5d9dd42); GitHub confirms merged. Step 5 and filter UI are complete on codex/application-filters.
+- Current note: [[Job Apps Tracker/Learning/Part 11 - Filtering and ordering applications|Part 11]], using the files/changes/new-content format. Next: joint review and explicit merge approval for step 5; step 6 PostgreSQL follows when ready.
 - Part 8 and Part 9 concept boxes are user self-assessment; implementation exercises are recorded separately as reviewed.
 - Local server is stopped. Start it from IntelliJ or the project terminal when needed; data still resets on restart.
 - Keep this outline current. Changes.md is now historical only; do not add further entries.
@@ -217,7 +218,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- Current branch: codex/update-applications, including unmerged lookup and Thymeleaf work. Latest implementation commit: 298ab39. [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) is open for joint review; no merge authorized.
+- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Main and origin/main synced. Current feature branch: codex/application-filters. Future merges require fresh explicit confirmation.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 

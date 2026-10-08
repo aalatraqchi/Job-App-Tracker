@@ -1,6 +1,6 @@
 # Job Application Tracker
 
-A gradual Java/Spring Boot learning project with a Thymeleaf interface for adding, listing, viewing, editing, and deleting job applications. The pages and JSON API share an in-memory service. Thirty-five tests cover the current service, validation, and HTTP behavior.
+A gradual Java/Spring Boot learning project with a Thymeleaf interface for adding, listing, viewing, editing, and deleting job applications. The pages and JSON API share an in-memory service. Forty-one tests cover the current service, validation, filters, and HTTP behavior.
 
 ## Environment
 
@@ -46,7 +46,7 @@ Stop the app with Ctrl+C. The starter binds to localhost for local development. 
 
 The first run downloads Maven and project dependencies; it needs Internet access. Build output goes to ignored `target/`. No credentials should be committed; local `.env` and `application-local.properties` files are ignored.
 
-The roadmap and learning notes live in the Obsidian Job Apps Tracker folder. Basic API CRUD and the corresponding Thymeleaf pages are complete. Filters, database persistence, interview stages, and authentication remain future milestones. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy. Changes.md is historical only.
+The roadmap and learning notes live in the Obsidian Job Apps Tracker folder. Basic API CRUD and the corresponding Thymeleaf pages are complete. Company/status filters and predictable ordering are complete. Database persistence, interview stages, and authentication remain future milestones. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy. Changes.md is historical only.
 
 ## Version control
 
@@ -57,8 +57,10 @@ Use the run command above, then open <http://127.0.0.1:8080/>.
 
 The Thymeleaf UI lists applications, adds them through a form, shows details, edits them, and deletes them after confirmation. HTML pages use `/tracker`; the JSON API uses `/applications`. Both use the same in-memory service. Restarting clears all records.
 
-Both forms and JSON requests validate required company/position/date, text lengths, and optional HTTP(S) job URLs. API errors include a `message`, with field-validation errors also including an `errors` map. DELETE returns HTTP 204; missing records return HTTP 404. Filters, persistence, interviews, and authentication remain pending.
+Both forms and JSON requests validate required company/position/date, text lengths, and optional HTTP(S) job URLs. API errors include a `message`, with field-validation errors also including an `errors` map. DELETE returns HTTP 204; missing records return HTTP 404. Persistence, interviews, and authentication remain pending.
 
 Edit a record at `/tracker/{id}/edit`. `/tracker/{id}/delete` shows confirmation; merely opening it does not delete data. Ordinary HTML forms submit POST to these page routes; API clients use PUT/DELETE at `/applications/{id}`.
 
 Templates: `src/main/resources/templates/tracker/`. Styles: `src/main/resources/static/css/tracker.css`. Page controller/form: `src/main/java/com/ashraf/jobapptracker/web/`.
+
+Filter the API with optional status/company query parameters, for example /applications?status=INTERVIEW&company=acme. Company matching is case-insensitive and partial; both filters combine with AND. Lists sort by applied date descending, then ID descending. Empty/blank filters mean no restriction; unknown statuses return HTTP 400. The browser list offers the same filters with Apply/Clear controls and a no-match state. Summary cards always count all records.

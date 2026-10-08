@@ -645,3 +645,36 @@ input:focus, select:focus, textarea:focus {
 .button.danger-link {
     color: #b42340;
 }
+
+.filter-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: end;
+    padding: 24px;
+    margin-bottom: 28px;
+}
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 44px;
+}
+
+@media (max-width: 900px) {
+    .filter-panel {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-panel {
+        grid-template-columns: 1fr;
+        padding: 20px 18px;
+    }
+}

@@ -10,15 +10,44 @@
         <a class="button" th:href="@{/tracker/new}"><span aria-hidden="true">+</span> Add application</a>
     </section>
     <section class="stats" aria-label="Application summary">
-        <div class="stat"><span>Total applications</span><strong th:text="${applications.size()}">0</strong></div>
+        <div class="stat"><span>Total applications</span><strong th:text="${total}">0</strong></div>
         <div class="stat"><span>In interviews</span><strong th:text="${interviews}">0</strong></div>
         <div class="stat"><span>Offers received</span><strong th:text="${offers}">0</strong></div>
     </section>
-    <div class="section-heading"><h2>All applications</h2><span class="muted">Every opportunity in one place</span></div>
-    <section class="empty-state panel" th:if="${applications.isEmpty()}">
+    <form class="panel filter-panel" method="get" th:action="@{/tracker}" aria-label="Filter applications">
+        <div class="field">
+            <label for="companyFilter">Company search</label>
+            <input id="companyFilter" name="company" th:value="${companyFilter}"
+                   placeholder="Search all or part of a name" type="search">
+        </div>
+        <div class="field">
+            <label for="statusFilter">Application status</label>
+            <select id="statusFilter" name="status">
+                <option value="">All statuses</option>
+                <option th:each="status : ${statuses}" th:value="${status}"
+                        th:selected="${status == selectedStatus}"
+                        th:text="${#strings.capitalize(#strings.toLowerCase(status.name()))}"></option>
+            </select>
+        </div>
+        <div class="filter-actions">
+            <button class="button" type="submit">Apply filters</button>
+            <a class="text-link" th:href="@{/tracker}">Clear filters</a>
+        </div>
+    </form>
+    <div class="section-heading">
+        <h2 th:text="${hasFilters ? 'Matching applications' : 'All applications'}"></h2>
+        <span class="muted" th:text="${applications.size() +
+              (applications.size() == 1 ? ' application shown' : ' applications shown') + ' · Newest first'}"></span>
+    </div>
+    <section class="empty-state panel" th:if="${applications.isEmpty() and !hasFilters}">
         <div class="empty-icon" aria-hidden="true">↗</div><h2>A fresh start for your search</h2>
         <p class="muted">Add your first application to keep the details and next steps together.</p>
         <a class="button" th:href="@{/tracker/new}">Add your first application</a>
+    </section>
+    <section class="empty-state panel" th:if="${applications.isEmpty() and hasFilters}">
+        <h2>No applications match</h2>
+        <p class="muted">Try another company or status, or clear the filters to see everything.</p>
+        <a class="button secondary" th:href="@{/tracker}">Show all applications</a>
     </section>
     <section class="application-grid" th:unless="${applications.isEmpty()}" aria-label="Applications">
         <article class="application-card panel" th:each="job : ${applications}">

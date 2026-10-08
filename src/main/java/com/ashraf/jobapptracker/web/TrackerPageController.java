@@ -32,12 +32,18 @@ public class TrackerPageController {
     }
 
     @GetMapping({"/", "/tracker"})
-    public String list(Model model) {
-        var applications = service.findAll();
+    public String list(@RequestParam(name = "status", required = false) ApplicationStatus status,
+                       @RequestParam(name = "company", required = false) String company, Model model) {
+        var allApplications = service.findAll();
+        var applications = service.findAll(status, company);
         model.addAttribute("applications", applications);
-        model.addAttribute("interviews", applications.stream()
+        model.addAttribute("total", allApplications.size());
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("companyFilter", company == null ? "" : company.strip());
+        model.addAttribute("hasFilters", status != null || (company != null && !company.isBlank()));
+        model.addAttribute("interviews", allApplications.stream()
                 .filter(application -> application.getStatus() == ApplicationStatus.INTERVIEW).count());
-        model.addAttribute("offers", applications.stream()
+        model.addAttribute("offers", allApplications.stream()
                 .filter(application -> application.getStatus() == ApplicationStatus.OFFER).count());
         return "tracker/list";
     }
@@ -136,7 +142,11 @@ public class TrackerPageController {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidId() {
+    public String invalidId(MethodArgumentTypeMismatchException exception, Model model) {
+        if ("status".equals(exception.getName())) {
+            model.addAttribute("errorTitle", "Invalid status filter");
+            model.addAttribute("errorMessage", "Choose a status from the filter menu to continue.");
+        }
         return "tracker/bad-request";
     }
 
