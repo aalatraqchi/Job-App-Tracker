@@ -217,7 +217,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- Current branch: codex/update-applications, including unmerged lookup and Thymeleaf work. Update service and PUT endpoint are verified; current checkpoint is being committed on this branch.
+- Current branch: codex/update-applications, including unmerged lookup and Thymeleaf work. Latest implementation commit: 298ab39. [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) is open for joint review; no merge authorized.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 
