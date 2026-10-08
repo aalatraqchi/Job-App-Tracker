@@ -151,3 +151,9 @@
 - Created [[Job Apps Tracker/Learning/Part 5|Part 5]] covering injection, request mapping, JSON conversion, response DTO mapping, status codes, manual POST requests, and the HTTP tests.
 - Assigned GET /applications to the user using existing service.findAll(), the response mapper, and an ArrayList/loop. Provided loop guidance. New concept boxes and GET exercise remain pending; combined POST/GET roadmap checkbox stays unchecked.
 - No database, filtering, required-field validation, or merge performed. Next: review the user's GET implementation before adding its focused HTTP test.
+
+### GET review and practical learning format
+- User requested brief practical lessons: when to use a construct and what it enables. Shortened Part 5; preserved user capability checkmarks as self-assessment. Deeper internals only on request.
+- Reviewed user's listApps GET handler: correct shared service call, model-to-response conversion, and returned list. Preserved the implementation.
+- Added HTTP verification of an initial empty array, two POST-created records with distinct IDs, and both complete DTOs listed without relying on order. Maven verify passed: eight tests, zero failures/errors, successful JAR packaging.
+- Marked step 3 endpoint and create/list verification items complete. No step 4 implementation or merge performed. Next: joint feature PR review and explicit merge confirmation.

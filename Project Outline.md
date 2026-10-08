@@ -61,13 +61,13 @@ Complete and verify each step before moving to the next. Treat each numbered ste
 - [x] **Verify:** `.\mvnw.cmd test` passes and the health endpoint returns HTTP 200.
 
 ### 3. Create and list applications in memory
-In progress: service creation/storage and explicit-status exercise reviewed. [[Job Apps Tracker/Learning/Part 5|Part 5]] introduces the HTTP boundary. POST /applications and response mapping are implemented and verified; GET /applications is the pending user exercise.
+Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature PR review/merge remains pending; [[Job Apps Tracker/Learning/Part 5|Part 5]] is the concise endpoint reference.
 
 - [x] Move the application model into the Spring project and define create-request and response DTOs. Six user-supplied model fields and both DTO records complete and reviewed; service-generated ID will be added with storage. DTO feature merged in PR #1 with user confirmation.
 - [x] Add a service holding an in-memory collection with generated IDs. Creation/listing implemented; tests verify distinct IDs and retention of identical-input applications. Feature branch review/merge still pending.
-- [ ] Add `POST /applications` and `GET /applications` controllers; keep storage and business rules in the service. POST and response mapper implemented; GET exercise pending in Part 5.
+- [x] Add `POST /applications` and `GET /applications` controllers; keep storage and business rules in the service. User GET implementation reviewed; both endpoints verified over HTTP.
 - [x] Default new applications to `APPLIED` when status is omitted. Default verified by service test; user test verifies that explicit INTERVIEW status is preserved; reviewed and passing.
-- [ ] **Verify:** create two applications, receive HTTP 201 with their IDs, and list both. Restarting clears them at this temporary stage.
+- [x] **Verify:** create two applications, receive HTTP 201 with their IDs, and list both. HTTP test verifies an empty initial list, distinct created IDs, and both response DTOs. Restarting recreates the temporary storage.
 
 ### 4. Finish the basic application API
 - [ ] Add `GET /applications/{id}`, `PUT /applications/{id}`, and `DELETE /applications/{id}`.
@@ -167,8 +167,8 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 ## Current Progress
 - Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
 - Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database yet; POST /applications is now implemented as recorded below.
-- In progress: step 3. POST /applications converts JSON, uses the shared service, maps the created model to ApplicationResponse, and returns HTTP 201. Seven tests pass: three service tests and four HTTP tests. GET/list HTTP behavior remains pending.
-- Next: user implements GET /applications using service.findAll(), a result list, and the existing toResponse mapper. Review the attempt before adding its focused HTTP test. Part 5 concepts/exercise remain unverified; combined POST/GET checklist and feature review/merge are pending.
+- Verified: step 3 create/list behavior, including POST 201, GET 200, distinct IDs, default APPLIED, and explicit status preservation. Eight tests and JAR packaging pass. Feature review/merge remains pending.
+- Next: joint feature PR review and explicit merge confirmation before step 4. GET exercise complete and independently reviewed/tested. Learning notes will be brief practical references: when to use a construct and what it enables; deeper internals only on request.
 - This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
 
 ## References
@@ -182,7 +182,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
 - Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new part when a new topic or milestone begins; keep each part concise and organized by concept, with short capability checklists. [[Job Apps Tracker/Learning/Part 1|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2|Part 2]] is the current application-model lesson.
 - For tasks based on covered concepts, the user attempts the code first; review and offer hints before supplying a complete solution.
-- Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is in progress; Part 4 explicit-status test is reviewed; current lesson is Part 5 and its GET handler exercise.
+- Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is in progress; Part 4 explicit-status test is reviewed; Part 5 GET exercise is complete and reviewed.
 
 
 
