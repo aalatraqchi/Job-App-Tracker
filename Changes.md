@@ -138,3 +138,9 @@
 - Added two service unit tests for copied details/default status and distinct stored records from identical input. Maven test passed: four tests total, zero failures/errors, including existing health/about HTTP tests.
 - Extended Part 4 with actual code and explanations of atomic allocation, defaults, mapping, and arrange/act/assert tests without Spring startup.
 - Assigned explicit INTERVIEW status preservation as the user's test exercise. New concept/exercise boxes remain unchecked. Next: review the attempt before proceeding to mapping and application endpoints. No merge authorized for this feature yet.
+
+### Explicit-status test reviewed
+- Reviewed the user's testingCustomStatusEnumPassedIn test: correct fresh service/request, explicit INTERVIEW, creation call, and status assertion. Preserved the user's implementation; no issues found.
+- Maven test passed: five tests, zero failures/errors (three service tests and two existing HTTP tests).
+- Updated Part 4 and outline to record reviewed test completion; preserved user self-checked concept boxes without treating them as a separate verbal verification.
+- Next: response mapping and application HTTP endpoints when requested. No implementation advancement or merge during this review.

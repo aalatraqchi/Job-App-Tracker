@@ -148,10 +148,14 @@ This covers the other branch of the default rule: default only when omitted, rat
 
 **I should be able to...**
 
-- [ ] Explain why ID allocation and map storage are separate operations.
-- [ ] Explain why `getAndIncrement()` is useful when requests run concurrently.
-- [ ] Trace a request's fields through `create()` into the stored model.
-- [ ] Explain why a plain unit test can create its own service while the app shares one.
-- [ ] Add and explain the explicit-status test, then have it reviewed.
+- [x] Explain why ID allocation and map storage are separate operations.
+- [x] Explain why `getAndIncrement()` is useful when requests run concurrently.
+- [x] Trace a request's fields through `create()` into the stored model.
+- [x] Explain why a plain unit test can create its own service while the app shares one.
+- [x] Add the explicit-status test and have its implementation reviewed.
 
-Worked-example verification on 10/8/26: four tests passed, zero failures/errors (two service tests and two existing HTTP tests). No application HTTP endpoints or response mapping yet. The new understanding checklist and test exercise remain pending.
+Worked-example verification on 10/8/26: four tests passed, zero failures/errors (two service tests and two existing HTTP tests). No application HTTP endpoints or response mapping yet. The user has self-checked the creation concept items; the explicit-status test was subsequently implemented and reviewed as recorded below.
+
+### Explicit-status test review — 10/8/26
+
+Your testingCustomStatusEnumPassedIn test correctly arranges a fresh service and INTERVIEW request, calls create(), and asserts INTERVIEW on the returned model. That assertion would fail if creation always replaced the status with APPLIED. The extra copied-detail assertions are valid, though the existing default-status test already checks those details. Your implementation was preserved. Maven test passed with five tests, zero failures/errors: three service unit tests and two HTTP integration tests. No HTTP application endpoints or response mapping added during review. The remaining concept boxes reflect your self-assessment, rather than a separate oral review.
