@@ -30,9 +30,9 @@ After saving, `return "redirect:/tracker/" + application.getId()` opens the deta
 Run `JobAppTrackerApplication` in IntelliJ, or ` .\mvnw.cmd spring-boot:run` in the project terminal. Open `http://localhost:8080/`. Stop with IntelliJ's stop button or Ctrl+C in the terminal that started it. Applications disappear when the server restarts because storage is still in memory.
 
 ## I should be able to...
-- [ ] Choose `@Controller` for pages and `@RestController` for JSON.
-- [ ] Find the template selected by a controller's return value.
-- [ ] Explain how a model attribute makes data available to HTML.
-- [ ] Identify where to change a form field or the page's styling.
+- [x] Choose `@Controller` for pages and `@RestController` for JSON.
+- [x] Find the template selected by a controller's return value.
+- [x] Explain how a model attribute makes data available to HTML.
+- [x] Identify where to change a form field or the page's styling.
 
 Implementation and browser checks are complete; these understanding checks are for your next review.

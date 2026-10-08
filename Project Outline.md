@@ -229,3 +229,8 @@ Missing-ID test review: user's HTTP 404/content-type/message assertions are corr
 - Current lesson: [[Job Apps Tracker/Learning/Part 8|Part 8 — Thymeleaf pages]]. Source branch: codex/thymeleaf-ui, including the unmerged lookup milestone. REST endpoints remain available; storage remains in memory. No update/delete, REST validation, persistence, or authentication advancement.
 
 Local preview update: the server is stopped (port 8080 free). CSS formatting improved for learning/readability; implementation progress is unchanged.
+
+### Next checkpoint — application updates
+- User requested resuming implementation. Part 8 boxes are self-checked; current lesson is [[Job Apps Tracker/Learning/Part 9|Part 9]].
+- Exercise pending: UpdateApplicationRequest and ApplicationService.update. Controller/edit page and update verification follow review. Step 4 update checkbox remains incomplete.
+- Branch codex/update-applications includes prior unmerged UI/lookup work. No merge authorized.

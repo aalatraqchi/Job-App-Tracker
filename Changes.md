@@ -194,3 +194,8 @@
 ### CSS readability and local server
 - Reformatted tracker.css into indented blocks with one declaration per line; maximum line length is 58 characters. Verified CSS content is unchanged apart from whitespace and optional final semicolons; no behavioral test rerun needed.
 - Checked the assistant-started server session: it had exited; confirmed no listener remains on port 8080. Start from IntelliJ or the project terminal when needed.
+
+### Update milestone learning started
+- User requested moving on. Part 8 capability boxes are self-checked in the vault; no separate verbal verification claimed.
+- Created Part 9: preserving identity during updates, a separate request DTO, replacing a stored model, and missing-ID behavior. Assigned the familiar DTO/service patterns to the user rather than implementing them.
+- Created codex/update-applications from the current unmerged UI/lookup work. No update code, endpoint, edit page, test, or merge implemented yet. Next: review the user's DTO/service attempt and add focused verification.
