@@ -38,3 +38,19 @@ After review, we will verify changed fields, unchanged ID/count, preserved statu
 
 ## Review checkpoint
 Your DTO and corrected service method are reviewed and preserved. Three update tests pass: replacement details/identity/count/ID allocation, omitted-status preservation and optional-field clearing, and missing-ID rejection. Full Maven verify passes 21 tests and packaging. Concept boxes remain your self-assessment. Next: PUT endpoint, then edit page, when ready.
+
+## Next exercise — PUT over HTTP
+Use `@PutMapping` when an HTTP request should update an existing resource. We will return the updated DTO with HTTP 200; POST still creates with HTTP 201.
+
+In `ApplicationController`, add a method that:
+1. Uses `@PutMapping("/{id}")`. The class already supplies `/applications`.
+2. Returns `ApplicationResponse`.
+3. Accepts `@PathVariable("id") long id` and `@RequestBody UpdateApplicationRequest request`.
+4. Calls `service.update(id, request)` and converts the result using the existing `toResponse(...)` method.
+
+You can combine patterns from `getById` and `create`. A plain returned response DTO gives HTTP 200 here; no `ResponseEntity` is needed. The existing exception handler already turns a missing ID into JSON 404.
+
+Try just this controller method, run the existing tests, then ask for review. We will add focused HTTP tests after reviewing it; the existing tests do not yet cover PUT. Leave the edit page and validation changes for their own increments.
+
+- [ ] Implement and review PUT mapping.
+- [ ] Verify updated JSON/HTTP 200, same ID, later GET showing changes, and missing-ID HTTP 404.
