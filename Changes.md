@@ -162,3 +162,10 @@
 - Opened [PR #2](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) for the completed in-memory create/list milestone. Reviewed the branch implementation and tests; no issues found within this milestone's scope.
 - Existing verification remains eight passing tests and successful JAR packaging. This increment changes documentation only; no additional test run needed.
 - Awaiting joint review and explicit user merge confirmation per the agreed workflow. No step 4 implementation or merge performed.
+
+### PR #2 merge and step 4 — Lookup by ID
+- User explicitly approved PR #2 and step 4. GitHub merge controls stayed loading; merged the approved branch with Git and pushed main (51830be). GitHub confirms PR #2 merged. Created codex/application-by-id from synced main.
+- Added service findById, ApplicationNotFoundException, shared ApiExceptionHandler returning 404/message, and GET /applications/{id} with PathVariable and response mapping.
+- Added two service lookup tests and successful GET-by-ID HTTP test. Maven test passed: 11 tests, zero failures/errors. Missing-ID HTTP status/body verification is the user's pending exercise.
+- Created concise [[Job Apps Tracker/Learning/Part 6|Part 6]] with practical annotation reference and missing-ID HTTP test exercise. New understanding/exercise boxes remain unchecked.
+- Update/delete, required-field validation, shared 400 handling, and complete CRUD verification remain pending. No further feature merge authorized.

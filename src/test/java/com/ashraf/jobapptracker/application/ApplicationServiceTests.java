@@ -6,9 +6,32 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplicationServiceTests {
+    @Test
+    void findsTheApplicationWithTheRequestedId() {
+        ApplicationService service = new ApplicationService();
+        CreateApplicationRequest request = new CreateApplicationRequest(
+                "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
+                null, null, null
+        );
+        JobApplication first = service.create(request);
+        JobApplication second = service.create(request);
+
+        assertSame(second, service.findById(second.getId()));
+        assertSame(first, service.findById(first.getId()));
+    }
+
+    @Test
+    void missingApplicationThrowsNotFoundException() {
+        ApplicationService service = new ApplicationService();
+
+        assertThrows(ApplicationNotFoundException.class, () -> service.findById(999));
+    }
+
     @Test
     void creationCopiesDetailsAndDefaultsOmittedStatus() {
         ApplicationService service = new ApplicationService();

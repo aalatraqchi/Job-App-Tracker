@@ -61,19 +61,21 @@ Complete and verify each step before moving to the next. Treat each numbered ste
 - [x] **Verify:** `.\mvnw.cmd test` passes and the health endpoint returns HTTP 200.
 
 ### 3. Create and list applications in memory
-Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature PR review/merge remains pending; [[Job Apps Tracker/Learning/Part 5|Part 5]] is the concise endpoint reference.
+Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature merged in PR #2 with user approval; [[Job Apps Tracker/Learning/Part 5|Part 5]] is the concise endpoint reference.
 
 - [x] Move the application model into the Spring project and define create-request and response DTOs. Six user-supplied model fields and both DTO records complete and reviewed; service-generated ID will be added with storage. DTO feature merged in PR #1 with user confirmation.
-- [x] Add a service holding an in-memory collection with generated IDs. Creation/listing implemented; tests verify distinct IDs and retention of identical-input applications. Feature branch review/merge still pending.
+- [x] Add a service holding an in-memory collection with generated IDs. Creation/listing implemented; tests verify distinct IDs and retention of identical-input applications. Feature merged in PR #2 with user approval.
 - [x] Add `POST /applications` and `GET /applications` controllers; keep storage and business rules in the service. User GET implementation reviewed; both endpoints verified over HTTP.
 - [x] Default new applications to `APPLIED` when status is omitted. Default verified by service test; user test verifies that explicit INTERVIEW status is preserved; reviewed and passing.
 - [x] **Verify:** create two applications, receive HTTP 201 with their IDs, and list both. HTTP test verifies an empty initial list, distinct created IDs, and both response DTOs. Restarting recreates the temporary storage.
 
 ### 4. Finish the basic application API
-- [ ] Add `GET /applications/{id}`, `PUT /applications/{id}`, and `DELETE /applications/{id}`.
+In progress: [[Job Apps Tracker/Learning/Part 6|Part 6]] covers retrieval by ID and missing applications. Eleven tests pass. User exercise: verify HTTP 404 and error message for a missing ID. No update/delete or validation yet.
+
+- [ ] Add `GET /applications/{id}`, `PUT /applications/{id}`, and `DELETE /applications/{id}`. GET-by-ID implemented; PUT/DELETE pending.
 - [ ] Define PUT as replacing the editable fields; keep the ID unchanged. Partial updates can wait.
 - [ ] Validate required company, position, and applied date; set sensible text-length limits and validate optional URLs.
-- [ ] Add one shared exception handler for consistent JSON errors: HTTP 400 for invalid requests and HTTP 404 for missing IDs.
+- [ ] Add one shared exception handler for consistent JSON errors: HTTP 400 for invalid requests and HTTP 404 for missing IDs. Missing-application handler implemented; HTTP 404 exercise and validation/400 handling remain pending.
 - [ ] **Verify:** create → retrieve → edit → delete works; blank required fields, unknown statuses, and missing IDs produce the expected errors. Successful deletion returns HTTP 204.
 
 ### 5. Add application filters and initial automated tests
@@ -167,8 +169,8 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 ## Current Progress
 - Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
 - Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database yet; POST /applications is now implemented as recorded below.
-- Verified: step 3 create/list behavior, including POST 201, GET 200, distinct IDs, default APPLIED, and explicit status preservation. Eight tests and JAR packaging pass. Feature review/merge remains pending.
-- Next: joint feature PR review and explicit merge confirmation before step 4. GET exercise complete and independently reviewed/tested. Learning notes will be brief practical references: when to use a construct and what it enables; deeper internals only on request.
+- Verified: step 3 create/list behavior, including POST 201, GET 200, distinct IDs, default APPLIED, and explicit status preservation. Eight tests and JAR packaging pass. Feature merged in PR #2 with user approval.
+- Next: Part 6 missing-ID HTTP test exercise. Step 4 has begun with GET /applications/{id}, service lookup, and shared 404 handler. Successful HTTP retrieval and service-level missing behavior verified; user HTTP 404 test pending. Update/delete and validation remain pending.
 - This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
 
 ## References
@@ -205,3 +207,7 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - [PR #2 — create and list applications in memory](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) is open from codex/in-memory-applications into main. Assistant review found no issues within the current milestone scope.
 - Maven verify passed with eight tests and successful packaging. Required-field validation and persistence remain future work.
 - Awaiting user review and explicit merge confirmation before step 4. Nothing merged.
+
+### Step 4 checkpoint
+- PR #2 merged with explicit user approval on 10/8/26 (51830be); local main and origin/main synced. Current branch: codex/application-by-id.
+- Current lesson: [[Job Apps Tracker/Learning/Part 6|Part 6]]. GET-by-ID worked example complete; missing-ID HTTP test exercise pending. Eleven tests pass. Future merges still require explicit confirmation.

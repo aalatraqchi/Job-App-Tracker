@@ -98,6 +98,32 @@ class ApplicationControllerTests {
         }
     }
 
+    @Test
+    void getByIdReturnsTheCreatedResponse() throws Exception {
+        Map<?, ?> created = postApplication("""
+                {
+                  "company": "Acme",
+                  "position": "Java Developer",
+                  "appliedDate": "2026-10-08",
+                  "status": "INTERVIEW",
+                  "jobUrl": "https://example.com/jobs/1",
+                  "notes": "Interview scheduled"
+                }
+                """);
+
+        try (var client = HttpClient.newHttpClient()) {
+            var request = HttpRequest.newBuilder(URI.create(
+                    "http://127.0.0.1:" + port + "/applications/" + created.get("id")))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+            assertTrue(response.headers().firstValue("Content-Type").orElse("").contains("application/json"));
+            assertEquals(created, new JsonMapper().readValue(response.body(), Map.class));
+        }
+    }
+
     private Map<?, ?> postApplication(String json) throws Exception {
         try (var client = HttpClient.newHttpClient()) {
             var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/applications"))

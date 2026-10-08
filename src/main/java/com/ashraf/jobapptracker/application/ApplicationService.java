@@ -30,4 +30,12 @@ public class ApplicationService {
     public List<JobApplication> findAll() {
         return List.copyOf(applications.values());
     }
+
+    public JobApplication findById(long id) {
+        JobApplication application = applications.get(id);
+        if (application == null) {
+            throw new ApplicationNotFoundException(id);
+        }
+        return application;
+    }
 }
