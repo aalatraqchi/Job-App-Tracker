@@ -26,6 +26,11 @@ public class ApplicationController {
         return toResponse(service.findById(id));
     }
 
+    @PutMapping("/{id}")
+    public ApplicationResponse updateById(@PathVariable("id") long id, @RequestBody UpdateApplicationRequest request) {
+        return toResponse(service.update(id, request));
+    }
+
     private ApplicationResponse toResponse(JobApplication application) {
         return new ApplicationResponse(
                 application.getId(), application.getCompany(), application.getPosition(),

@@ -52,5 +52,7 @@ You can combine patterns from `getById` and `create`. A plain returned response 
 
 Try just this controller method, run the existing tests, then ask for review. We will add focused HTTP tests after reviewing it; the existing tests do not yet cover PUT. Leave the edit page and validation changes for their own increments.
 
-- [ ] Implement and review PUT mapping.
-- [ ] Verify updated JSON/HTTP 200, same ID, later GET showing changes, and missing-ID HTTP 404.
+- [x] Implement and review PUT mapping.
+- [x] Verify updated JSON/HTTP 200, same ID, later GET showing changes, and missing-ID HTTP 404.
+
+PUT review complete: your corrected method uses PutMapping and directly maps the object returned by service.update. Preserved your code. Three HTTP tests pass, including omitted-status preservation and unchanged record count; full Maven verify passes 24 tests and packaging. Edit form remains the next increment.

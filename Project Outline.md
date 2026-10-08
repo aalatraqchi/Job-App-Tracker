@@ -76,7 +76,7 @@ In progress: lookup and service updates are verified. Current lesson: [[Job Apps
 - [x] Add `GET /applications/{id}` and verify successful retrieval and JSON 404 for missing IDs.
 - [x] Define update behavior: replace editable details, retain ID, and preserve existing status if omitted. Partial updates can wait.
 - [x] Implement and test `UpdateApplicationRequest` and `ApplicationService.update`; preserve record count and ID generation.
-- [ ] Add `PUT /applications/{id}` returning the updated response DTO and HTTP 200.
+- [x] Add `PUT /applications/{id}` returning the updated response DTO and HTTP 200; user implementation reviewed and verified over HTTP.
 - [ ] Add `DELETE /applications/{id}` returning HTTP 204.
 - [ ] Validate required company, position, and applied date; set text-length limits and validate optional URLs on the JSON API.
 - [x] Add shared missing-ID JSON error handling with HTTP 404.
@@ -193,8 +193,8 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - [x] Retrieve by ID and consistent missing-ID JSON 404.
 - [x] Thymeleaf list/add/detail interface, form errors, responsive styling, and UI/API integration checks.
 - [x] User's update DTO/service exercise reviewed and verified; old-versus-new-object return issue corrected by the user.
-- Verification: **21 tests pass and JAR packaging succeeds**. This includes three focused service update tests. PUT/edit UI are not implemented yet.
-- Next exercise: add PUT in ApplicationController, then review and test before building the edit form.
+- Verification: **24 tests pass and JAR packaging succeeds**. This includes three service update tests and three HTTP PUT tests. Edit UI is not implemented yet.
+- PUT exercise complete and reviewed: HTTP 200/updated fields, unchanged ID/count, later GET, omitted status, and missing-ID JSON 404 verified. Next: edit form when the user is ready.
 - Part 8 and Part 9 concept boxes are user self-assessment; implementation exercises are recorded separately as reviewed.
 - Local server is stopped. Start it from IntelliJ or the project terminal when needed; data still resets on restart.
 - Keep this outline current. Changes.md is now historical only; do not add further entries.
@@ -215,7 +215,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- Current branch: codex/update-applications, including unmerged lookup and Thymeleaf work. Latest implementation commit: 9ff8f1d.
+- Current branch: codex/update-applications, including unmerged lookup and Thymeleaf work. Update service and PUT endpoint are verified; current checkpoint is being committed on this branch.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 
