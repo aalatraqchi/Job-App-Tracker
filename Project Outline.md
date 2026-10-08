@@ -234,3 +234,9 @@ Local preview update: the server is stopped (port 8080 free). CSS formatting imp
 - User requested resuming implementation. Part 8 boxes are self-checked; current lesson is [[Job Apps Tracker/Learning/Part 9|Part 9]].
 - Exercise pending: UpdateApplicationRequest and ApplicationService.update. Controller/edit page and update verification follow review. Step 4 update checkbox remains incomplete.
 - Branch codex/update-applications includes prior unmerged UI/lookup work. No merge authorized.
+
+Update exercise initial review: DTO correct; service needs omitted-status preservation and returning the replacement. User corrections and focused verification pending; no update endpoint yet.
+
+Update second review: null-status preservation correct; returned-object correction still pending because Map.replace returns the previous object. No implementation advancement.
+
+Update service checkpoint complete: user's DTO/service reviewed and preserved; three focused tests and full 21-test verification pass. PUT endpoint and edit page remain pending; step 4 is still incomplete. No merge authorized.

@@ -199,3 +199,18 @@
 - User requested moving on. Part 8 capability boxes are self-checked in the vault; no separate verbal verification claimed.
 - Created Part 9: preserving identity during updates, a separate request DTO, replacing a stored model, and missing-ID behavior. Assigned the familiar DTO/service patterns to the user rather than implementing them.
 - Created codex/update-applications from the current unmerged UI/lookup work. No update code, endpoint, edit page, test, or merge implemented yet. Next: review the user's DTO/service attempt and add focused verification.
+
+### Update exercise initial review
+- UpdateApplicationRequest correctly defines all six fields. Service preserves ID, looks up the existing application, builds the replacement, and guards map.replace correctly.
+- Two corrections assigned as hints: omitted status must preserve the existing application's status; return the replacement rather than the old object. Remove the unnecessary semicolon after the if block.
+- User implementation preserved. Exercise and update verification remain pending; no tests run or feature advancement during this initial review.
+
+### Update exercise second review
+- Omitted status now correctly preserves app.getStatus(); unnecessary semicolon removed.
+- Remaining issue: updated is assigned the return value of Map.replace, which is the previous object. Assigned hint: construct the replacement into updated first, then use replace's return value only for the missing-entry check. User code preserved; tests and exercise completion pending.
+
+### Update service exercise complete
+- Reviewed user's final correction: replacement constructed separately, map.replace guarded, replacement returned. DTO and service implementation correct and preserved.
+- Added three service tests covering all replacement fields, returned/stored identity, unchanged ID/count and ID allocator, unrelated record preservation, omitted status, optional-field clearing, and missing-ID rejection.
+- Maven verify passed: 21 tests, zero failures/errors, successful packaging. Part 9 implementation exercise complete; concept understanding boxes remain unverified/self-assessment.
+- No PUT endpoint, edit page, or merge added during review. Next: introduce update HTTP access when user ready.

@@ -30,8 +30,11 @@ public JobApplication update(long id, UpdateApplicationRequest request) {
 Leave the controller and templates alone for now. Run the existing tests, then ask for review. Existing tests check for regressions; they do not yet prove the new update behavior.
 
 ## I should be able to...
-- [ ] Explain why updating must keep the ID and avoid allocating a new one.
-- [ ] Explain why `replace` is useful for updating an existing map entry.
-- [ ] Implement the request record and service method using existing patterns.
+- [x] Explain why updating must keep the ID and avoid allocating a new one.
+- [x] Explain why `replace` is useful for updating an existing map entry.
+- [x] Implement the request record and service method using existing patterns.
 
 After review, we will verify changed fields, unchanged ID/count, preserved status when omitted, and missing-ID behavior before adding HTTP/UI access.
+
+## Review checkpoint
+Your DTO and corrected service method are reviewed and preserved. Three update tests pass: replacement details/identity/count/ID allocation, omitted-status preservation and optional-field clearing, and missing-ID rejection. Full Maven verify passes 21 tests and packaging. Concept boxes remain your self-assessment. Next: PUT endpoint, then edit page, when ready.
