@@ -117,3 +117,48 @@
 - Verified Maven verify: two existing endpoint tests passed with zero failures/errors and executable JAR packaged. These tests do not cover DTO JSON binding or service mapping; contracts were reviewed directly, with HTTP mapping verification deferred to application endpoints.
 - Marked the model/DTO definition checklist item and response exercise reviewed. Service-generated ID, mapping, service, and application endpoints remain pending.
 - Staged, committed (d2c4a31), and pushed the reviewed response and progress notes. Opened [DTO PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) for joint review. Nothing merged; explicit user confirmation is required. Updated stale progress text to match the completed definitions.
+### DTO merge and Part 4 — Service/storage foundations
+- User reviewed PR #1 and explicitly authorized merging and moving on. Merged PR #1 on GitHub (0d3628c), synced local main, and created codex/in-memory-applications.
+- Created [[Job Apps Tracker/Learning/Part 4|Part 4]] covering services, Spring-managed shared instances, ID-to-model maps, collection encapsulation, and temporary storage. Added ApplicationService with an empty ConcurrentHashMap and findAll() as the worked example.
+- Assigned the familiar model-ID exercise: private long id, first constructor parameter/assignment, and getId(). Understanding and exercise checkboxes remain unchecked. No creation, ID allocation, mapping, or application endpoints implemented yet.
+- Maven test passed: two existing endpoint tests, zero failures/errors. The initial sandbox run could not open Tomcat's loopback connection; rerunning with localhost access passed. These tests verify startup and health/about, not storage behavior.
+- Next: review the user's ID exercise, then introduce creation and ID generation incrementally. The service roadmap checkbox remains unchecked.
+
+### Model-ID exercise reviewed
+- Reviewed the user's private long id, first constructor parameter/assignment, and getId(): all correct. Preserved the user implementation; request DTO unchanged.
+- Maven test passed with two existing endpoint tests, zero failures/errors. These tests do not assert model identity or service storage behavior.
+- Marked only the model-ID exercise reviewed in Part 4; other understanding boxes remain unverified. Creation, ID generation, mapping, and application endpoints remain pending.
+- Next: service/storage understanding check, then creation and ID generation incrementally.
+
+## 10/8/26
+
+### Part 4 — Application creation and service unit tests
+- Recorded demonstrated service/storage foundations: shared Spring instance, ID-to-model pairs, final reference versus mutable contents, unmodifiable returned list holding the same objects, and temporary memory. Preserved the user's lesson notes and checked foundation boxes.
+- Added ApplicationService.create: AtomicLong ID allocation, omitted-status default APPLIED, explicit request-to-model mapping, map storage, and returned model. No application HTTP endpoints or response mapping added.
+- Added two service unit tests for copied details/default status and distinct stored records from identical input. Maven test passed: four tests total, zero failures/errors, including existing health/about HTTP tests.
+- Extended Part 4 with actual code and explanations of atomic allocation, defaults, mapping, and arrange/act/assert tests without Spring startup.
+- Assigned explicit INTERVIEW status preservation as the user's test exercise. New concept/exercise boxes remain unchecked. Next: review the attempt before proceeding to mapping and application endpoints. No merge authorized for this feature yet.
+
+### Explicit-status test reviewed
+- Reviewed the user's testingCustomStatusEnumPassedIn test: correct fresh service/request, explicit INTERVIEW, creation call, and status assertion. Preserved the user's implementation; no issues found.
+- Maven test passed: five tests, zero failures/errors (three service tests and two existing HTTP tests).
+- Updated Part 4 and outline to record reviewed test completion; preserved user self-checked concept boxes without treating them as a separate verbal verification.
+- Next: response mapping and application HTTP endpoints when requested. No implementation advancement or merge during this review.
+
+### Part 5 — POST application HTTP boundary
+- Added ApplicationController with constructor-injected shared service, class-level /applications path, POST request-body conversion, explicit model-to-response mapping, and HTTP 201 response.
+- Added two real HTTP tests for created response details/default APPLIED status and explicit INTERVIEW status. Maven test passed: seven tests, zero failures/errors. No extra dependency added.
+- Created [[Job Apps Tracker/Learning/Part 5|Part 5]] covering injection, request mapping, JSON conversion, response DTO mapping, status codes, manual POST requests, and the HTTP tests.
+- Assigned GET /applications to the user using existing service.findAll(), the response mapper, and an ArrayList/loop. Provided loop guidance. New concept boxes and GET exercise remain pending; combined POST/GET roadmap checkbox stays unchecked.
+- No database, filtering, required-field validation, or merge performed. Next: review the user's GET implementation before adding its focused HTTP test.
+
+### GET review and practical learning format
+- User requested brief practical lessons: when to use a construct and what it enables. Shortened Part 5; preserved user capability checkmarks as self-assessment. Deeper internals only on request.
+- Reviewed user's listApps GET handler: correct shared service call, model-to-response conversion, and returned list. Preserved the implementation.
+- Added HTTP verification of an initial empty array, two POST-created records with distinct IDs, and both complete DTOs listed without relying on order. Maven verify passed: eight tests, zero failures/errors, successful JAR packaging.
+- Marked step 3 endpoint and create/list verification items complete. No step 4 implementation or merge performed. Next: joint feature PR review and explicit merge confirmation.
+
+### Create/list pull request opened
+- Opened [PR #2](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) for the completed in-memory create/list milestone. Reviewed the branch implementation and tests; no issues found within this milestone's scope.
+- Existing verification remains eight passing tests and successful JAR packaging. This increment changes documentation only; no additional test run needed.
+- Awaiting joint review and explicit user merge confirmation per the agreed workflow. No step 4 implementation or merge performed.

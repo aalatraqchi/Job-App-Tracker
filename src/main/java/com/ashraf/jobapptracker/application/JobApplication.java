@@ -3,6 +3,7 @@ package com.ashraf.jobapptracker.application;
 import java.time.LocalDate;
 
 public class JobApplication {
+    private long id;
     private String company;
     private String position;
     private LocalDate appliedDate;
@@ -13,7 +14,8 @@ public class JobApplication {
     private String notes;
 
     // Constructor
-    public JobApplication(String company, String position, LocalDate date, ApplicationStatus status, String url, String notes) {
+    public JobApplication(long id, String company, String position, LocalDate date, ApplicationStatus status, String url, String notes) {
+        this.id = id;
         this.company = company;
         this.position = position;
         this.appliedDate = date;
@@ -23,6 +25,10 @@ public class JobApplication {
     }
 
     // Getters
+    public long getId() {
+        return id;
+    }
+
     public String getCompany() {
         return company;
     }
