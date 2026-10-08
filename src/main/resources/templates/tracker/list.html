@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Your applications')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content">
+    <section class="page-heading">
+        <div><p class="eyebrow">YOUR NEXT CHAPTER</p><h1>Your applications</h1><p class="muted">Keep your search in focus, from the first application to the next opportunity.</p></div>
+        <a class="button" th:href="@{/tracker/new}"><span aria-hidden="true">+</span> Add application</a>
+    </section>
+    <section class="stats" aria-label="Application summary">
+        <div class="stat"><span>Total applications</span><strong th:text="${applications.size()}">0</strong></div>
+        <div class="stat"><span>In interviews</span><strong th:text="${interviews}">0</strong></div>
+        <div class="stat"><span>Offers received</span><strong th:text="${offers}">0</strong></div>
+    </section>
+    <div class="section-heading"><h2>All applications</h2><span class="muted">Every opportunity in one place</span></div>
+    <section class="empty-state panel" th:if="${applications.isEmpty()}">
+        <div class="empty-icon" aria-hidden="true">↗</div><h2>A fresh start for your search</h2>
+        <p class="muted">Add your first application to keep the details and next steps together.</p>
+        <a class="button" th:href="@{/tracker/new}">Add your first application</a>
+    </section>
+    <section class="application-grid" th:unless="${applications.isEmpty()}" aria-label="Applications">
+        <article class="application-card panel" th:each="job : ${applications}">
+            <div class="card-top"><span class="company-avatar" aria-hidden="true" th:text="${#strings.isEmpty(job.company) ? '?' : #strings.substring(job.company, 0, 1)}">A</span>
+                <span class="badge" th:classappend="${job.status == null ? '' : #strings.toLowerCase(job.status.name())}" th:text="${job.status}">APPLIED</span></div>
+            <p class="company-name" th:text="${job.company}">Company</p>
+            <h3><a th:href="@{/tracker/{id}(id=${job.id})}" th:text="${job.position}">Position</a></h3>
+            <div class="card-bottom"><span class="muted" th:text="${job.appliedDate == null ? 'Date not recorded' : 'Applied ' + job.appliedDate}">Applied date</span><a class="text-link" th:href="@{/tracker/{id}(id=${job.id})}" th:aria-label="'View application for ' + ${job.company}">View <span aria-hidden="true">→</span></a></div>
+        </article>
+    </section>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>

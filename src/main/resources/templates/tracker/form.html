@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Add application')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <a class="text-link back-link" th:href="@{/tracker}">← All applications</a>
+    <div class="page-heading"><div><p class="eyebrow">MAKE YOUR NEXT MOVE</p><h1>Add an application</h1><p class="muted">A few details now. A clearer picture of your search later.</p></div></div>
+    <form class="panel form-panel" th:action="@{/tracker}" th:object="${form}" method="post">
+        <div class="notice error" role="alert" th:if="${#fields.hasErrors('*')}">Check the highlighted fields and try again.</div>
+        <div class="form-grid">
+            <div class="field"><label for="company">Company <span class="required">*</span></label><input id="company" th:field="*{company}" th:errorclass="invalid" required maxlength="200" placeholder="e.g. Acme" autocomplete="organization"><p class="field-error" th:errors="*{company}"></p></div>
+            <div class="field"><label for="position">Position <span class="required">*</span></label><input id="position" th:field="*{position}" th:errorclass="invalid" required maxlength="200" placeholder="e.g. Java Developer"><p class="field-error" th:errors="*{position}"></p></div>
+            <div class="field"><label for="appliedDate">Application date <span class="required">*</span></label><input type="date" id="appliedDate" th:field="*{appliedDate}" th:errorclass="invalid" required><p class="field-error" th:errors="*{appliedDate}"></p></div>
+            <div class="field"><label for="status">Status <span class="required">*</span></label><select id="status" th:field="*{status}" th:errorclass="invalid" required><option th:each="status : ${statuses}" th:value="${status}" th:text="${#strings.capitalize(#strings.toLowerCase(status.name()))}">Applied</option></select><p class="field-error" th:errors="*{status}"></p></div>
+            <div class="field full-width"><label for="jobUrl">Job link <span class="optional">optional</span></label><input type="url" id="jobUrl" th:field="*{jobUrl}" th:errorclass="invalid" maxlength="2000" placeholder="https://company.com/careers/role"><p class="field-error" th:errors="*{jobUrl}"></p></div>
+            <div class="field full-width"><label for="notes">Notes <span class="optional">optional</span></label><textarea id="notes" th:field="*{notes}" th:errorclass="invalid" maxlength="5000" rows="5" placeholder="Anything you want to remember about this opportunity…"></textarea><p class="field-error" th:errors="*{notes}"></p></div>
+        </div>
+        <div class="form-actions"><span class="muted small">* Required fields</span><div><a class="button secondary" th:href="@{/tracker}">Cancel</a><button class="button" type="submit">Save application</button></div></div>
+    </form>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>
