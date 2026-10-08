@@ -50,7 +50,7 @@ The roadmap and dated progress live in the Obsidian Job Apps Tracker folder. Bac
 
 ## Version control
 
-Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker). Main tracks `origin/main`. Use a feature branch for new work, review the staged diff, run verification, commit and push, then review a pull request before merging. `Learning/Part 3.md` explains the workflow and commands. Learning notes are copied from the vault deliberately; changes are not synchronized automatically.
+Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker). Main tracks `origin/main`. Use a feature branch for new work, review the staged diff, run verification, commit and push, then review a pull request before merging. `Learning/Part 3 - Git and GitHub workflow.md` explains the workflow and commands. Learning notes are copied from the vault deliberately; changes are not synchronized automatically.
 ## Browser interface
 
 Use the run command above, then open <http://127.0.0.1:8080/>.

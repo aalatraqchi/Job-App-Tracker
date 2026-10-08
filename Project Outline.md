@@ -62,7 +62,7 @@ Complete and verify each step before moving to the next. Treat each numbered ste
 - [x] **Verify:** `.\mvnw.cmd test` passes and the health endpoint returns HTTP 200.
 
 ### 3. Create and list applications in memory
-Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature merged in PR #2 with user approval; [[Job Apps Tracker/Learning/Part 5|Part 5]] is the concise endpoint reference.
+Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature merged in PR #2 with user approval; [[Job Apps Tracker/Learning/Part 5 - Create and list applications over HTTP|Part 5]] is the concise endpoint reference.
 
 - [x] Move the application model into the Spring project and define create-request and response DTOs. Six user-supplied model fields and both DTO records complete and reviewed; Service-generated ID is also implemented and verified. DTO feature merged in PR #1 with user confirmation.
 - [x] Add a service holding an in-memory collection with generated IDs. Creation/listing implemented; tests verify distinct IDs and retention of identical-input applications. Feature merged in PR #2 with user approval.
@@ -71,7 +71,7 @@ Step 3 behavior complete and verified: POST creates applications with generated 
 - [x] **Verify:** create two applications, receive HTTP 201 with their IDs, and list both. HTTP test verifies an empty initial list, distinct created IDs, and both response DTOs. Restarting recreates the temporary storage.
 
 ### 4. Finish the basic application API
-In progress: lookup and service updates are verified. Current lesson: [[Job Apps Tracker/Learning/Part 9|Part 9]].
+In progress: lookup and service updates are verified. Current lesson: [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]].
 
 - [x] Add `GET /applications/{id}` and verify successful retrieval and JSON 404 for missing IDs.
 - [x] Define update behavior: replace editable details, retain ID, and preserve existing status if omitted. Partial updates can wait.
@@ -208,7 +208,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 
 ## Learning Approach
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
-- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new part when a new topic or milestone begins; keep each part concise and organized by concept, with short capability checklists. [[Job Apps Tracker/Learning/Part 1|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 9|Part 9]] is the current update lesson.
+- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]] is the current update lesson.
 - For tasks based on covered concepts, the user attempts the code first; review and offer hints before supplying a complete solution.
 - Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is complete; Part 4 explicit-status test and Part 5 GET exercise are reviewed. Part 6 lookup test and Part 9 service update exercise are also complete and reviewed.
 
@@ -226,7 +226,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Initial baseline 75faa18 contains the current starter, six-field model, two endpoint tests, and learning/progress snapshots. Maven verify passed with two tests and successful packaging before the push.
 - Main tracks origin/main and includes merged DTO PR #1 (merge commit 0d3628c). New learning work is on codex/in-memory-applications. Future feature merges still require explicit confirmation.
-- [[Job Apps Tracker/Learning/Part 3|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
+- [[Job Apps Tracker/Learning/Part 3 - Git and GitHub workflow|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
 
 - Git operations are delegated to the assistant, with staged/committed/pushed updates. Finished features require joint review and explicit user merge confirmation. Git practice exercises do not block Java/Spring learning.
 
@@ -237,13 +237,13 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 
 ### Step 4 checkpoint
 - PR #2 merged with explicit user approval on 10/8/26 (51830be); local main and origin/main synced. Current branch: codex/application-by-id.
-- Current lesson: [[Job Apps Tracker/Learning/Part 6|Part 6]]. GET-by-ID worked example complete; missing-ID HTTP test exercise pending. Eleven tests pass. Future merges still require explicit confirmation.
+- Current lesson: [[Job Apps Tracker/Learning/Part 6 - Retrieve an application by ID|Part 6]]. GET-by-ID worked example complete; missing-ID HTTP test exercise pending. Eleven tests pass. Future merges still require explicit confirmation.
 
 Missing-ID test review: user's HTTP 404/content-type/message assertions are correct; 12 tests pass. Pending small cleanup: remove unused POST setup and rename test to describe 404, then review. No further step 4 implementation yet.
 
 ### Current learning checkpoint
 - Part 6 missing-ID HTTP exercise complete and reviewed after cleanup; 12 tests pass. GET-by-ID and 404/message behavior verified. Update/delete and validation still pending.
-- Paused implementation for requested [[Job Apps Tracker/Learning/Part 7|frontend overview]]. A polished responsive UI is desired; HTML/CSS/JavaScript served by Spring Boot is the suggested simple starting point, with Thymeleaf/separate frontend alternatives explained. Stack and start timing not decided; no frontend implementation or environment changes performed.
+- Paused implementation for requested [[Job Apps Tracker/Learning/Part 7 - Frontend overview|frontend overview]]. A polished responsive UI is desired; HTML/CSS/JavaScript served by Spring Boot is the suggested simple starting point, with Thymeleaf/separate frontend alternatives explained. Stack and start timing not decided; no frontend implementation or environment changes performed.
 
 ### Thymeleaf interface milestone — 10/8/26
 - User chose Thymeleaf and requested a simple modern responsive interface while pausing backend development.
@@ -253,12 +253,12 @@ Missing-ID test review: user's HTTP 404/content-type/message assertions are corr
 - [x] Verify HTTP behavior and Chrome desktop/phone layouts; all 18 tests and packaging pass.
 - [ ] Review Part 8 understanding checks with the user.
 - [ ] Joint feature review and explicit merge approval.
-- Current lesson: [[Job Apps Tracker/Learning/Part 8|Part 8 — Thymeleaf pages]]. Source branch: codex/thymeleaf-ui, including the unmerged lookup milestone. REST endpoints remain available; storage remains in memory. No update/delete, REST validation, persistence, or authentication advancement.
+- Current lesson: [[Job Apps Tracker/Learning/Part 8 - Thymeleaf pages|Part 8 — Thymeleaf pages]]. Source branch: codex/thymeleaf-ui, including the unmerged lookup milestone. REST endpoints remain available; storage remains in memory. No update/delete, REST validation, persistence, or authentication advancement.
 
 Local preview update: the server is stopped (port 8080 free). CSS formatting improved for learning/readability; implementation progress is unchanged.
 
 ### Next checkpoint — application updates
-- User requested resuming implementation. Part 8 boxes are self-checked; current lesson is [[Job Apps Tracker/Learning/Part 9|Part 9]].
+- User requested resuming implementation. Part 8 boxes are self-checked; current lesson is [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]].
 - Exercise pending: UpdateApplicationRequest and ApplicationService.update. Controller/edit page and update verification follow review. Step 4 update checkbox remains incomplete.
 - Branch codex/update-applications includes prior unmerged UI/lookup work. No merge authorized.
 
@@ -269,3 +269,5 @@ Update second review: null-status preservation correct; returned-object correcti
 Update service checkpoint complete: user's DTO/service reviewed and preserved; three focused tests and full 21-test verification pass. PUT endpoint and edit page remain pending; step 4 is still incomplete. No merge authorized.
 
 </details>
+
+Learning format update: descriptive filenames are the displayed titles; redundant top headings removed. Existing lesson bodies and checkmarks preserved. Future lessons use the brief file/change/new-concept breakdown. Changes.md remains untouched.

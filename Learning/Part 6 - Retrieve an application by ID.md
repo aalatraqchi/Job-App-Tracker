@@ -1,6 +1,4 @@
-# Part 6 — Retrieve an application by ID
-
-Step 4 starts here. [[Job Apps Tracker/Learning/Part 5|Create/list]] is merged in [PR #2](https://github.com/aalatraqchi/Job-App-Tracker/pull/2). Update, delete, and validation follow in later increments.
+Step 4 starts here. [[Job Apps Tracker/Learning/Part 5 - Create and list applications over HTTP|Create/list]] is merged in [PR #2](https://github.com/aalatraqchi/Job-App-Tracker/pull/2). Update, delete, and validation follow in later increments.
 
 ## What to use and when
 

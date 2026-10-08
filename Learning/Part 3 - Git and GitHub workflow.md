@@ -1,7 +1,5 @@
-# Part 3 — Git and GitHub workflow
-
 ## Goal and current setup
-Use version control for small, understandable milestones, including when working alone. This is a separate topic from [[Job Apps Tracker/Learning/Part 2|Part 2]], which remains our application-model lesson.
+Use version control for small, understandable milestones, including when working alone. This is a separate topic from [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]], which remains our application-model lesson.
 
 Repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker), private.
 

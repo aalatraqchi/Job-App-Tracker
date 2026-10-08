@@ -1,5 +1,3 @@
-# Learning
-
 ## How we will work
 This is a working portfolio project and a Java/Spring Boot refresher. We will introduce only the concepts needed by the current feature, explain why they exist using our actual code, and build in small increments. When a task uses concepts already covered, I will attempt it first; feedback starts with hints before a complete solution. These notes stay organized by concept, while [[Job Apps Tracker/Changes]] records dated progress and [[Job Apps Tracker/Project Outline]] tracks milestones.
 

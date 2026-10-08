@@ -1,5 +1,3 @@
-# Part 8 — Thymeleaf pages
-
 The tracker now has a list, an add form, and a detail page. Both the pages and JSON API use the same `ApplicationService`, so an application created through either appears in both.
 
 ## Returning a page

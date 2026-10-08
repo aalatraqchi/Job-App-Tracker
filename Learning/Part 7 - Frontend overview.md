@@ -1,5 +1,3 @@
-# Part 7 — Frontend overview
-
 Planning only: no UI implemented and backend work is paused for this explanation.
 
 ## The pieces

@@ -1,5 +1,3 @@
-# Part 9 — Updating an application
-
 ## Goal
 Change an existing application's details without creating another application or changing its ID. Start with the service; the PUT endpoint and edit page come after your attempt is reviewed.
 
