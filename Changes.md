@@ -190,3 +190,7 @@
 - Added six real HTTP tests covering pages/styles, form creation and shared API data, invalid input, HTML versus JSON 404, and escaped content/unsafe links. Maven verify passed: 18 tests, zero failures/errors, successful packaging.
 - Checked Chrome desktop and phone layouts with no horizontal overflow. Created one temporary Example Co. demo application and verified save, detail, and list. App remains running locally; records clear on restart.
 - Added concise Part 8 and updated README/run instructions and outline. Understanding boxes remain unchecked. Branch codex/thymeleaf-ui includes lookup work; merge requires fresh user confirmation.
+
+### CSS readability and local server
+- Reformatted tracker.css into indented blocks with one declaration per line; maximum line length is 58 characters. Verified CSS content is unchanged apart from whitespace and optional final semicolons; no behavioral test rerun needed.
+- Checked the assistant-started server session: it had exited; confirmed no listener remains on port 8080. Start from IntelliJ or the project terminal when needed.
