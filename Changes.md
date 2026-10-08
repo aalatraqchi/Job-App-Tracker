@@ -179,3 +179,7 @@
 - Reviewed user's renamed getByMissingIdReturns404 with unnecessary creation removed. Assertions correct; preserved user code. Maven test passed: 12 tests, zero failures/errors. Part 6 exercise marked complete.
 - Added concise [[Job Apps Tracker/Learning/Part 7|Part 7 frontend overview]] at user request: HTML/CSS/JavaScript roles, existing API connection, Spring-hosted static UI versus Thymeleaf/separate frontend, and practical responsive design. Stack/timing remain proposals, not selected implementation.
 - Backend roadmap paused for the explanation; no UI implementation, installation, update/delete, validation, or merge performed.
+
+### Frontend choices clarified
+- User confirmed previous Thymeleaf experience and recalled Angular. Extended Part 7 with the practical difference: server-filled HTML versus browser-rendered API data. Thymeleaf still uses HTML/CSS and optional JavaScript; Angular can use Spring Boot as its JSON backend.
+- Updated recommendation to Thymeleaf based on confirmed familiarity and Java focus; explained separate page/REST controllers reusing the same service. Choice remains pending user decision. No backend implementation advanced.
