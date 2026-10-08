@@ -48,11 +48,13 @@ public class ApplicationController {
     }
 
     @GetMapping
-    public List<ApplicationResponse> listApps(){
+    public List<ApplicationResponse> listApps(
+            @RequestParam(name = "status", required = false) ApplicationStatus status,
+            @RequestParam(name = "company", required = false) String company) {
         List<ApplicationResponse> list = new ArrayList<>();
 
         // Append list
-        for (JobApplication application : service.findAll()){
+        for (JobApplication application : service.findAll(status, company)) {
             list.add(toResponse(application));
         }
 
