@@ -4,6 +4,7 @@
 <body>
 <header th:replace="~{tracker/fragments :: header}"></header>
 <main class="shell main-content">
+    <div class="notice success" role="status" th:if="${success}" th:text="${success}"></div>
     <section class="page-heading">
         <div><p class="eyebrow">YOUR NEXT CHAPTER</p><h1>Your applications</h1><p class="muted">Keep your search in focus, from the first application to the next opportunity.</p></div>
         <a class="button" th:href="@{/tracker/new}"><span aria-hidden="true">+</span> Add application</a>

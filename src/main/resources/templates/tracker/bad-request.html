@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Invalid application link')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <section class="panel empty-state">
+        <h1>Invalid application link</h1>
+        <p class="muted">Choose an application from your list to continue.</p>
+        <a class="button" th:href="@{/tracker}">All applications</a>
+    </section>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>

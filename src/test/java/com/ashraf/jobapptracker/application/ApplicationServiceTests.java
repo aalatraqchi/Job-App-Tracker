@@ -12,6 +12,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplicationServiceTests {
     @Test
+    void deletionRemovesOnlyRequestedApplicationAndRejectsMissingIds() {
+        ApplicationService service = new ApplicationService();
+        CreateApplicationRequest request = new CreateApplicationRequest(
+                "Acme", "Developer", LocalDate.of(2026, 10, 8), null, null, null);
+        JobApplication removed = service.create(request);
+        JobApplication retained = service.create(request);
+
+        service.delete(removed.getId());
+
+        assertEquals(1, service.findAll().size());
+        assertSame(retained, service.findById(retained.getId()));
+        assertThrows(ApplicationNotFoundException.class, () -> service.findById(removed.getId()));
+        assertThrows(ApplicationNotFoundException.class, () -> service.delete(removed.getId()));
+        assertThrows(ApplicationNotFoundException.class, () -> service.delete(999));
+        assertEquals(1, service.findAll().size());
+    }
+
+    @Test
     void updateReplacesDetailsAndReturnsStoredReplacementWithoutAllocatingId() {
         ApplicationService service = new ApplicationService();
         CreateApplicationRequest original = new CreateApplicationRequest(

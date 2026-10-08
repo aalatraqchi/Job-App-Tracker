@@ -1,6 +1,6 @@
 # Job Application Tracker
 
-A gradual Java/Spring Boot learning project with a Thymeleaf interface for adding, listing, and viewing job applications. The pages and JSON API share an in-memory service. Eighteen tests cover the current service and HTTP behavior.
+A gradual Java/Spring Boot learning project with a Thymeleaf interface for adding, listing, viewing, editing, and deleting job applications. The pages and JSON API share an in-memory service. Thirty-five tests cover the current service, validation, and HTTP behavior.
 
 ## Environment
 
@@ -46,7 +46,7 @@ Stop the app with Ctrl+C. The starter binds to localhost for local development. 
 
 The first run downloads Maven and project dependencies; it needs Internet access. Build output goes to ignored `target/`. No credentials should be committed; local `.env` and `application-local.properties` files are ignored.
 
-The roadmap and dated progress live in the Obsidian Job Apps Tracker folder. Backend development is paused for the requested Thymeleaf milestone; update/delete, REST validation, and database persistence remain pending. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy of the notes.
+The roadmap and learning notes live in the Obsidian Job Apps Tracker folder. Basic API CRUD and the corresponding Thymeleaf pages are complete. Filters, database persistence, interview stages, and authentication remain future milestones. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy. Changes.md is historical only.
 
 ## Version control
 
@@ -55,8 +55,10 @@ Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi
 
 Use the run command above, then open <http://127.0.0.1:8080/>.
 
-The Thymeleaf UI lists applications, adds them through a form, and shows details. HTML pages use `/tracker`; the existing JSON API uses `/applications`. Both use the same in-memory service. Restarting clears all records.
+The Thymeleaf UI lists applications, adds them through a form, shows details, edits them, and deletes them after confirmation. HTML pages use `/tracker`; the JSON API uses `/applications`. Both use the same in-memory service. Restarting clears all records.
 
-The UI includes basic form checks and responsive layouts. API validation, editing, deletion, persistence, and authentication are still pending backend milestones.
+Both forms and JSON requests validate required company/position/date, text lengths, and optional HTTP(S) job URLs. API errors include a `message`, with field-validation errors also including an `errors` map. DELETE returns HTTP 204; missing records return HTTP 404. Filters, persistence, interviews, and authentication remain pending.
+
+Edit a record at `/tracker/{id}/edit`. `/tracker/{id}/delete` shows confirmation; merely opening it does not delete data. Ordinary HTML forms submit POST to these page routes; API clients use PUT/DELETE at `/applications/{id}`.
 
 Templates: `src/main/resources/templates/tracker/`. Styles: `src/main/resources/static/css/tracker.css`. Page controller/form: `src/main/java/com/ashraf/jobapptracker/web/`.

@@ -3,7 +3,7 @@ package com.ashraf.jobapptracker.web;
 import com.ashraf.jobapptracker.application.ApplicationStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import com.ashraf.jobapptracker.common.HttpUrl;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,7 +18,7 @@ public record ApplicationForm(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate appliedDate,
         @NotNull(message = "Choose a status.") ApplicationStatus status,
         @Size(max = 2000, message = "Use 2,000 characters or fewer.")
-        @Pattern(regexp = "(?i)^(https?://[^\\s]+)?$", message = "Use a link starting with https:// or http://.") String jobUrl,
+        @HttpUrl String jobUrl,
         @Size(max = 5000, message = "Use 5,000 characters or fewer.") String notes
 ) {
 }

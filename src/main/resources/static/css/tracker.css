@@ -627,3 +627,21 @@ input:focus, select:focus, textarea:focus {
     }
 
 }
+
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.button.danger {
+    background: #b42340;
+}
+
+.button.danger:hover {
+    background: #8e1b33;
+}
+
+.button.danger-link {
+    color: #b42340;
+}

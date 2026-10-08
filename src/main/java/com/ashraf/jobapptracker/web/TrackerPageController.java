@@ -4,6 +4,7 @@ import com.ashraf.jobapptracker.application.ApplicationNotFoundException;
 import com.ashraf.jobapptracker.application.ApplicationService;
 import com.ashraf.jobapptracker.application.ApplicationStatus;
 import com.ashraf.jobapptracker.application.CreateApplicationRequest;
+import com.ashraf.jobapptracker.application.UpdateApplicationRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.URI;
@@ -46,14 +49,16 @@ public class TrackerPageController {
 
     @GetMapping("/tracker/new")
     public String newApplication(Model model) {
+        prepareForm(model, null);
         model.addAttribute("form", new ApplicationForm("", "", LocalDate.now(), ApplicationStatus.APPLIED, "", ""));
         return "tracker/form";
     }
 
     @PostMapping("/tracker")
     public String create(@Valid @ModelAttribute("form") ApplicationForm form,
-                         BindingResult errors, RedirectAttributes redirect) {
+                         BindingResult errors, RedirectAttributes redirect, Model model) {
         if (errors.hasErrors()) {
+            prepareForm(model, null);
             return "tracker/form";
         }
         var application = service.create(new CreateApplicationRequest(
@@ -62,6 +67,57 @@ public class TrackerPageController {
         ));
         redirect.addFlashAttribute("success", "Application added. You're one step closer.");
         return "redirect:/tracker/" + application.getId();
+    }
+
+    @GetMapping("/tracker/{id}/edit")
+    public String edit(@PathVariable("id") long id, Model model) {
+        var application = service.findById(id);
+        prepareForm(model, id);
+        model.addAttribute("form", new ApplicationForm(
+                application.getCompany(), application.getPosition(), application.getAppliedDate(),
+                application.getStatus(), application.getJobUrl(), application.getNotes()));
+        return "tracker/form";
+    }
+
+    @PostMapping("/tracker/{id}/edit")
+    public String update(@PathVariable("id") long id,
+                         @Valid @ModelAttribute("form") ApplicationForm form,
+                         BindingResult errors, RedirectAttributes redirect, Model model) {
+        service.findById(id);
+        prepareForm(model, id);
+        if (errors.hasErrors()) {
+            return "tracker/form";
+        }
+        service.update(id, new UpdateApplicationRequest(
+                form.company().strip(), form.position().strip(), form.appliedDate(),
+                form.status(), form.jobUrl(), form.notes()));
+        redirect.addFlashAttribute("success", "Application updated.");
+        return "redirect:/tracker/" + id;
+    }
+
+    @GetMapping("/tracker/{id}/delete")
+    public String confirmDelete(@PathVariable("id") long id, Model model) {
+        model.addAttribute("job", service.findById(id));
+        return "tracker/delete";
+    }
+
+    @PostMapping("/tracker/{id}/delete")
+    public String delete(@PathVariable("id") long id,
+                         @RequestParam(name = "confirmed", defaultValue = "false") boolean confirmed,
+                         RedirectAttributes redirect) {
+        service.findById(id);
+        if (!confirmed) {
+            return "redirect:/tracker/" + id + "/delete";
+        }
+        service.delete(id);
+        redirect.addFlashAttribute("success", "Application deleted.");
+        return "redirect:/tracker";
+    }
+
+    private void prepareForm(Model model, Long id) {
+        model.addAttribute("editing", id != null);
+        model.addAttribute("formAction", id == null ? "/tracker" : "/tracker/" + id + "/edit");
+        model.addAttribute("cancelUrl", id == null ? "/tracker" : "/tracker/" + id);
     }
 
     @GetMapping("/tracker/{id}")
@@ -76,6 +132,12 @@ public class TrackerPageController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String notFound() {
         return "tracker/not-found";
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String invalidId() {
+        return "tracker/bad-request";
     }
 
     private String safeJobUrl(String url) {
