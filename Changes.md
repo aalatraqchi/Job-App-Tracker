@@ -157,3 +157,8 @@
 - Reviewed user's listApps GET handler: correct shared service call, model-to-response conversion, and returned list. Preserved the implementation.
 - Added HTTP verification of an initial empty array, two POST-created records with distinct IDs, and both complete DTOs listed without relying on order. Maven verify passed: eight tests, zero failures/errors, successful JAR packaging.
 - Marked step 3 endpoint and create/list verification items complete. No step 4 implementation or merge performed. Next: joint feature PR review and explicit merge confirmation.
+
+### Create/list pull request opened
+- Opened [PR #2](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) for the completed in-memory create/list milestone. Reviewed the branch implementation and tests; no issues found within this milestone's scope.
+- Existing verification remains eight passing tests and successful JAR packaging. This increment changes documentation only; no additional test run needed.
+- Awaiting joint review and explicit user merge confirmation per the agreed workflow. No step 4 implementation or merge performed.

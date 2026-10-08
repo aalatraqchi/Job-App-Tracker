@@ -200,3 +200,8 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - [[Job Apps Tracker/Learning/Part 3|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
 
 - Git operations are delegated to the assistant, with staged/committed/pushed updates. Finished features require joint review and explicit user merge confirmation. Git practice exercises do not block Java/Spring learning.
+
+### Create/list feature review
+- [PR #2 — create and list applications in memory](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) is open from codex/in-memory-applications into main. Assistant review found no issues within the current milestone scope.
+- Maven verify passed with eight tests and successful packaging. Required-field validation and persistence remain future work.
+- Awaiting user review and explicit merge confirmation before step 4. Nothing merged.
