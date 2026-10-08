@@ -45,4 +45,23 @@ class ApplicationServiceTests {
         assertTrue(stored.contains(first));
         assertTrue(stored.contains(second));
     }
+
+    @Test
+    void testingCustomStatusEnumPassedIn() {
+        ApplicationService service = new ApplicationService();
+        CreateApplicationRequest request = new CreateApplicationRequest(
+                "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.INTERVIEW, "https://example.com/jobs/1", "Applied through company website"
+        );
+
+        JobApplication application = service.create(request);
+
+        assertTrue(application.getId() > 0);
+        assertEquals(request.company(), application.getCompany());
+        assertEquals(request.position(), application.getPosition());
+        assertEquals(request.appliedDate(), application.getAppliedDate());
+        assertEquals(ApplicationStatus.INTERVIEW, application.getStatus());
+        assertEquals(request.jobUrl(), application.getJobUrl());
+        assertEquals(request.notes(), application.getNotes());
+    }
 }
