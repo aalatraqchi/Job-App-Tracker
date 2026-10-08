@@ -27,7 +27,42 @@ public class ApplicationService {
         return application;
     }
 
+    public JobApplication update(long id, UpdateApplicationRequest request) {
+        // Check app existence
+        JobApplication app = findById(id);
+
+        ApplicationStatus status = request.status();
+        if (status == null) {
+            status = app.getStatus();
+        }
+
+        JobApplication updated = new JobApplication(
+                id, request.company(), request.position(), request.appliedDate(),
+                status, request.jobUrl(), request.notes()
+        );
+
+        if (applications.replace(id, updated) == null){
+            throw new ApplicationNotFoundException(id);
+        }
+
+        return updated;
+    }
+
+    public void delete(long id) {
+        if (applications.remove(id) == null) {
+            throw new ApplicationNotFoundException(id);
+        }
+    }
+
     public List<JobApplication> findAll() {
         return List.copyOf(applications.values());
+    }
+
+    public JobApplication findById(long id) {
+        JobApplication application = applications.get(id);
+        if (application == null) {
+            throw new ApplicationNotFoundException(id);
+        }
+        return application;
     }
 }
