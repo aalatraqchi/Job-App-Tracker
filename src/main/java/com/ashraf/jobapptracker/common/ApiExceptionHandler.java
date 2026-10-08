@@ -37,7 +37,11 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, String>> invalidParameter() {
+    public ResponseEntity<Map<String, String>> invalidParameter(MethodArgumentTypeMismatchException exception) {
+        if ("status".equals(exception.getName())) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", "Choose a valid status: APPLIED, INTERVIEW, OFFER, REJECTED, WITHDRAWN."));
+        }
         return ResponseEntity.badRequest().body(Map.of("message", "Provide a valid numeric application ID."));
     }
 }
