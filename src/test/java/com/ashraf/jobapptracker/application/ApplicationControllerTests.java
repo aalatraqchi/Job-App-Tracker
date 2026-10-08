@@ -138,4 +138,19 @@ class ApplicationControllerTests {
             return new JsonMapper().readValue(response.body(), Map.class);
         }
     }
+
+    @Test
+    void getByMissingIdReturns404() throws Exception {
+        try (var client = HttpClient.newHttpClient()) {
+            var request = HttpRequest.newBuilder(URI.create(
+                            "http://127.0.0.1:" + port + "/applications/-1"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(404, response.statusCode());
+            assertTrue(response.headers().firstValue("Content-Type").orElse("").contains("application/json"));
+            assertEquals("Application -1 was not found", new JsonMapper().readValue(response.body(), Map.class).get("message"));
+        }
+    }
 }
