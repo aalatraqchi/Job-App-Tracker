@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · Application Tracker'">Application Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/tracker.css}">
+</head>
+<body>
+<header class="site-header" th:fragment="header">
+    <div class="shell header-inner">
+        <a class="brand" th:href="@{/tracker}"><span class="brand-mark" aria-hidden="true">↗</span> Application Tracker</a>
+        <nav aria-label="Main navigation"><a class="nav-link" th:href="@{/tracker}">Applications</a></nav>
+    </div>
+</header>
+<footer class="shell site-footer" th:fragment="footer"><span>A little progress, one application at a time.</span><span>Local workspace · Data resets on restart</span></footer>
+</body>
+</html>

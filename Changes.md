@@ -162,3 +162,55 @@
 - Opened [PR #2](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) for the completed in-memory create/list milestone. Reviewed the branch implementation and tests; no issues found within this milestone's scope.
 - Existing verification remains eight passing tests and successful JAR packaging. This increment changes documentation only; no additional test run needed.
 - Awaiting joint review and explicit user merge confirmation per the agreed workflow. No step 4 implementation or merge performed.
+
+### PR #2 merge and step 4 — Lookup by ID
+- User explicitly approved PR #2 and step 4. GitHub merge controls stayed loading; merged the approved branch with Git and pushed main (51830be). GitHub confirms PR #2 merged. Created codex/application-by-id from synced main.
+- Added service findById, ApplicationNotFoundException, shared ApiExceptionHandler returning 404/message, and GET /applications/{id} with PathVariable and response mapping.
+- Added two service lookup tests and successful GET-by-ID HTTP test. Maven test passed: 11 tests, zero failures/errors. Missing-ID HTTP status/body verification is the user's pending exercise.
+- Created concise [[Job Apps Tracker/Learning/Part 6|Part 6]] with practical annotation reference and missing-ID HTTP test exercise. New understanding/exercise boxes remain unchecked.
+- Update/delete, required-field validation, shared 400 handling, and complete CRUD verification remain pending. No further feature merge authorized.
+
+### Missing-ID HTTP test initial review
+- User correctly selects message from the parsed response map. HTTP 404, JSON content-type, and message assertions are correct; Maven test passed with 12 tests, zero failures/errors.
+- Requested learner cleanup: remove unnecessary POST creation and unused variable, and rename test to describe the missing-ID 404 result. Preserved user code; exercise completion remains pending cleanup review.
+- No update/delete, validation, or merge performed.
+
+### Lookup test cleanup reviewed and frontend overview
+- Reviewed user's renamed getByMissingIdReturns404 with unnecessary creation removed. Assertions correct; preserved user code. Maven test passed: 12 tests, zero failures/errors. Part 6 exercise marked complete.
+- Added concise [[Job Apps Tracker/Learning/Part 7|Part 7 frontend overview]] at user request: HTML/CSS/JavaScript roles, existing API connection, Spring-hosted static UI versus Thymeleaf/separate frontend, and practical responsive design. Stack/timing remain proposals, not selected implementation.
+- Backend roadmap paused for the explanation; no UI implementation, installation, update/delete, validation, or merge performed.
+
+### Frontend choices clarified
+- User confirmed previous Thymeleaf experience and recalled Angular. Extended Part 7 with the practical difference: server-filled HTML versus browser-rendered API data. Thymeleaf still uses HTML/CSS and optional JavaScript; Angular can use Spring Boot as its JSON backend.
+- Updated recommendation to Thymeleaf based on confirmed familiarity and Java focus; explained separate page/REST controllers reusing the same service. Choice remains pending user decision. No backend implementation advanced.
+
+### Thymeleaf interface implemented
+- At user request, paused further backend work and added Thymeleaf, a separate page controller/form, shared HTML fragments, and responsive CSS.
+- List/add/detail pages reuse the existing in-memory ApplicationService. Added form error messages, save redirect/success feedback, safe text/link rendering, and a friendly HTML 404; JSON API behavior preserved.
+- Added six real HTTP tests covering pages/styles, form creation and shared API data, invalid input, HTML versus JSON 404, and escaped content/unsafe links. Maven verify passed: 18 tests, zero failures/errors, successful packaging.
+- Checked Chrome desktop and phone layouts with no horizontal overflow. Created one temporary Example Co. demo application and verified save, detail, and list. App remains running locally; records clear on restart.
+- Added concise Part 8 and updated README/run instructions and outline. Understanding boxes remain unchecked. Branch codex/thymeleaf-ui includes lookup work; merge requires fresh user confirmation.
+
+### CSS readability and local server
+- Reformatted tracker.css into indented blocks with one declaration per line; maximum line length is 58 characters. Verified CSS content is unchanged apart from whitespace and optional final semicolons; no behavioral test rerun needed.
+- Checked the assistant-started server session: it had exited; confirmed no listener remains on port 8080. Start from IntelliJ or the project terminal when needed.
+
+### Update milestone learning started
+- User requested moving on. Part 8 capability boxes are self-checked in the vault; no separate verbal verification claimed.
+- Created Part 9: preserving identity during updates, a separate request DTO, replacing a stored model, and missing-ID behavior. Assigned the familiar DTO/service patterns to the user rather than implementing them.
+- Created codex/update-applications from the current unmerged UI/lookup work. No update code, endpoint, edit page, test, or merge implemented yet. Next: review the user's DTO/service attempt and add focused verification.
+
+### Update exercise initial review
+- UpdateApplicationRequest correctly defines all six fields. Service preserves ID, looks up the existing application, builds the replacement, and guards map.replace correctly.
+- Two corrections assigned as hints: omitted status must preserve the existing application's status; return the replacement rather than the old object. Remove the unnecessary semicolon after the if block.
+- User implementation preserved. Exercise and update verification remain pending; no tests run or feature advancement during this initial review.
+
+### Update exercise second review
+- Omitted status now correctly preserves app.getStatus(); unnecessary semicolon removed.
+- Remaining issue: updated is assigned the return value of Map.replace, which is the previous object. Assigned hint: construct the replacement into updated first, then use replace's return value only for the missing-entry check. User code preserved; tests and exercise completion pending.
+
+### Update service exercise complete
+- Reviewed user's final correction: replacement constructed separately, map.replace guarded, replacement returned. DTO and service implementation correct and preserved.
+- Added three service tests covering all replacement fields, returned/stored identity, unchanged ID/count and ID allocator, unrelated record preservation, omitted status, optional-field clearing, and missing-ID rejection.
+- Maven verify passed: 21 tests, zero failures/errors, successful packaging. Part 9 implementation exercise complete; concept understanding boxes remain unverified/self-assessment.
+- No PUT endpoint, edit page, or merge added during review. Next: introduce update HTTP access when user ready.

@@ -1,19 +1,20 @@
 # Job Application Tracker — Project Outline
 
 ## Goal
-Build a small Java backend for tracking job applications from applying through interviews to an offer or rejection. Use the project to ease back into Java through short, working milestones, adding one concept at a time.
+Build a small Java/Spring Boot application with a responsive Thymeleaf frontend for tracking job applications from applying through interviews to an offer or rejection. Use the project to ease back into Java through short, working milestones, adding one concept at a time.
 
-The finished first version will let an authenticated user create, view, update, filter, and delete their own applications; record interview stages and notes; and keep everything in PostgreSQL between restarts. Interact with the backend using an API client such as Postman or curl. A graphical interface can come later.
+The finished first version will let an authenticated user create, view, update, filter, and delete their own applications; record interview stages and notes; and keep everything in PostgreSQL between restarts. Use the browser interface for everyday tracking, with JSON endpoints available for API practice and testing. Build each frontend capability alongside its service/API milestone.
 
 ## Tools
 - **Java 21:** the baseline from the project idea; refresh classes, enums, collections, exceptions, and date/time types as they become useful.
 - **Spring Boot and Spring Web:** start the app and expose HTTP endpoints that accept and return JSON.
+- **Thymeleaf, HTML, and CSS:** render server-side pages, bind forms, and build a responsive interface; add JavaScript only when a feature needs it.
 - **Maven:** manage dependencies and builds; use the generated Maven Wrapper so the project has a consistent build command.
 - **Spring Data JPA and PostgreSQL:** map Java objects to database tables and persist applications and interview records.
 - **Bean Validation:** check request fields and give useful errors.
 - **Spring Security:** authenticate users and enforce ownership once the application features work.
-- **JUnit and Spring Boot test support:** verify business rules, API behavior, persistence, and user isolation.
-- **Git:** save completed milestones. Keep source and run instructions in `E:\Codex\Job App Tracker`; keep the roadmap and dated progress in this vault.
+- **JUnit and Spring Boot test support:** verify business rules, API behavior, rendered pages/forms, persistence, and user isolation.
+- **Git:** save completed milestones. Keep source and run instructions in `E:\Codex\Job App Tracker`; keep the roadmap and concise learning notes in this vault. Changes.md is retained as history and no longer updated.
 
 Use Spring Initializr to select Maven, Java 21, and a stable Spring Boot release compatible with Java 21. Record the chosen version in the project; let Spring Boot manage its dependency versions. Start with Spring Web and Validation, then add persistence and security at the relevant steps. Avoid preview Java features and snapshot framework versions.
 
@@ -61,26 +62,46 @@ Complete and verify each step before moving to the next. Treat each numbered ste
 - [x] **Verify:** `.\mvnw.cmd test` passes and the health endpoint returns HTTP 200.
 
 ### 3. Create and list applications in memory
-Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature PR review/merge remains pending; [[Job Apps Tracker/Learning/Part 5|Part 5]] is the concise endpoint reference.
+Step 3 behavior complete and verified: POST creates applications with generated IDs; GET lists them as response DTOs. User GET implementation reviewed and preserved. Eight tests and JAR packaging pass. Feature merged in PR #2 with user approval; [[Job Apps Tracker/Learning/Part 5 - Create and list applications over HTTP|Part 5]] is the concise endpoint reference.
 
-- [x] Move the application model into the Spring project and define create-request and response DTOs. Six user-supplied model fields and both DTO records complete and reviewed; service-generated ID will be added with storage. DTO feature merged in PR #1 with user confirmation.
-- [x] Add a service holding an in-memory collection with generated IDs. Creation/listing implemented; tests verify distinct IDs and retention of identical-input applications. Feature branch review/merge still pending.
+- [x] Move the application model into the Spring project and define create-request and response DTOs. Six user-supplied model fields and both DTO records complete and reviewed; Service-generated ID is also implemented and verified. DTO feature merged in PR #1 with user confirmation.
+- [x] Add a service holding an in-memory collection with generated IDs. Creation/listing implemented; tests verify distinct IDs and retention of identical-input applications. Feature merged in PR #2 with user approval.
 - [x] Add `POST /applications` and `GET /applications` controllers; keep storage and business rules in the service. User GET implementation reviewed; both endpoints verified over HTTP.
 - [x] Default new applications to `APPLIED` when status is omitted. Default verified by service test; user test verifies that explicit INTERVIEW status is preserved; reviewed and passing.
 - [x] **Verify:** create two applications, receive HTTP 201 with their IDs, and list both. HTTP test verifies an empty initial list, distinct created IDs, and both response DTOs. Restarting recreates the temporary storage.
 
 ### 4. Finish the basic application API
-- [ ] Add `GET /applications/{id}`, `PUT /applications/{id}`, and `DELETE /applications/{id}`.
-- [ ] Define PUT as replacing the editable fields; keep the ID unchanged. Partial updates can wait.
-- [ ] Validate required company, position, and applied date; set sensible text-length limits and validate optional URLs.
-- [ ] Add one shared exception handler for consistent JSON errors: HTTP 400 for invalid requests and HTTP 404 for missing IDs.
-- [ ] **Verify:** create → retrieve → edit → delete works; blank required fields, unknown statuses, and missing IDs produce the expected errors. Successful deletion returns HTTP 204.
+Complete and verified: API CRUD, required-field/text-length/URL validation, and JSON 400/404 errors. Current breakdown: [[Job Apps Tracker/Learning/Part 10 - Application CRUD and edit-delete pages|Part 10]].
+
+- [x] Add `GET /applications/{id}` and verify successful retrieval and JSON 404 for missing IDs.
+- [x] Define update behavior: replace editable details, retain ID, and preserve existing status if omitted. Partial updates can wait.
+- [x] Implement and test `UpdateApplicationRequest` and `ApplicationService.update`; preserve record count and ID generation.
+- [x] Add `PUT /applications/{id}` returning the updated response DTO and HTTP 200; user implementation reviewed and verified over HTTP.
+- [x] Add `DELETE /applications/{id}` returning HTTP 204.
+- [x] Validate required company, position, and applied date; set text-length limits and validate optional URLs on the JSON API.
+- [x] Add shared missing-ID JSON error handling with HTTP 404.
+- [x] Add consistent JSON HTTP 400 errors for invalid requests.
+- [x] **Verify:** create → retrieve → edit → delete over HTTP; invalid input, unknown statuses, and missing IDs produce expected errors.
+
+### 4A. Build the Thymeleaf interface alongside the API
+Current CRUD interface complete. User confirmed that filters, interviews, login, and persistence-dependent checks below stay with their later steps.
+- [x] Add Thymeleaf and separate HTML page routes reusing ApplicationService.
+- [x] Build list, summary counts, empty state, add form, detail page, and friendly HTML 404.
+- [x] Add shared responsive CSS, labelled inputs, focus styles, page-form validation, and success feedback.
+- [x] Verify shared UI/API data and desktop/phone layouts; format CSS for readable editing.
+- [x] Add an edit form using the verified update service.
+- [x] Add deletion with a confirmation step after delete behavior is implemented.
+- [ ] Add company/status filter controls when filtering is ready in step 5.
+- [ ] Add interview-stage views/forms when step 7 is ready.
+- [ ] Add login/logout and authenticated navigation in step 8.
+- [ ] Verify the complete browser workflow after persistence and ownership are added.
 
 ### 5. Add application filters and initial automated tests
 - [ ] Support optional `status` and `company` query parameters on the list endpoint.
 - [ ] Make company matching case-insensitive and partial; combine filters with AND when both are supplied.
 - [ ] Use a predictable list order, such as applied date descending followed by ID descending.
-- [ ] Add JUnit service tests for status defaults, editing, deleting, and filter combinations; add controller tests for validation and missing IDs.
+- [x] Add service tests for status defaults and editing, plus HTTP tests for missing IDs.
+- [ ] Add tests for deletion, filter combinations, and REST validation.
 - [ ] **Verify:** a filter with no matches returns an empty list; invalid statuses return HTTP 400; all tests pass.
 
 ### 6. Replace in-memory storage with PostgreSQL
@@ -101,10 +122,10 @@ Step 3 behavior complete and verified: POST creates applications with generated 
 ### 8. Add authentication gradually
 - [ ] Add Spring Security and an `AppUser` table with unique usernames and encoded passwords.
 - [ ] Begin with two development accounts created through an explicit local setup procedure; no public registration endpoint is required for version one.
-- [ ] Use Spring Security's `PasswordEncoder` and HTTP Basic authentication for the local API-client workflow.
+- [ ] Use Spring Security's `PasswordEncoder` and session-based form login/logout for the browser. Decide whether API-client practice also needs HTTP Basic support.
 - [ ] Require authentication for application/interview endpoints. Keep `/health` free of private information.
-- [ ] Document the chosen stateless security configuration and CSRF decision for this API-client-only version. Revisit them before adding a browser UI; use HTTPS before any remote use.
-- [ ] **Verify:** correct credentials authenticate, incorrect or missing credentials return HTTP 401, and responses never contain password hashes.
+- [ ] Keep CSRF protection for browser form submissions and include tokens in Thymeleaf forms. Document session/API behavior and use HTTPS before any remote use.
+- [ ] **Verify:** browser login/logout works, protected pages require login, invalid credentials fail, and responses never expose password hashes. Verify JSON API authentication/error behavior separately.
 
 ### 9. Enforce ownership for every operation
 - [ ] Link each application to its owner. If practice data already exists, explicitly assign it to a development account before requiring an owner.
@@ -124,7 +145,7 @@ Step 3 behavior complete and verified: POST creates applications with generated 
 - [ ] Add focused PostgreSQL integration tests against a separate disposable test database for persistence, filtering, relationships, and deletion.
 - [ ] Add automated authentication and two-user isolation tests for applications and interview endpoints.
 - [ ] Run `.\mvnw.cmd verify`; make any test-database setup requirements explicit.
-- [ ] Walk through: authenticate → create application → add interview → update status → filter → restart → retrieve → delete.
+- [ ] Walk through both browser and API flows: authenticate → create application → add interview → update status → filter → restart → retrieve → delete.
 - [ ] **Verify:** the complete workflow passes, failure responses are consistent, and tests never alter personal development data.
 
 ### 12. Document and finish version one
@@ -156,20 +177,29 @@ Example filters: `/applications?status=INTERVIEW`, `/applications?company=Google
 - `interview`: interview controller, service, repository, entity, outcome enum, and DTOs.
 - `user` and `security`: user storage, authentication, and security configuration.
 - `common`: shared error responses and exception handling.
+- `web`: HTML page controllers and form models.
+- `src/main/resources/templates/tracker`: Thymeleaf pages and shared fragments.
+- `src/main/resources/static/css`: responsive page styling.
 - `src/main/resources/db/migration`: versioned SQL migrations when step 10 begins.
 - `src/test/java`: tests organized around the corresponding features.
 
-Request flow: **HTTP request → controller → service → repository → PostgreSQL**. The controller handles HTTP input/output; the service applies business and ownership rules; the repository handles database access. Introduce each layer when its step needs it.
+Current flow: **browser/API request → page/REST controller → shared service → in-memory map**. Page controllers provide model data to Thymeleaf; REST controllers return JSON. Later, persistence becomes **service → repository → PostgreSQL**. The controller handles HTTP input/output; the service applies business and ownership rules; the repository handles database access. Introduce each layer when its step needs it.
 
 ## First-Version Scope
-Keep this a local learning backend. Leave a frontend, public registration, JWT/OAuth, password-reset email, job scraping, resume uploads, notifications, analytics, cloud deployment, and microservices for later. Separate company/position tables, pagination, and status-history auditing are optional improvements after the first version is complete.
+Keep this a local learning application with a basic Thymeleaf frontend. Leave public registration, JWT/OAuth, password-reset email, job scraping, resume uploads, notifications, analytics, cloud deployment, and microservices for later. Separate company/position tables, pagination, and status-history auditing are optional improvements after the first version is complete.
 
 ## Current Progress
-- Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
-- Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database yet; POST /applications is now implemented as recorded below.
-- Verified: step 3 create/list behavior, including POST 201, GET 200, distinct IDs, default APPLIED, and explicit status preservation. Eight tests and JAR packaging pass. Feature review/merge remains pending.
-- Next: joint feature PR review and explicit merge confirmation before step 4. GET exercise complete and independently reviewed/tested. Learning notes will be brief practical references: when to use a construct and what it enables; deeper internals only on request.
-- This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
+- [x] Environment, Spring Boot starter, `/health`, `/about`, and starter exercises.
+- [x] Application model, DTOs, generated IDs, and in-memory create/list API.
+- [x] Retrieve by ID and consistent missing-ID JSON 404.
+- [x] Thymeleaf list/add/detail interface, form errors, responsive styling, and UI/API integration checks.
+- [x] User's update DTO/service exercise reviewed and verified; old-versus-new-object return issue corrected by the user.
+- Verification: **35 tests pass and JAR packaging succeeds**. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
+- [x] Step 4 API completion and current step 4A edit/delete UI. Future-dependent UI items remain unchecked as explicitly agreed.
+- Current note: [[Job Apps Tracker/Learning/Part 10 - Application CRUD and edit-delete pages|Part 10]], using the requested files/changes/new-content format. Next: joint feature review and explicit merge approval; step 5 filters follow when ready.
+- Part 8 and Part 9 concept boxes are user self-assessment; implementation exercises are recorded separately as reviewed.
+- Local server is stopped. Start it from IntelliJ or the project terminal when needed; data still resets on restart.
+- Keep this outline current. Changes.md is now historical only; do not add further entries.
 
 ## References
 - [Spring Quickstart](https://spring.io/quickstart/) — Java and Initializr setup.
@@ -180,24 +210,25 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 
 ## Learning Approach
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
-- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new part when a new topic or milestone begins; keep each part concise and organized by concept, with short capability checklists. [[Job Apps Tracker/Learning/Part 1|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2|Part 2]] is the current application-model lesson.
+- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]] is the current update lesson.
 - For tasks based on covered concepts, the user attempts the code first; review and offer hints before supplying a complete solution.
-- Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is in progress; Part 4 explicit-status test is reviewed; Part 5 GET exercise is complete and reviewed.
-
-
-
-
-
-
-
-
-
+- Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is complete; Part 4 explicit-status test and Part 5 GET exercise are reviewed. Part 6 lookup test and Part 9 service update exercise are also complete and reviewed.
 
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
+- Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
+- Current branch: codex/update-applications, including unmerged lookup and Thymeleaf work. Latest implementation commit: 298ab39. [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) is open for joint review; no merge authorized.
+- Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
+- Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
+
+<details>
+<summary>Earlier checkpoint history (superseded by Current Progress)</summary>
+
+### Earlier version-control checkpoints
+- Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Initial baseline 75faa18 contains the current starter, six-field model, two endpoint tests, and learning/progress snapshots. Maven verify passed with two tests and successful packaging before the push.
 - Main tracks origin/main and includes merged DTO PR #1 (merge commit 0d3628c). New learning work is on codex/in-memory-applications. Future feature merges still require explicit confirmation.
-- [[Job Apps Tracker/Learning/Part 3|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
+- [[Job Apps Tracker/Learning/Part 3 - Git and GitHub workflow|Part 3]] covers Git/GitHub. Vault notes remain authoritative; source note snapshots are copied deliberately before commits rather than automatically synchronized.
 
 - Git operations are delegated to the assistant, with staged/committed/pushed updates. Finished features require joint review and explicit user merge confirmation. Git practice exercises do not block Java/Spring learning.
 
@@ -205,3 +236,40 @@ Keep this a local learning backend. Leave a frontend, public registration, JWT/O
 - [PR #2 — create and list applications in memory](https://github.com/aalatraqchi/Job-App-Tracker/pull/2) is open from codex/in-memory-applications into main. Assistant review found no issues within the current milestone scope.
 - Maven verify passed with eight tests and successful packaging. Required-field validation and persistence remain future work.
 - Awaiting user review and explicit merge confirmation before step 4. Nothing merged.
+
+### Step 4 checkpoint
+- PR #2 merged with explicit user approval on 10/8/26 (51830be); local main and origin/main synced. Current branch: codex/application-by-id.
+- Current lesson: [[Job Apps Tracker/Learning/Part 6 - Retrieve an application by ID|Part 6]]. GET-by-ID worked example complete; missing-ID HTTP test exercise pending. Eleven tests pass. Future merges still require explicit confirmation.
+
+Missing-ID test review: user's HTTP 404/content-type/message assertions are correct; 12 tests pass. Pending small cleanup: remove unused POST setup and rename test to describe 404, then review. No further step 4 implementation yet.
+
+### Current learning checkpoint
+- Part 6 missing-ID HTTP exercise complete and reviewed after cleanup; 12 tests pass. GET-by-ID and 404/message behavior verified. Update/delete and validation still pending.
+- Paused implementation for requested [[Job Apps Tracker/Learning/Part 7 - Frontend overview|frontend overview]]. A polished responsive UI is desired; HTML/CSS/JavaScript served by Spring Boot is the suggested simple starting point, with Thymeleaf/separate frontend alternatives explained. Stack and start timing not decided; no frontend implementation or environment changes performed.
+
+### Thymeleaf interface milestone — 10/8/26
+- User chose Thymeleaf and requested a simple modern responsive interface while pausing backend development.
+- [x] Add Thymeleaf and separate HTML page routes reusing ApplicationService.
+- [x] Application list, summary counts, empty state, add form, detail page, and HTML 404.
+- [x] Shared responsive styling and basic page-form validation/error messages.
+- [x] Verify HTTP behavior and Chrome desktop/phone layouts; all 18 tests and packaging pass.
+- [ ] Review Part 8 understanding checks with the user.
+- [ ] Joint feature review and explicit merge approval.
+- Current lesson: [[Job Apps Tracker/Learning/Part 8 - Thymeleaf pages|Part 8 — Thymeleaf pages]]. Source branch: codex/thymeleaf-ui, including the unmerged lookup milestone. REST endpoints remain available; storage remains in memory. No update/delete, REST validation, persistence, or authentication advancement.
+
+Local preview update: the server is stopped (port 8080 free). CSS formatting improved for learning/readability; implementation progress is unchanged.
+
+### Next checkpoint — application updates
+- User requested resuming implementation. Part 8 boxes are self-checked; current lesson is [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]].
+- Exercise pending: UpdateApplicationRequest and ApplicationService.update. Controller/edit page and update verification follow review. Step 4 update checkbox remains incomplete.
+- Branch codex/update-applications includes prior unmerged UI/lookup work. No merge authorized.
+
+Update exercise initial review: DTO correct; service needs omitted-status preservation and returning the replacement. User corrections and focused verification pending; no update endpoint yet.
+
+Update second review: null-status preservation correct; returned-object correction still pending because Map.replace returns the previous object. No implementation advancement.
+
+Update service checkpoint complete: user's DTO/service reviewed and preserved; three focused tests and full 21-test verification pass. PUT endpoint and edit page remain pending; step 4 is still incomplete. No merge authorized.
+
+</details>
+
+Learning format update: descriptive filenames are the displayed titles; redundant top headings removed. Existing lesson bodies and checkmarks preserved. Future lessons use the brief file/change/new-concept breakdown. Changes.md remains untouched.

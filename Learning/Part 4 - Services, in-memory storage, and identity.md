@@ -1,6 +1,4 @@
-# Part 4 — Services, in-memory storage, and identity
-
-Previous lessons: [[Job Apps Tracker/Learning/Part 2|Model and DTOs]] and [[Job Apps Tracker/Learning/Part 3|Git workflow]]. The DTO milestone was reviewed and merged in [PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) with your approval.
+Previous lessons: [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Model and DTOs]] and [[Job Apps Tracker/Learning/Part 3 - Git and GitHub workflow|Git workflow]]. The DTO milestone was reviewed and merged in [PR #1](https://github.com/aalatraqchi/Job-App-Tracker/pull/1) with your approval.
 
 ## Current goal
 

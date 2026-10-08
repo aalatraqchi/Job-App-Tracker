@@ -1,7 +1,5 @@
-# Part 2 — Modeling a job application
-
 ## Goal and current boundary
-Start outline step 3 by representing one job application as a Java object. We will extend this part as we learn the remaining concepts needed for in-memory create/list behavior. [[Job Apps Tracker/Learning/Part 1|Part 1]] covered startup and HTTP endpoints.
+Start outline step 3 by representing one job application as a Java object. We will extend this part as we learn the remaining concepts needed for in-memory create/list behavior. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] covered startup and HTTP endpoints.
 
 Current code: `src/main/java/com/ashraf/jobapptracker/application/JobApplication.java` in `E:\Codex\Job App Tracker`. Company was introduced as a worked example; the user has now correctly added position, extended the constructor, and added getPosition(). The attempt has been reviewed, and the user reported passing tests. ApplicationStatus is now defined as a worked enum example. The user has now added appliedDate (LocalDate) and status (ApplicationStatus), extended the constructor, and added matching getters; the code was reviewed and is correct. Remaining model fields, DTOs, storage, and application endpoints are still ahead. This class is not yet connected to a controller.
 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Application details')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <a class="text-link back-link" th:href="@{/tracker}">← All applications</a>
+    <div class="notice success" role="status" th:if="${success}" th:text="${success}"></div>
+    <section class="page-heading"><div><p class="eyebrow" th:text="${job.company}">COMPANY</p><h1 th:text="${job.position}">Position</h1><p class="muted" th:text="'Application #' + ${job.id}">Application ID</p></div><span class="badge" th:classappend="${job.status == null ? '' : #strings.toLowerCase(job.status.name())}" th:text="${job.status}">APPLIED</span></section>
+    <section class="panel detail-panel"><h2>Application details</h2><dl class="details-grid"><div><dt>Company</dt><dd th:text="${job.company}"></dd></div><div><dt>Position</dt><dd th:text="${job.position}"></dd></div><div><dt>Applied on</dt><dd th:text="${job.appliedDate ?: 'Not recorded'}"></dd></div><div><dt>Status</dt><dd th:text="${job.status ?: 'Not recorded'}"></dd></div></dl>
+        <div class="detail-section"><h3>Job link</h3><a class="text-link job-link" th:if="${safeJobUrl}" th:href="${safeJobUrl}" th:text="${safeJobUrl}" target="_blank" rel="noopener noreferrer"></a><p class="muted" th:unless="${safeJobUrl}">No job link available.</p></div>
+        <div class="detail-section"><h3>Notes</h3><p class="notes" th:if="${!#strings.isEmpty(job.notes)}" th:text="${job.notes}"></p><p class="muted" th:if="${#strings.isEmpty(job.notes)}">No notes added yet.</p></div>
+        <div class="action-row detail-section">
+            <a class="button" th:href="@{/tracker/{id}/edit(id=${job.id})}">Edit application</a>
+            <a class="button secondary danger-link" th:href="@{/tracker/{id}/delete(id=${job.id})}">Delete application</a>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>

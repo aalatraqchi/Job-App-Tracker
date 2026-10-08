@@ -6,9 +6,109 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplicationServiceTests {
+    @Test
+    void deletionRemovesOnlyRequestedApplicationAndRejectsMissingIds() {
+        ApplicationService service = new ApplicationService();
+        CreateApplicationRequest request = new CreateApplicationRequest(
+                "Acme", "Developer", LocalDate.of(2026, 10, 8), null, null, null);
+        JobApplication removed = service.create(request);
+        JobApplication retained = service.create(request);
+
+        service.delete(removed.getId());
+
+        assertEquals(1, service.findAll().size());
+        assertSame(retained, service.findById(retained.getId()));
+        assertThrows(ApplicationNotFoundException.class, () -> service.findById(removed.getId()));
+        assertThrows(ApplicationNotFoundException.class, () -> service.delete(removed.getId()));
+        assertThrows(ApplicationNotFoundException.class, () -> service.delete(999));
+        assertEquals(1, service.findAll().size());
+    }
+
+    @Test
+    void updateReplacesDetailsAndReturnsStoredReplacementWithoutAllocatingId() {
+        ApplicationService service = new ApplicationService();
+        CreateApplicationRequest original = new CreateApplicationRequest(
+                "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.APPLIED, null, "Original notes"
+        );
+        JobApplication first = service.create(original);
+        JobApplication other = service.create(original);
+        UpdateApplicationRequest request = new UpdateApplicationRequest(
+                "New Company", "Backend Developer", LocalDate.of(2026, 10, 9),
+                ApplicationStatus.INTERVIEW, "https://example.com/jobs/2", "Interview scheduled"
+        );
+
+        JobApplication updated = service.update(first.getId(), request);
+
+        assertEquals(first.getId(), updated.getId());
+        assertEquals(request.company(), updated.getCompany());
+        assertEquals(request.position(), updated.getPosition());
+        assertEquals(request.appliedDate(), updated.getAppliedDate());
+        assertEquals(request.status(), updated.getStatus());
+        assertEquals(request.jobUrl(), updated.getJobUrl());
+        assertEquals(request.notes(), updated.getNotes());
+        assertSame(updated, service.findById(first.getId()));
+        assertSame(other, service.findById(other.getId()));
+        assertEquals(2, service.findAll().size());
+        assertEquals(other.getId() + 1, service.create(original).getId());
+    }
+
+    @Test
+    void updatePreservesExistingStatusWhenOmittedAndClearsOptionalFields() {
+        ApplicationService service = new ApplicationService();
+        JobApplication application = service.create(new CreateApplicationRequest(
+                "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.INTERVIEW, "https://example.com/jobs/1", "Old notes"
+        ));
+
+        JobApplication updated = service.update(application.getId(), new UpdateApplicationRequest(
+                "Acme", "Java Developer", application.getAppliedDate(), null, null, null
+        ));
+
+        assertEquals(ApplicationStatus.INTERVIEW, updated.getStatus());
+        assertEquals(null, updated.getJobUrl());
+        assertEquals(null, updated.getNotes());
+        assertSame(updated, service.findById(application.getId()));
+    }
+
+    @Test
+    void updatingMissingIdThrowsWithoutInsertingApplication() {
+        ApplicationService service = new ApplicationService();
+        UpdateApplicationRequest request = new UpdateApplicationRequest(
+                "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.APPLIED, null, null
+        );
+
+        assertThrows(ApplicationNotFoundException.class, () -> service.update(999, request));
+        assertTrue(service.findAll().isEmpty());
+    }
+
+    @Test
+    void findsTheApplicationWithTheRequestedId() {
+        ApplicationService service = new ApplicationService();
+        CreateApplicationRequest request = new CreateApplicationRequest(
+                "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
+                null, null, null
+        );
+        JobApplication first = service.create(request);
+        JobApplication second = service.create(request);
+
+        assertSame(second, service.findById(second.getId()));
+        assertSame(first, service.findById(first.getId()));
+    }
+
+    @Test
+    void missingApplicationThrowsNotFoundException() {
+        ApplicationService service = new ApplicationService();
+
+        assertThrows(ApplicationNotFoundException.class, () -> service.findById(999));
+    }
+
     @Test
     void creationCopiesDetailsAndDefaultsOmittedStatus() {
         ApplicationService service = new ApplicationService();
