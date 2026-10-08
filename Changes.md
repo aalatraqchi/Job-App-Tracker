@@ -144,3 +144,10 @@
 - Maven test passed: five tests, zero failures/errors (three service tests and two existing HTTP tests).
 - Updated Part 4 and outline to record reviewed test completion; preserved user self-checked concept boxes without treating them as a separate verbal verification.
 - Next: response mapping and application HTTP endpoints when requested. No implementation advancement or merge during this review.
+
+### Part 5 — POST application HTTP boundary
+- Added ApplicationController with constructor-injected shared service, class-level /applications path, POST request-body conversion, explicit model-to-response mapping, and HTTP 201 response.
+- Added two real HTTP tests for created response details/default APPLIED status and explicit INTERVIEW status. Maven test passed: seven tests, zero failures/errors. No extra dependency added.
+- Created [[Job Apps Tracker/Learning/Part 5|Part 5]] covering injection, request mapping, JSON conversion, response DTO mapping, status codes, manual POST requests, and the HTTP tests.
+- Assigned GET /applications to the user using existing service.findAll(), the response mapper, and an ArrayList/loop. Provided loop guidance. New concept boxes and GET exercise remain pending; combined POST/GET roadmap checkbox stays unchecked.
+- No database, filtering, required-field validation, or merge performed. Next: review the user's GET implementation before adding its focused HTTP test.
