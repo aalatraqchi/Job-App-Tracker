@@ -56,9 +56,15 @@ Do not use `postApplication()` or create a record for this test. The point is to
 
 ## I should be able to...
 
-- [ ] Use `@PathVariable` to read a URL ID.
-- [ ] Distinguish successful lookup (200) from missing record (404).
-- [ ] Explain why the service throws an exception and the shared handler chooses the HTTP response.
-- [ ] Add the missing-ID HTTP test and have it reviewed.
+- [x] Use `@PathVariable` to read a URL ID.
+- [x] Distinguish successful lookup (200) from missing record (404).
+- [x] Explain why the service throws an exception and the shared handler chooses the HTTP response.
+- [x] Add the missing-ID HTTP test and have it reviewed.
 
 Verified: **11 tests pass**, including successful GET-by-ID over HTTP and service-level missing-ID behavior. Your pending HTTP test will verify the 404 status and error JSON together. These new checklist items remain pending; no update/delete or validation implemented yet.
+
+## Test review — 10/8/26
+
+Your 404, JSON content type, and message assertions are correct. Reading the message key from the map selects the string to compare. All 12 tests pass. One cleanup remains: remove the unused created = postApplication(...) setup from this test; no record is needed to request -1. Rename the test to getByMissingIdReturns404 so its name describes the result. Try those edits yourself; final exercise checkbox stays pending cleanup review. Other checkmarks are preserved as your self-assessment.
+
+Cleanup review complete: getByMissingIdReturns404 removes the unused POST setup and asserts 404, JSON content type, and the message value. Preserved user implementation. All 12 tests pass. The missing-ID HTTP exercise is complete; other concept checkmarks remain user self-assessment.

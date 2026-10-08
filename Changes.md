@@ -169,3 +169,13 @@
 - Added two service lookup tests and successful GET-by-ID HTTP test. Maven test passed: 11 tests, zero failures/errors. Missing-ID HTTP status/body verification is the user's pending exercise.
 - Created concise [[Job Apps Tracker/Learning/Part 6|Part 6]] with practical annotation reference and missing-ID HTTP test exercise. New understanding/exercise boxes remain unchecked.
 - Update/delete, required-field validation, shared 400 handling, and complete CRUD verification remain pending. No further feature merge authorized.
+
+### Missing-ID HTTP test initial review
+- User correctly selects message from the parsed response map. HTTP 404, JSON content-type, and message assertions are correct; Maven test passed with 12 tests, zero failures/errors.
+- Requested learner cleanup: remove unnecessary POST creation and unused variable, and rename test to describe the missing-ID 404 result. Preserved user code; exercise completion remains pending cleanup review.
+- No update/delete, validation, or merge performed.
+
+### Lookup test cleanup reviewed and frontend overview
+- Reviewed user's renamed getByMissingIdReturns404 with unnecessary creation removed. Assertions correct; preserved user code. Maven test passed: 12 tests, zero failures/errors. Part 6 exercise marked complete.
+- Added concise [[Job Apps Tracker/Learning/Part 7|Part 7 frontend overview]] at user request: HTML/CSS/JavaScript roles, existing API connection, Spring-hosted static UI versus Thymeleaf/separate frontend, and practical responsive design. Stack/timing remain proposals, not selected implementation.
+- Backend roadmap paused for the explanation; no UI implementation, installation, update/delete, validation, or merge performed.
