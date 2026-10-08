@@ -32,6 +32,92 @@ class TrackerPageTests {
     private ApplicationService service;
 
     @Test
+    void editPrefillsValuesAndSavesIntoDetailListAndApi() throws Exception {
+        var application = service.create(new CreateApplicationRequest(
+                "Original Company", "Developer", LocalDate.of(2026, 10, 8),
+                com.ashraf.jobapptracker.application.ApplicationStatus.APPLIED, null, "Original notes"));
+        long id = application.getId();
+        int before = service.findAll().size();
+        var edit = get("/tracker/" + id + "/edit");
+        assertEquals(200, edit.statusCode());
+        assertTrue(edit.body().contains("Edit application"));
+        assertTrue(edit.body().contains("value=\"Original Company\""));
+        assertTrue(edit.body().contains("action=\"/tracker/" + id + "/edit\""));
+
+        var saved = postFields("/tracker/" + id + "/edit", Map.of(
+                "company", "Updated Company", "position", "Senior Developer",
+                "appliedDate", "2026-10-09", "status", "OFFER", "jobUrl", "", "notes", "New notes"));
+        assertEquals(302, saved.statusCode());
+        assertEquals("/tracker/" + id,
+                URI.create(saved.headers().firstValue("Location").orElseThrow()).getPath().split(";")[0]);
+        var detail = get("/tracker/" + id);
+        assertTrue(detail.body().contains("Application updated."));
+        assertTrue(detail.body().contains("Senior Developer"));
+        assertTrue(get("/tracker").body().contains("Updated Company"));
+        var data = new JsonMapper().readValue(get("/applications/" + id).body(), Map.class);
+        assertEquals("OFFER", data.get("status"));
+        assertEquals("New notes", data.get("notes"));
+        assertEquals(before, service.findAll().size());
+    }
+
+    @Test
+    void invalidEditKeepsSubmittedValuesAndDoesNotOverwriteRecord() throws Exception {
+        var application = service.create(new CreateApplicationRequest(
+                "Keep Company", "Developer", LocalDate.of(2026, 10, 8), null, null, null));
+        var response = postFields("/tracker/" + application.getId() + "/edit", Map.of(
+                "company", " ", "position", "Attempted change", "appliedDate", "not-a-date",
+                "status", "UNKNOWN", "jobUrl", "http://", "notes", ""));
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("Edit application"));
+        assertTrue(response.body().contains("Choose a valid application date."));
+        assertTrue(response.body().contains("Choose one of the available statuses."));
+        assertTrue(response.body().contains("Attempted change"));
+        var fieldErrors = postFields("/tracker/" + application.getId() + "/edit", Map.of(
+                "company", " ", "position", "Attempted change", "appliedDate", "2026-10-08",
+                "status", "APPLIED", "jobUrl", "http://", "notes", ""));
+        assertEquals(200, fieldErrors.statusCode());
+        assertTrue(fieldErrors.body().contains("Enter a company name."));
+        assertTrue(fieldErrors.body().contains("Use a valid link"));
+        assertSame(application, service.findById(application.getId()));
+    }
+
+    @Test
+    void deleteRequiresConfirmationAndReturnsToListWithFeedback() throws Exception {
+        var application = service.create(new CreateApplicationRequest(
+                "Delete Company", "Developer", LocalDate.of(2026, 10, 8), null, null, null));
+        String path = "/tracker/" + application.getId();
+        assertTrue(get(path).body().contains(path + "/delete"));
+        var confirmation = get(path + "/delete");
+        assertEquals(200, confirmation.statusCode());
+        assertTrue(confirmation.body().contains("Delete this application?"));
+        assertTrue(confirmation.body().contains("Keep application"));
+        assertSame(application, service.findById(application.getId()));
+        assertEquals(302, postFields(path + "/delete", Map.of()).statusCode());
+        assertSame(application, service.findById(application.getId()));
+        var deleted = postFields(path + "/delete", Map.of("confirmed", "true"));
+        assertEquals(302, deleted.statusCode());
+        assertEquals("/tracker",
+                URI.create(deleted.headers().firstValue("Location").orElseThrow()).getPath().split(";")[0]);
+        assertTrue(get("/tracker").body().contains("Application deleted."));
+        assertEquals(404, get(path).statusCode());
+        assertEquals(404, get("/applications/" + application.getId()).statusCode());
+        assertEquals(404, postFields(path + "/delete", Map.of("confirmed", "true")).statusCode());
+    }
+
+    @Test
+    void missingEditAndDeleteUseHtml404AndBadIdsUseHtml400() throws Exception {
+        for (String suffix : new String[]{"/edit", "/delete"}) {
+            var missing = get("/tracker/-1" + suffix);
+            assertEquals(404, missing.statusCode());
+            assertTrue(missing.headers().firstValue("Content-Type").orElse("").contains("text/html"));
+            assertEquals(404, postFields("/tracker/-1" + suffix, Map.of()).statusCode());
+            var invalid = get("/tracker/not-a-number" + suffix);
+            assertEquals(400, invalid.statusCode());
+            assertTrue(invalid.body().contains("Invalid application link"));
+        }
+    }
+
+    @Test
     void listAndFormRenderHtmlAndStyles() throws Exception {
         var list = get("/");
         assertEquals(200, list.statusCode());
@@ -118,13 +204,17 @@ class TrackerPageTests {
     }
 
     private HttpResponse<String> postForm(String company, String date) throws Exception {
-        String body = Map.of("company", company, "position", "Java Developer", "appliedDate", date,
-                        "status", "INTERVIEW", "jobUrl", "", "notes", "UI test notes")
+        return postFields("/tracker", Map.of("company", company, "position", "Java Developer", "appliedDate", date,
+                "status", "INTERVIEW", "jobUrl", "", "notes", "UI test notes"));
+    }
+
+    private HttpResponse<String> postFields(String path, Map<String, String> fields) throws Exception {
+        String body = fields
                 .entrySet().stream().map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8)
                         + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
         try (var client = HttpClient.newBuilder().cookieHandler(cookies).build()) {
-            return client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/tracker"))
+            return client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(body)).build(), HttpResponse.BodyHandlers.ofString());
         }

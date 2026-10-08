@@ -71,25 +71,26 @@ Step 3 behavior complete and verified: POST creates applications with generated 
 - [x] **Verify:** create two applications, receive HTTP 201 with their IDs, and list both. HTTP test verifies an empty initial list, distinct created IDs, and both response DTOs. Restarting recreates the temporary storage.
 
 ### 4. Finish the basic application API
-In progress: lookup and service updates are verified. Current lesson: [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]].
+Complete and verified: API CRUD, required-field/text-length/URL validation, and JSON 400/404 errors. Current breakdown: [[Job Apps Tracker/Learning/Part 10 - Application CRUD and edit-delete pages|Part 10]].
 
 - [x] Add `GET /applications/{id}` and verify successful retrieval and JSON 404 for missing IDs.
 - [x] Define update behavior: replace editable details, retain ID, and preserve existing status if omitted. Partial updates can wait.
 - [x] Implement and test `UpdateApplicationRequest` and `ApplicationService.update`; preserve record count and ID generation.
 - [x] Add `PUT /applications/{id}` returning the updated response DTO and HTTP 200; user implementation reviewed and verified over HTTP.
-- [ ] Add `DELETE /applications/{id}` returning HTTP 204.
-- [ ] Validate required company, position, and applied date; set text-length limits and validate optional URLs on the JSON API.
+- [x] Add `DELETE /applications/{id}` returning HTTP 204.
+- [x] Validate required company, position, and applied date; set text-length limits and validate optional URLs on the JSON API.
 - [x] Add shared missing-ID JSON error handling with HTTP 404.
-- [ ] Add consistent JSON HTTP 400 errors for invalid requests.
-- [ ] **Verify:** create → retrieve → edit → delete over HTTP; invalid input, unknown statuses, and missing IDs produce expected errors.
+- [x] Add consistent JSON HTTP 400 errors for invalid requests.
+- [x] **Verify:** create → retrieve → edit → delete over HTTP; invalid input, unknown statuses, and missing IDs produce expected errors.
 
 ### 4A. Build the Thymeleaf interface alongside the API
+Current CRUD interface complete. User confirmed that filters, interviews, login, and persistence-dependent checks below stay with their later steps.
 - [x] Add Thymeleaf and separate HTML page routes reusing ApplicationService.
 - [x] Build list, summary counts, empty state, add form, detail page, and friendly HTML 404.
 - [x] Add shared responsive CSS, labelled inputs, focus styles, page-form validation, and success feedback.
 - [x] Verify shared UI/API data and desktop/phone layouts; format CSS for readable editing.
-- [ ] Add an edit form using the verified update service.
-- [ ] Add deletion with a confirmation step after delete behavior is implemented.
+- [x] Add an edit form using the verified update service.
+- [x] Add deletion with a confirmation step after delete behavior is implemented.
 - [ ] Add company/status filter controls when filtering is ready in step 5.
 - [ ] Add interview-stage views/forms when step 7 is ready.
 - [ ] Add login/logout and authenticated navigation in step 8.
@@ -193,8 +194,9 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - [x] Retrieve by ID and consistent missing-ID JSON 404.
 - [x] Thymeleaf list/add/detail interface, form errors, responsive styling, and UI/API integration checks.
 - [x] User's update DTO/service exercise reviewed and verified; old-versus-new-object return issue corrected by the user.
-- Verification: **24 tests pass and JAR packaging succeeds**. This includes three service update tests and three HTTP PUT tests. Edit UI is not implemented yet.
-- PUT exercise complete and reviewed: HTTP 200/updated fields, unchanged ID/count, later GET, omitted status, and missing-ID JSON 404 verified. Next: edit form when the user is ready.
+- Verification: **35 tests pass and JAR packaging succeeds**. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
+- [x] Step 4 API completion and current step 4A edit/delete UI. Future-dependent UI items remain unchecked as explicitly agreed.
+- Current note: [[Job Apps Tracker/Learning/Part 10 - Application CRUD and edit-delete pages|Part 10]], using the requested files/changes/new-content format. Next: joint feature review and explicit merge approval; step 5 filters follow when ready.
 - Part 8 and Part 9 concept boxes are user self-assessment; implementation exercises are recorded separately as reviewed.
 - Local server is stopped. Start it from IntelliJ or the project terminal when needed; data still resets on restart.
 - Keep this outline current. Changes.md is now historical only; do not add further entries.

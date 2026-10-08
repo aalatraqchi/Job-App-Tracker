@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Delete application')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <a class="text-link back-link" th:href="@{/tracker/{id}(id=${job.id})}">← Application details</a>
+    <section class="panel detail-panel">
+        <p class="eyebrow">REMOVE AN APPLICATION</p>
+        <h1>Delete this application?</h1>
+        <p>You are about to delete <strong th:text="${job.position}"></strong>
+            at <strong th:text="${job.company}"></strong>.</p>
+        <p class="muted">This removes the application and its notes. This action cannot be undone.</p>
+        <form class="action-row detail-section" method="post"
+              th:action="@{/tracker/{id}/delete(id=${job.id})}">
+            <input type="hidden" name="confirmed" value="true">
+            <a class="button secondary" th:href="@{/tracker/{id}(id=${job.id})}">Keep application</a>
+            <button class="button danger" type="submit">Yes, delete application</button>
+        </form>
+    </section>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>

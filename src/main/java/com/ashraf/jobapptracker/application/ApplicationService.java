@@ -48,6 +48,12 @@ public class ApplicationService {
         return updated;
     }
 
+    public void delete(long id) {
+        if (applications.remove(id) == null) {
+            throw new ApplicationNotFoundException(id);
+        }
+    }
+
     public List<JobApplication> findAll() {
         return List.copyOf(applications.values());
     }

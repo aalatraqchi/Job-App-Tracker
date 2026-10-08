@@ -1,5 +1,7 @@
 package com.ashraf.jobapptracker.application;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<ApplicationResponse> create(@RequestBody CreateApplicationRequest request) {
+    public ResponseEntity<ApplicationResponse> create(@Valid @RequestBody CreateApplicationRequest request) {
         JobApplication application = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(application));
     }
@@ -27,8 +29,14 @@ public class ApplicationController {
     }
 
     @PutMapping("/{id}")
-    public ApplicationResponse updateById(@PathVariable("id") long id, @RequestBody UpdateApplicationRequest request) {
+    public ApplicationResponse updateById(@PathVariable("id") long id, @Valid @RequestBody UpdateApplicationRequest request) {
         return toResponse(service.update(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable("id") long id) {
+        service.delete(id);
     }
 
     private ApplicationResponse toResponse(JobApplication application) {
