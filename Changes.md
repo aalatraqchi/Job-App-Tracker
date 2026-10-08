@@ -129,3 +129,12 @@
 - Maven test passed with two existing endpoint tests, zero failures/errors. These tests do not assert model identity or service storage behavior.
 - Marked only the model-ID exercise reviewed in Part 4; other understanding boxes remain unverified. Creation, ID generation, mapping, and application endpoints remain pending.
 - Next: service/storage understanding check, then creation and ID generation incrementally.
+
+## 10/8/26
+
+### Part 4 — Application creation and service unit tests
+- Recorded demonstrated service/storage foundations: shared Spring instance, ID-to-model pairs, final reference versus mutable contents, unmodifiable returned list holding the same objects, and temporary memory. Preserved the user's lesson notes and checked foundation boxes.
+- Added ApplicationService.create: AtomicLong ID allocation, omitted-status default APPLIED, explicit request-to-model mapping, map storage, and returned model. No application HTTP endpoints or response mapping added.
+- Added two service unit tests for copied details/default status and distinct stored records from identical input. Maven test passed: four tests total, zero failures/errors, including existing health/about HTTP tests.
+- Extended Part 4 with actual code and explanations of atomic allocation, defaults, mapping, and arrange/act/assert tests without Spring startup.
+- Assigned explicit INTERVIEW status preservation as the user's test exercise. New concept/exercise boxes remain unchecked. Next: review the attempt before proceeding to mapping and application endpoints. No merge authorized for this feature yet.
