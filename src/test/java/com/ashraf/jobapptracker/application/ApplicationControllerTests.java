@@ -3,6 +3,7 @@ package com.ashraf.jobapptracker.application;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
@@ -10,8 +11,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -57,6 +60,42 @@ class ApplicationControllerTests {
         Map<?, ?> body = postApplication(json);
 
         assertEquals("INTERVIEW", body.get("status"));
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void getListsCreatedApplicationsAndInitiallyReturnsEmptyArray() throws Exception {
+        assertTrue(getApplications().isEmpty());
+
+        String json = """
+                {
+                  "company": "Acme",
+                  "position": "Java Developer",
+                  "appliedDate": "2026-10-08"
+                }
+                """;
+        Map<?, ?> first = postApplication(json);
+        Map<?, ?> second = postApplication(json);
+
+        List<?> applications = getApplications();
+
+        assertNotEquals(first.get("id"), second.get("id"));
+        assertEquals(2, applications.size());
+        assertTrue(applications.contains(first));
+        assertTrue(applications.contains(second));
+    }
+
+    private List<?> getApplications() throws Exception {
+        try (var client = HttpClient.newHttpClient()) {
+            var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/applications"))
+                    .GET()
+                    .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+            assertTrue(response.headers().firstValue("Content-Type").orElse("").contains("application/json"));
+            return new JsonMapper().readValue(response.body(), List.class);
+        }
     }
 
     private Map<?, ?> postApplication(String json) throws Exception {
