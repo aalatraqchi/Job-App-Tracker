@@ -21,6 +21,11 @@ public class ApplicationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(application));
     }
 
+    @GetMapping("/{id}")
+    public ApplicationResponse getById(@PathVariable("id") long id) {
+        return toResponse(service.findById(id));
+    }
+
     private ApplicationResponse toResponse(JobApplication application) {
         return new ApplicationResponse(
                 application.getId(), application.getCompany(), application.getPosition(),
