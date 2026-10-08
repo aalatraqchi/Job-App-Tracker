@@ -23,6 +23,84 @@ class ApplicationControllerTests {
     private int port;
 
     @Test
+    void putReturnsUpdatedDetailsAndLaterGetSeesSameRecord() throws Exception {
+        Map<?, ?> created = postApplication("""
+                {"company":"Acme","position":"Java Developer",
+                 "appliedDate":"2026-10-08","status":"APPLIED"}
+                """);
+        int countBefore = getApplications().size();
+        String path = "/applications/" + created.get("id");
+
+        var response = putApplication(path, """
+                {"company":"New Company","position":"Backend Developer",
+                 "appliedDate":"2026-10-09","status":"INTERVIEW",
+                 "jobUrl":"https://example.com/jobs/2","notes":"Interview scheduled"}
+                """);
+
+        assertEquals(200, response.statusCode());
+        assertTrue(response.headers().firstValue("Content-Type").orElse("").contains("application/json"));
+        Map<?, ?> updated = new JsonMapper().readValue(response.body(), Map.class);
+        assertEquals(Map.of(
+                "id", created.get("id"), "company", "New Company",
+                "position", "Backend Developer", "appliedDate", "2026-10-09",
+                "status", "INTERVIEW", "jobUrl", "https://example.com/jobs/2",
+                "notes", "Interview scheduled"
+        ), updated);
+        assertEquals(countBefore, getApplications().size());
+
+        try (var client = HttpClient.newHttpClient()) {
+            var get = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+                    .GET().build();
+            var retrieved = client.send(get, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, retrieved.statusCode());
+            assertEquals(updated, new JsonMapper().readValue(retrieved.body(), Map.class));
+        }
+    }
+
+    @Test
+    void putPreservesStatusWhenOmitted() throws Exception {
+        Map<?, ?> created = postApplication("""
+                {"company":"Acme","position":"Java Developer",
+                 "appliedDate":"2026-10-08","status":"INTERVIEW"}
+                """);
+
+        var response = putApplication("/applications/" + created.get("id"), """
+                {"company":"Acme","position":"Senior Java Developer",
+                 "appliedDate":"2026-10-08"}
+                """);
+
+        assertEquals(200, response.statusCode());
+        Map<?, ?> updated = new JsonMapper().readValue(response.body(), Map.class);
+        assertEquals(created.get("id"), updated.get("id"));
+        assertEquals("INTERVIEW", updated.get("status"));
+        assertEquals("Senior Java Developer", updated.get("position"));
+    }
+
+    @Test
+    void putForMissingIdReturnsJson404WithoutCreatingRecord() throws Exception {
+        int countBefore = getApplications().size();
+        var response = putApplication("/applications/-1", """
+                {"company":"Acme","position":"Java Developer",
+                 "appliedDate":"2026-10-08","status":"APPLIED"}
+                """);
+
+        assertEquals(404, response.statusCode());
+        assertTrue(response.headers().firstValue("Content-Type").orElse("").contains("application/json"));
+        assertEquals("Application -1 was not found",
+                new JsonMapper().readValue(response.body(), Map.class).get("message"));
+        assertEquals(countBefore, getApplications().size());
+    }
+
+    private HttpResponse<String> putApplication(String path, String json) throws Exception {
+        try (var client = HttpClient.newHttpClient()) {
+            var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json)).build();
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+    }
+
+    @Test
     void postCreatesApplicationAndDefaultsOmittedStatus() throws Exception {
         String json = """
                 {
