@@ -3,6 +3,7 @@ package com.ashraf.jobapptracker.application;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -11,6 +12,44 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplicationServiceTests {
+    @Test
+    void filtersCombineCompanySubstringAndStatusWithoutChangingStorage() {
+        ApplicationService service = new ApplicationService();
+        JobApplication applied = service.create(new CreateApplicationRequest(
+                "Acme Labs", "Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.APPLIED, null, null));
+        JobApplication interview = service.create(new CreateApplicationRequest(
+                "ACME Group", "Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.INTERVIEW, null, null));
+        JobApplication other = service.create(new CreateApplicationRequest(
+                "Other Company", "Developer", LocalDate.of(2026, 10, 8),
+                ApplicationStatus.INTERVIEW, null, null));
+
+        assertEquals(List.of(interview, applied), service.findAll(null, "  cMe  "));
+        assertEquals(List.of(other, interview), service.findAll(ApplicationStatus.INTERVIEW, null));
+        assertEquals(List.of(interview), service.findAll(ApplicationStatus.INTERVIEW, "acme"));
+        assertTrue(service.findAll(ApplicationStatus.OFFER, "acme").isEmpty());
+        assertTrue(service.findAll(null, "missing").isEmpty());
+        assertEquals(service.findAll(), service.findAll(null, "  "));
+        assertEquals(3, service.findAll().size());
+    }
+
+    @Test
+    void listOrdersDateDescendingThenIdDescendingAndPlacesMissingDatesLast() {
+        ApplicationService service = new ApplicationService();
+        JobApplication older = service.create(new CreateApplicationRequest(
+                "Acme", "Developer", LocalDate.of(2026, 10, 7), null, null, null));
+        JobApplication firstNewer = service.create(new CreateApplicationRequest(
+                "Acme", "Developer", LocalDate.of(2026, 10, 9), null, null, null));
+        JobApplication lastNewer = service.create(new CreateApplicationRequest(
+                "Acme", "Developer", LocalDate.of(2026, 10, 9), null, null, null));
+        JobApplication undated = service.create(new CreateApplicationRequest(
+                "Acme", "Developer", null, null, null, null));
+
+        assertEquals(List.of(lastNewer, firstNewer, older, undated), service.findAll());
+        assertEquals(service.findAll(), service.findAll(ApplicationStatus.APPLIED, "ACME"));
+    }
+
     @Test
     void deletionRemovesOnlyRequestedApplicationAndRejectsMissingIds() {
         ApplicationService service = new ApplicationService();
