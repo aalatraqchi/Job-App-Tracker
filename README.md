@@ -1,6 +1,6 @@
 # Job Application Tracker
 
-A gradual Java/Spring Boot learning project. The current starter exposes `GET /health` and `GET /about`, with two HTTP integration tests. The application model contains company, position, applied date, status, job URL, and notes; application endpoints and storage come in later milestones.
+A gradual Java/Spring Boot learning project with a Thymeleaf interface for adding, listing, and viewing job applications. The pages and JSON API share an in-memory service. Eighteen tests cover the current service and HTTP behavior.
 
 ## Environment
 
@@ -26,7 +26,7 @@ $env:JAVA_HOME = 'C:\Program Files\Java\jdk-21'
 .\mvnw.cmd spring-boot:run
 ```
 
-Open <http://localhost:8080/health>. Expected JSON:
+Open <http://localhost:8080/> for the tracker, or <http://localhost:8080/health> for the health check. Expected health JSON:
 
 ```json
 {"status":"UP","application":"job-app-tracker"}
@@ -46,8 +46,17 @@ Stop the app with Ctrl+C. The starter binds to localhost for local development. 
 
 The first run downloads Maven and project dependencies; it needs Internet access. Build output goes to ignored `target/`. No credentials should be committed; local `.env` and `application-local.properties` files are ignored.
 
-The roadmap and dated progress live in the Obsidian Job Apps Tracker folder. Next implementation work is request/response DTOs, followed by the in-memory service and create/list API. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy of the notes.
+The roadmap and dated progress live in the Obsidian Job Apps Tracker folder. Backend development is paused for the requested Thymeleaf milestone; update/delete, REST validation, and database persistence remain pending. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy of the notes.
 
 ## Version control
 
 Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker). Main tracks `origin/main`. Use a feature branch for new work, review the staged diff, run verification, commit and push, then review a pull request before merging. `Learning/Part 3.md` explains the workflow and commands. Learning notes are copied from the vault deliberately; changes are not synchronized automatically.
+## Browser interface
+
+Use the run command above, then open <http://127.0.0.1:8080/>.
+
+The Thymeleaf UI lists applications, adds them through a form, and shows details. HTML pages use `/tracker`; the existing JSON API uses `/applications`. Both use the same in-memory service. Restarting clears all records.
+
+The UI includes basic form checks and responsive layouts. API validation, editing, deletion, persistence, and authentication are still pending backend milestones.
+
+Templates: `src/main/resources/templates/tracker/`. Styles: `src/main/resources/static/css/tracker.css`. Page controller/form: `src/main/java/com/ashraf/jobapptracker/web/`.

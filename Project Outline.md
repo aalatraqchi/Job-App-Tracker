@@ -164,13 +164,13 @@ Example filters: `/applications?status=INTERVIEW`, `/applications?company=Google
 Request flow: **HTTP request → controller → service → repository → PostgreSQL**. The controller handles HTTP input/output; the service applies business and ownership rules; the repository handles database access. Introduce each layer when its step needs it.
 
 ## First-Version Scope
-Keep this a local learning backend. Leave a frontend, public registration, JWT/OAuth, password-reset email, job scraping, resume uploads, notifications, analytics, cloud deployment, and microservices for later. Separate company/position tables, pagination, and status-history auditing are optional improvements after the first version is complete.
+Keep this a local learning application with a basic Thymeleaf frontend. Leave public registration, JWT/OAuth, password-reset email, job scraping, resume uploads, notifications, analytics, cloud deployment, and microservices for later. Separate company/position tables, pagination, and status-history auditing are optional improvements after the first version is complete.
 
 ## Current Progress
 - Completed: project outline, environment verification, step 2 Spring Boot starter (4.1.1 with Java 21), and starter learning checkpoint. User implemented /about and its own integration test.
 - Verified: Maven Wrapper build/package passed; the user reported both /health and /about HTTP integration tests passing on 10/6/26; live localhost:8080/health returned HTTP 200 and status UP. Existing JDK 21.0.2, Maven 3.9.6, and IntelliJ installations reused. Wrapper downloads Maven 3.9.16. No database yet; POST /applications is now implemented as recorded below.
 - Verified: step 3 create/list behavior, including POST 201, GET 200, distinct IDs, default APPLIED, and explicit status preservation. Eight tests and JAR packaging pass. Feature merged in PR #2 with user approval.
-- Next: Part 6 missing-ID HTTP test exercise. Step 4 has begun with GET /applications/{id}, service lookup, and shared 404 handler. Successful HTTP retrieval and service-level missing behavior verified; user HTTP 404 test pending. Update/delete and validation remain pending.
+- Part 6 missing-ID HTTP exercise complete and reviewed. GET /applications/{id} and shared JSON 404 verified. Backend step 4 is paused for the requested Thymeleaf interface; update/delete and REST validation remain pending.
 - This note tracks milestones; [[Changes]] tracks dated work and verification results. Record actual completed changes and any limitations, then name the next step.
 
 ## References
@@ -217,3 +217,13 @@ Missing-ID test review: user's HTTP 404/content-type/message assertions are corr
 ### Current learning checkpoint
 - Part 6 missing-ID HTTP exercise complete and reviewed after cleanup; 12 tests pass. GET-by-ID and 404/message behavior verified. Update/delete and validation still pending.
 - Paused implementation for requested [[Job Apps Tracker/Learning/Part 7|frontend overview]]. A polished responsive UI is desired; HTML/CSS/JavaScript served by Spring Boot is the suggested simple starting point, with Thymeleaf/separate frontend alternatives explained. Stack and start timing not decided; no frontend implementation or environment changes performed.
+
+### Thymeleaf interface milestone — 10/8/26
+- User chose Thymeleaf and requested a simple modern responsive interface while pausing backend development.
+- [x] Add Thymeleaf and separate HTML page routes reusing ApplicationService.
+- [x] Application list, summary counts, empty state, add form, detail page, and HTML 404.
+- [x] Shared responsive styling and basic page-form validation/error messages.
+- [x] Verify HTTP behavior and Chrome desktop/phone layouts; all 18 tests and packaging pass.
+- [ ] Review Part 8 understanding checks with the user.
+- [ ] Joint feature review and explicit merge approval.
+- Current lesson: [[Job Apps Tracker/Learning/Part 8|Part 8 — Thymeleaf pages]]. Source branch: codex/thymeleaf-ui, including the unmerged lookup milestone. REST endpoints remain available; storage remains in memory. No update/delete, REST validation, persistence, or authentication advancement.

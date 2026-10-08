@@ -183,3 +183,10 @@
 ### Frontend choices clarified
 - User confirmed previous Thymeleaf experience and recalled Angular. Extended Part 7 with the practical difference: server-filled HTML versus browser-rendered API data. Thymeleaf still uses HTML/CSS and optional JavaScript; Angular can use Spring Boot as its JSON backend.
 - Updated recommendation to Thymeleaf based on confirmed familiarity and Java focus; explained separate page/REST controllers reusing the same service. Choice remains pending user decision. No backend implementation advanced.
+
+### Thymeleaf interface implemented
+- At user request, paused further backend work and added Thymeleaf, a separate page controller/form, shared HTML fragments, and responsive CSS.
+- List/add/detail pages reuse the existing in-memory ApplicationService. Added form error messages, save redirect/success feedback, safe text/link rendering, and a friendly HTML 404; JSON API behavior preserved.
+- Added six real HTTP tests covering pages/styles, form creation and shared API data, invalid input, HTML versus JSON 404, and escaped content/unsafe links. Maven verify passed: 18 tests, zero failures/errors, successful packaging.
+- Checked Chrome desktop and phone layouts with no horizontal overflow. Created one temporary Example Co. demo application and verified save, detail, and list. App remains running locally; records clear on restart.
+- Added concise Part 8 and updated README/run instructions and outline. Understanding boxes remain unchecked. Branch codex/thymeleaf-ui includes lookup work; merge requires fresh user confirmation.
