@@ -6,6 +6,7 @@ starter.zip
 src/main/resources/application-local.properties
 target/
 backups/
+.tracker/
 *.dump
 *.dump.sha256
 .mvn/wrapper/maven-wrapper.jar
