@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Please reopen the form')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <section class="panel form-panel">
+        <p class="eyebrow">Please try again</p>
+        <h1>Please reopen the form</h1>
+        <p class="muted">This request could not be verified. Nothing was saved or deleted.</p>
+        <p class="muted">Return to your applications, reopen the form, and submit it again.</p>
+        <a class="button" th:href="@{/tracker}">Back to applications</a>
+    </section>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>

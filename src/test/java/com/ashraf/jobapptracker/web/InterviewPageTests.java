@@ -1,6 +1,7 @@
 package com.ashraf.jobapptracker.web;
 
 import com.ashraf.jobapptracker.PostgresTestSupport;
+import com.ashraf.jobapptracker.CsrfTestClient;
 import com.ashraf.jobapptracker.application.*;
 import com.ashraf.jobapptracker.interview.*;
 import org.junit.jupiter.api.Test;
@@ -128,6 +129,7 @@ class InterviewPageTests extends PostgresTestSupport {
                     .POST(HttpRequest.BodyPublishers.ofString(body));
         }
         try (var client = HttpClient.newBuilder().cookieHandler(cookies).build()) {
+            if (fields != null) { CsrfTestClient.withCsrf(client, request, port); }
             return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
         }
     }

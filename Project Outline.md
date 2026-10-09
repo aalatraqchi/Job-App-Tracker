@@ -46,11 +46,11 @@ Begin with a single application object. Company and position are text fields, so
 
 ## Personal Local Release Path — agreed 10/8/26
 
-Use one personal dataset without usernames, passwords, login/logout, user rows, or owner IDs. Keep steps 8–9 and their related UI/tests/account migrations as future work; unchecked deferred boxes are not blockers for this release. This scope does not authorize merging PR #6.
+Use one personal dataset without usernames, passwords, login/logout, user rows, or owner IDs. Keep steps 8–9 and their related UI/tests/account migrations as future work; unchecked deferred boxes are not blockers for this release. PR #6 was subsequently merged with explicit approval (19ecfed); each future feature merge still needs fresh approval.
 
 | Roadmap area | Personal-release decision |
 | --- | --- |
-| Steps 1–7 | Tracking features are implemented; step 7 still needs joint review and explicit merge approval. The optional step 1 refresher does not block use. |
+| Steps 1–7 | Tracking features through step 7 are implemented and merged with explicit approval. The optional step 1 refresher does not block use. |
 | Step 4A login/navigation and step 8 accounts | Defer accounts, password handling, authentication, login/logout, and authentication tests. Retain browser form-request protection as a small account-free finish task. |
 | Step 9 ownership | Defer owner relationships, principal-based queries, and two-user isolation tests. Interview-to-application scoping remains implemented and required. |
 | Step 10 migrations | Defer Flyway for the initial personal release. Continue the current automatic schema updates; back up wanted data before later schema changes. Add user/owner migrations when those features are implemented. |
@@ -58,8 +58,8 @@ Use one personal dataset without usernames, passwords, login/logout, user rows, 
 
 ### Personal-use finish checklist
 - [x] Bind the app and database to this computer: `server.address=127.0.0.1` and Docker's `127.0.0.1:5433` mapping are configured.
-- [ ] Jointly review step 7 and merge PR #6 only after Ashraf explicitly approves.
-- [ ] Add/test browser form-request protection (CSRF) without requiring accounts or login. Keep API practice usable through a documented token flow; do not disable protection for browser-accessible write routes merely to simplify tests.
+- [x] Jointly review step 7 and merge PR #6 after explicit approval; main pushed at 19ecfed and GitHub confirms the merge.
+- [x] Add/test account-free CSRF protection: browser forms include tokens automatically; API writes use GET /csrf plus its session cookie/header. Missing, invalid, and wrong-session tokens are rejected; 54 tests and packaging pass. Feature review/merge is pending separately.
 - [ ] Document and verify a PostgreSQL backup/restore procedure. A persistent Docker volume retains data across restarts but is not a separate backup.
 - [ ] Verify the personal browser/API workflow: create application → add/edit interview → update application status → filter → restart → retrieve → delete only a disposable test record.
 - [ ] Finalize straightforward daily start/stop instructions and verify the packaged app runs from the documented project-root directory.
@@ -192,6 +192,7 @@ Paths use the screenshot's simple `/applications` convention. After steps 8–9,
 
 | Method | Path | Purpose |
 | --- | --- | --- |
+| GET | `/csrf` | Obtain an API write token; retain its session cookie and send the returned header |
 | POST | `/applications` | Create an application |
 | GET | `/applications` | List applications; optional `status` and `company` filters |
 | GET | `/applications/{id}` | Retrieve an application |
@@ -207,7 +208,7 @@ Example filters: `/applications?status=INTERVIEW`, `/applications?company=Google
 ## Code Organization
 - `application`: application controller, service, repository, entity, status enum, and DTOs.
 - `interview`: interview controller, service, repository, entity, outcome enum, and DTOs.
-- `user` and `security`: user storage, authentication, and security configuration.
+- `security`: account-free request protection now; `user` storage and authentication are deferred.
 - `common`: shared error responses and exception handling.
 - `web`: HTML page controllers and form models.
 - `src/main/resources/templates/tracker`: Thymeleaf pages and shared fragments.
@@ -228,10 +229,10 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - [x] PostgreSQL persistence, including application/database restart verification.
 - [x] Step 7 interview entity, scoped nested API CRUD, validation, scheduled/unscheduled stages, and application-deletion cascade.
 - [x] Step 4A interview detail cards, add/edit forms, and deletion confirmation.
-- Verification: **49 tests pass and JAR packaging succeeds**. Real PostgreSQL tests verify interview CRUD, invalid input, wrong-parent URLs, cascade deletion without orphan stages, and multiple stages surviving a Spring-context restart. Browser creation/edit/save and desktop/390px layouts checked without horizontal overflow; automated HTTP tests verify confirmed deletion. Temporary preview records were removed.
-- Current note: [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]], using the files/changes/new-content format. Step 7 is implemented on `codex/interview-stages`; next is joint feature review and explicit merge approval, followed by the personal-use finish checklist. Step 8 authentication is deferred.
-- Earlier feature PRs #3, #4, and #5 were merged with explicit user approval (5d9dd42, 05c25bf, and d31898c). Step 7 is not merged.
-- [PR #6 — Track interview stages for each application](https://github.com/aalatraqchi/Job-App-Tracker/pull/6) is open from `codex/interview-stages` into main; implementation 9c43630. Assistant review found no issues within step 7 scope. Await user review and explicit merge confirmation.
+- Verification: **54 tests pass and JAR packaging succeeds**. Existing PostgreSQL, CRUD, validation, filter, interview-scoping/cascade, and restart tests remain passing. Five new real-HTTP tests cover account-free reads, all write routes rejecting missing/invalid tokens, unchanged records after rejection, session binding, API token use, and hidden tokens in every form. Chrome create/edit/add-interview submissions work; the friendly 403 page fits desktop and 390px layouts without overflow. Temporary preview records removed.
+- Current note: [[Job Apps Tracker/Learning/Part 14 - Local browser request protection|Part 14]], using the brief files/changes/new-content format. Branch `codex/local-form-protection`; next joint review and fresh explicit merge approval, then the separate backup/restore milestone. Accounts remain deferred.
+- Earlier feature PRs #3, #4, and #5 were merged with explicit user approval (5d9dd42, 05c25bf, d31898c).
+- [PR #6 — Track interview stages for each application](https://github.com/aalatraqchi/Job-App-Tracker/pull/6) merged with explicit approval; local and remote main updated at 19ecfed. Request-protection work has not been merged. [PR #7 — Protect local browser and API writes without accounts](https://github.com/aalatraqchi/Job-App-Tracker/pull/7) is open from codex/local-form-protection; implementation 13035fe. Assistant review found no issues within scope; await joint review and explicit merge approval.
 - Part 8 and Part 9 concept boxes remain user self-assessment; implementation exercises were reviewed separately.
 - PostgreSQL is running through Docker Compose on localhost:5433. Start Docker Desktop and run `.\scripts\setup-database.ps1` when needed, then run the app from the project root. Assistant preview on 8081 is stopped; other application processes were left alone.
 - Keep this outline current. Changes.md is historical only; do not add further entries.
@@ -245,14 +246,14 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 
 ## Learning Approach
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
-- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]] is the current interview-stage breakdown.
+- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]] covers interviews; [[Job Apps Tracker/Learning/Part 14 - Local browser request protection|Part 14]] is the current request-protection breakdown.
 - Implement agreed increments directly with the brief breakdown format. When the user requests an exercise or submits an attempt, review it and offer hints before replacing code.
 - Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is complete; Part 4 explicit-status test and Part 5 GET exercise are reviewed. Part 6 lookup test and Part 9 service update exercise are also complete and reviewed.
 
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Current branch: `codex/interview-stages` for step 7. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). [PR #5 — Persist job applications in PostgreSQL](https://github.com/aalatraqchi/Job-App-Tracker/pull/5) merged with explicit user approval (d31898c). All 42 tests and packaging passed before merging PR #5. Step 7 has 49 passing tests and awaits a separate review/merge approval.
+- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Current branch: `codex/local-form-protection` for account-free CSRF protection. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). [PR #5 — Persist job applications in PostgreSQL](https://github.com/aalatraqchi/Job-App-Tracker/pull/5) merged with explicit user approval (d31898c). All 42 tests and packaging passed before merging PR #5. PR #6 merged with fresh explicit approval (19ecfed). The request-protection milestone has 54 passing tests and awaits its own review/merge approval.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 
