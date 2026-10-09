@@ -10,6 +10,8 @@ The personal version is ready to use locally: application CRUD, filters, intervi
 
 ## Daily use
 
+Use the **Theme** selector in the page header to choose Dark (the default), Light, Ocean, Forest, or Sunset. Your choice is saved in this browser for the same address and port; it does not change your application records. If browser storage is blocked, switching still works on the current page.
+
 1. Start Docker Desktop, then open PowerShell in the project folder:
 
    ```powershell
