@@ -12,7 +12,23 @@ The personal version is ready to use locally: application CRUD, filters, intervi
 
 Use the **Theme** selector in the page header to choose Dark (the default), Light, Ocean, Forest, or Sunset. Your choice is saved in this browser for the same address and port; it does not change your application records. If browser storage is blocked, switching still works on the current page.
 
-1. Start Docker Desktop, then open PowerShell in the project folder:
+1. Double-click **Start Job Application Tracker** on the desktop (or `Start Tracker.cmd` in this folder). It starts Docker Desktop if necessary, prepares PostgreSQL, builds the app when source files change, waits for the website, and opens your default browser at <http://127.0.0.1:8080/>.
+2. Use the website normally. The app runs in the background; you can close the launch window. Clicking Start again opens the existing app instead of starting a duplicate. After code changes, click Stop, then Start to rebuild.
+3. When finished, double-click **Stop Job Application Tracker** (or `Stop Tracker.cmd`). It stops the managed Java process first, then this project's database container. Records stay in PostgreSQL's volume. Closing the browser alone leaves the app running. Docker Desktop remains available for other projects.
+
+The first start may take longer to download dependencies or wait for Docker. When a rebuild is needed, Start uses `clean package` with tests skipped for daily convenience; normal starts reuse the package. Run `mvnw.cmd verify` when validating code changes, after stopping the app. Runtime state and logs are local/ignored under `.tracker/`. If startup fails, the window stays open with a useful message; check `build.log`, `app.log`, or `app-error.log` there. Keep the project folder in place; rerun `scripts/install-shortcuts.ps1` after moving it. The scripts use the installed JDK 21 and work in Windows PowerShell 5.1.
+
+The shortcuts only manage the app they started. If an IntelliJ/manual app occupies port 8080, stop it in that terminal/IDE before using them. Stop refuses an unrelated listener or mismatched process identity. Finish active saves before stopping: the Windows launcher terminates its Java process, then stops PostgreSQL; it does not send a graceful Spring shutdown request. No system execution-policy setting is changed; the command wrappers allow just these local script invocations.
+
+To recreate the desktop shortcuts:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-shortcuts.ps1
+```
+
+### Manual development alternatives
+
+For an IntelliJ session or a foreground terminal, start Docker Desktop, then open PowerShell in the project folder:
 
    ```powershell
    Set-Location 'path\to\Job-App-Tracker'
@@ -21,8 +37,7 @@ Use the **Theme** selector in the page header to choose Dark (the default), Ligh
    .\mvnw.cmd spring-boot:run
    ```
 
-2. Wait for the started message, then open <http://127.0.0.1:8080/>. Leave that terminal open. You can instead run `JobAppTrackerApplication` in IntelliJ after starting the database; use one app launch method at a time.
-3. When finished, stop the app with **Ctrl+C in its terminal**, or IntelliJ's Stop button if IntelliJ started it. Closing Chrome does not stop the app. Optionally run `docker compose stop database` from the project root afterward; saved records remain in the Docker volume. Leave the database running between app restarts if convenient.
+Wait for the started message, then open <http://127.0.0.1:8080/>. Leave that terminal open. You can instead run `JobAppTrackerApplication` in IntelliJ after starting the database; use one app launch method at a time. Stop the app with **Ctrl+C in its terminal**, or IntelliJ's Stop button if IntelliJ started it, then optionally run `docker compose stop database`.
 
 For personal tracking without starting IntelliJ, build once after code changes, then run the packaged app from the project root:
 
@@ -146,11 +161,21 @@ Stop the app with Ctrl+C. The starter binds to localhost for local development. 
 
 ## Build and test
 
+Stop the shortcut-managed app before building or testing.
+
 ```powershell
 .\mvnw.cmd verify
 ```
 
 Docker Desktop must be running for tests. Testcontainers starts a separate disposable PostgreSQL database on a random port; tests clear only that database, leaving development records alone. The restart test closes one Spring context and opens another against the same test database.
+
+Launcher verification (run with the tracker stopped):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-tracker-launchers.ps1
+```
+
+On October 9, 2026, Windows PowerShell 5.1 checks passed for concurrent/duplicate starts, repeated stops, wrong-process and occupied-port rejection, stale PID recovery, cached builds, changed/deleted resources, and unchanged saved records across restarts. The exact command wrappers and repeatable desktop shortcut creation passed; the launched app rendered correctly in Chrome. All 54 Java tests also passed in this milestone. The checks used an already running Docker engine; the automatic Docker Desktop cold-launch path was not exercised. Verification finishes with the app and project database stopped.
 
 Personal-release verification on October 8, 2026: a clean Git export passed `clean verify` (54 tests and packaging), and fresh database setup generated its own local credentials. A separate Docker project/volume and random loopback database port kept the check isolated. The packaged app passed browser create/interview-edit/status/filter checks, preserved fields after both app and database restarts, and served the same data through the API. The API examples and 400/403/404 responses were checked; confirmed deletion removed only disposable records and left no orphan interviews. Temporary processes/resources were removed, development data remained unchanged, and the JAR was checked to exclude local credentials.
 
