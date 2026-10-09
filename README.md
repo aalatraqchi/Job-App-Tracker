@@ -2,6 +2,12 @@
 
 A gradual Java/Spring Boot learning project with a Thymeleaf interface for managing job applications and their interview stages. The pages and JSON API share services backed by PostgreSQL. Forty-nine tests cover CRUD, validation, filters, interview relationships, HTTP behavior, and persistence after restarting the application.
 
+## Current release target
+
+Personal use on this computer with one dataset and no accounts or login. Account creation, password handling, login/logout, ownership, and two-user tests remain in the roadmap for a future multi-account version. Flyway migrations may also wait for a later milestone; the current setup uses automatic schema updates.
+
+The app binds to `127.0.0.1`; Docker publishes PostgreSQL only on `127.0.0.1:5433`. The remaining personal-release finish pass covers account-free browser form-request protection, verified database backup/restore instructions, the complete local workflow, and daily start/stop documentation. Interview-stage PR #6 still awaits explicit merge approval. The authoritative outline preserves the original future steps and tracks the personal finish checklist separately.
+
 ## Environment
 
 - JDK 21 (existing installation: `path\to\jdk-21`).
