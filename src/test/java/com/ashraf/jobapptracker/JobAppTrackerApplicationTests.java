@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // Random port to not conflict with our main port
-class JobAppTrackerApplicationTests {
+class JobAppTrackerApplicationTests extends PostgresTestSupport {
 	@LocalServerPort
 	private int port;
 

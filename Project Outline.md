@@ -105,12 +105,12 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [x] **Verify:** a filter with no matches returns an empty list; invalid statuses return HTTP 400; all tests pass.
 
 ### 6. Replace in-memory storage with PostgreSQL
-- [ ] Install/start PostgreSQL if needed and create a local development database and database user.
-- [ ] Add Spring Data JPA and the PostgreSQL driver, then map the application to a table and create its repository.
-- [ ] Replace collection access in the service with repository operations. Keep the public endpoint behavior consistent.
-- [ ] Store database credentials in environment variables or ignored local configuration; document the variable names in the README.
-- [ ] For early local development, allow JPA to update the schema. Replace this with versioned migrations in step 10.
-- [ ] **Verify:** create an application, restart the backend, and retrieve it again. Existing API tests still pass after adapting their setup.
+- [x] Install/start PostgreSQL if needed and create a local development database and database user.
+- [x] Add Spring Data JPA and the PostgreSQL driver, then map the application to a table and create its repository.
+- [x] Replace collection access in the service with repository operations. Keep the public endpoint behavior consistent.
+- [x] Store database credentials in environment variables or ignored local configuration; document the variable names in the README.
+- [x] For early local development, allow JPA to update the schema. Replace this with versioned migrations in step 10.
+- [x] **Verify:** create an application, restart the backend, and retrieve it again. Existing API tests still pass after adapting their setup.
 
 ### 7. Track interview stages
 - [ ] Add an `InterviewStage` entity, DTOs, repository, and service linked to an application.
@@ -183,7 +183,7 @@ Example filters: `/applications?status=INTERVIEW`, `/applications?company=Google
 - `src/main/resources/db/migration`: versioned SQL migrations when step 10 begins.
 - `src/test/java`: tests organized around the corresponding features.
 
-Current flow: **browser/API request → page/REST controller → shared service → in-memory map**. Page controllers provide model data to Thymeleaf; REST controllers return JSON. Later, persistence becomes **service → repository → PostgreSQL**. The controller handles HTTP input/output; the service applies business and ownership rules; the repository handles database access. Introduce each layer when its step needs it.
+Current flow: **browser/API request → page/REST controller → shared service → repository → PostgreSQL**. Page controllers provide model data to Thymeleaf; REST controllers return JSON. The controller handles HTTP input/output; the service applies business and ownership rules; the repository handles database access. Introduce each layer when its step needs it.
 
 ## First-Version Scope
 Keep this a local learning application with a basic Thymeleaf frontend. Leave public registration, JWT/OAuth, password-reset email, job scraping, resume uploads, notifications, analytics, cloud deployment, and microservices for later. Separate company/position tables, pagination, and status-history auditing are optional improvements after the first version is complete.
@@ -194,12 +194,12 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - [x] Retrieve by ID and consistent missing-ID JSON 404.
 - [x] Thymeleaf list/add/detail interface, form errors, responsive styling, and UI/API integration checks.
 - [x] User's update DTO/service exercise reviewed and verified; old-versus-new-object return issue corrected by the user.
-- Verification: **41 tests pass and JAR packaging succeeds**. Step 5 filter combinations, ordering, no matches, and invalid status JSON/HTML 400 are verified. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
+- Verification: **42 tests pass and JAR packaging succeeds**. Step 6 PostgreSQL persistence is verified by a Spring-context restart test and a manual application/database restart. Tests use an isolated disposable PostgreSQL database. Step 5 filter combinations, ordering, no matches, and invalid status JSON/HTML 400 are verified. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
 - [x] Step 4 API completion and current step 4A edit/delete UI. Future-dependent UI items remain unchecked as explicitly agreed.
-- PR #3 merged with explicit user approval on 10/8/26 (5d9dd42); GitHub confirms merged. Step 5 and filter UI are complete on codex/application-filters.
-- Current note: [[Job Apps Tracker/Learning/Part 11 - Filtering and ordering applications|Part 11]], using the files/changes/new-content format. Next: joint review and explicit merge approval for step 5; step 6 PostgreSQL follows when ready.
+- PR #3 merged with explicit user approval on 10/8/26 (5d9dd42); GitHub confirms merged. PR #4 merged with explicit user approval (05c25bf). Steps 5 and 6 are complete; PostgreSQL persistence is on codex/postgresql-persistence.
+- Current note: [[Job Apps Tracker/Learning/Part 12 - PostgreSQL persistence|Part 12]], using the files/changes/new-content format. Next: joint review and explicit merge approval for step 6, then step 7 interview stages.
 - Part 8 and Part 9 concept boxes are user self-assessment; implementation exercises are recorded separately as reviewed.
-- Local server is stopped. Start it from IntelliJ or the project terminal when needed; data still resets on restart.
+- PostgreSQL is running through Docker Compose on localhost:5433. Start Docker Desktop and run `.\scripts\setup-database.ps1` when needed, then run the app from the project root in IntelliJ or the terminal. Records survive app/database restarts. Assistant preview on 8081 is stopped; the existing process on 8080 was left alone.
 - Keep this outline current. Changes.md is now historical only; do not add further entries.
 
 ## References
@@ -211,14 +211,14 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 
 ## Learning Approach
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
-- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 9 - Updating an application|Part 9]] is the current update lesson.
-- For tasks based on covered concepts, the user attempts the code first; review and offer hints before supplying a complete solution.
+- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 12 - PostgreSQL persistence|Part 12]] is the current persistence breakdown.
+- Implement agreed increments directly with the brief breakdown format. When the user requests an exercise or submits an attempt, review it and offer hints before replacing code.
 - Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is complete; Part 4 explicit-status test and Part 5 GET exercise are reviewed. Part 6 lookup test and Part 9 service update exercise are also complete and reviewed.
 
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Main and origin/main synced. Current feature branch: codex/application-filters. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) is open; implementation commit 936eea5. Assistant review found no issues in scope. Await explicit confirmation before merging.
+- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Main and origin/main synced. Current feature branch: codex/postgresql-persistence. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). Step 6 persistence is ready for its own PR review; no merge approval for that feature yet.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 

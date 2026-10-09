@@ -1,5 +1,7 @@
 package com.ashraf.jobapptracker.application;
 
+import com.ashraf.jobapptracker.PostgresTestSupport;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ApplicationControllerTests {
+class ApplicationControllerTests extends PostgresTestSupport {
     @LocalServerPort
     private int port;
 
