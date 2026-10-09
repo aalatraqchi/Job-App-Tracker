@@ -5,6 +5,9 @@ starter.zip
 .env.*
 src/main/resources/application-local.properties
 target/
+backups/
+*.dump
+*.dump.sha256
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

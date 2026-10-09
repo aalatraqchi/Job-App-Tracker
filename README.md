@@ -6,7 +6,7 @@ A gradual Java/Spring Boot learning project with a Thymeleaf interface for manag
 
 Personal use on this computer with one dataset and no accounts or login. Account creation, password handling, login/logout, ownership, and two-user tests remain in the roadmap for a future multi-account version. Flyway migrations may also wait for a later milestone; the current setup uses automatic schema updates.
 
-The app binds to `127.0.0.1`; Docker publishes PostgreSQL only on `127.0.0.1:5433`. Interview-stage PR #6 was merged with explicit approval (19ecfed). Browser form-request protection is implemented without accounts; the remaining personal-release finish pass covers verified database backup/restore instructions, the complete local workflow, and daily start/stop documentation. The authoritative outline preserves the original future steps and tracks the personal finish checklist separately.
+The app binds to `127.0.0.1`; Docker publishes PostgreSQL only on `127.0.0.1:5433`. Interview-stage PR #6 and request-protection PR #7 were merged with explicit approval (19ecfed, a4e822e). Database backup/restore is implemented and verified; the remaining personal-release finish pass covers the complete local workflow and daily start/stop documentation. The authoritative outline preserves the original future steps and tracks the personal finish checklist separately.
 
 ## Environment
 
@@ -45,6 +45,51 @@ docker compose up -d --wait database
 Spring Boot and PostgreSQL run separately: IntelliJ's Stop button only stops the application. During development, leave PostgreSQL running while restarting the app. When finished for the day, stop the app, then optionally run `docker compose stop database` to free resources. Next time, start Docker Desktop, run the database start command above, then run the app. Stopping the database preserves its named-volume data; the app needs the database running to start and handle application records.
 
 For this learning milestone, `spring.jpa.hibernate.ddl-auto=update` creates/updates tables automatically. Versioned Flyway migrations are planned for step 10.
+
+## Back up and restore your records
+
+Start Docker Desktop and the database first. The app may stay running for a backup; stop it before switching to a restored database. Run from the project root:
+
+```powershell
+$backup = .\scripts\backup-database.ps1
+```
+
+This saves a timestamped `.dump` archive and matching `.dump.sha256` checksum in `backups/`. It includes the schema, application/interview records, and ID sequence values. Both files stay out of Git. Keep them together; copy them to a private backup location on another drive if you want protection from losing this computer's drive. Archives contain your tracking data and are not encrypted. They do not include database passwords or global PostgreSQL roles; on a fresh setup, run `setup-database.ps1` first to create the database/user and local credentials.
+
+Restore into a **new, separate database**:
+
+```powershell
+# For an older backup, replace $backup with the full path to its .dump file.
+$restored = .\scripts\restore-database.ps1 -BackupFile $backup
+```
+
+The script verifies the checksum and archive, creates a uniquely named `job_app_tracker_restore_...` database, then restores it in one transaction. It refuses the working database name and any existing destination. Your original database remains available. A failed restore rolls back its changes and leaves the new database for inspection.
+
+To use the restored data, stop the current app, then start it in this PowerShell session:
+
+```powershell
+$env:DB_URL = "jdbc:postgresql://127.0.0.1:5433/$restored"
+.\mvnw.cmd spring-boot:run
+```
+
+Check your applications/interviews in the browser before making further changes. In IntelliJ, set the same `DB_URL` value in the run configuration's environment variables. Subsequent backups of this recovered dataset need `-Database $restored`; the backup script otherwise uses the original `job_app_tracker` database. Keep that setting for future app starts while using the recovered database.
+
+To return to the original dataset, stop the app, remove the override, and start it again:
+
+```powershell
+Remove-Item Env:DB_URL -ErrorAction SilentlyContinue
+.\mvnw.cmd spring-boot:run
+```
+
+To repeat the backup/restore verification, stop app writes and run:
+
+```powershell
+.\scripts\test-database-backup.ps1
+```
+
+This retains a real personal backup, checks its restored application/interview data, and uses disposable databases to verify Unicode, dates, nulls, relationships, ID sequences, and rejection of overwrites/corrupt files. It drops only the temporary databases it created. Existing development data is checked for changes and is never a restore destination. These script checks are separate from the 54 Java tests; no new Java behavior was added in this milestone.
+
+The scripts use the PostgreSQL 17 tools already inside the container: [pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html) and [pg_restore](https://www.postgresql.org/docs/17/app-pgrestore.html). No separate PostgreSQL client installation is needed.
 
 ## Open in IntelliJ
 
