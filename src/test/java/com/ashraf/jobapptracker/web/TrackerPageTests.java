@@ -1,6 +1,7 @@
 package com.ashraf.jobapptracker.web;
 
 import com.ashraf.jobapptracker.PostgresTestSupport;
+import com.ashraf.jobapptracker.CsrfTestClient;
 
 import com.ashraf.jobapptracker.application.ApplicationService;
 import com.ashraf.jobapptracker.application.CreateApplicationRequest;
@@ -216,7 +217,8 @@ class TrackerPageTests extends PostgresTestSupport {
                         + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
         try (var client = HttpClient.newBuilder().cookieHandler(cookies).build()) {
-            return client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+            return client.send(CsrfTestClient.withCsrf(client,
+                    HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path)), port)
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(body)).build(), HttpResponse.BodyHandlers.ofString());
         }

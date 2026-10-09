@@ -1,6 +1,7 @@
 package com.ashraf.jobapptracker.interview;
 
 import com.ashraf.jobapptracker.PostgresTestSupport;
+import com.ashraf.jobapptracker.CsrfTestClient;
 import com.ashraf.jobapptracker.application.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,12 +143,13 @@ class InterviewControllerTests extends PostgresTestSupport {
     private List<Map<?, ?>> list(HttpResponse<String> response) { return mapper.readValue(response.body(), List.class); }
 
     private HttpResponse<String> send(String method, String path, Map<String, Object> body) throws Exception {
-        try (var client = HttpClient.newHttpClient()) {
+        try (var client = CsrfTestClient.newClient()) {
             var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
                     .header("Content-Type", "application/json")
                     .method(method, body == null ? HttpRequest.BodyPublishers.noBody()
-                            : HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body))).build();
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
+                            : HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)));
+            if (!method.equals("GET")) { CsrfTestClient.withCsrf(client, request, port); }
+            return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
         }
     }
 }

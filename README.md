@@ -1,12 +1,12 @@
 # Job Application Tracker
 
-A gradual Java/Spring Boot learning project with a Thymeleaf interface for managing job applications and their interview stages. The pages and JSON API share services backed by PostgreSQL. Forty-nine tests cover CRUD, validation, filters, interview relationships, HTTP behavior, and persistence after restarting the application.
+A gradual Java/Spring Boot learning project with a Thymeleaf interface for managing job applications and their interview stages. The pages and JSON API share services backed by PostgreSQL. Fifty-four tests cover CRUD, validation, filters, interview relationships, request protection, HTTP behavior, and persistence after restarting the application.
 
 ## Current release target
 
 Personal use on this computer with one dataset and no accounts or login. Account creation, password handling, login/logout, ownership, and two-user tests remain in the roadmap for a future multi-account version. Flyway migrations may also wait for a later milestone; the current setup uses automatic schema updates.
 
-The app binds to `127.0.0.1`; Docker publishes PostgreSQL only on `127.0.0.1:5433`. The remaining personal-release finish pass covers account-free browser form-request protection, verified database backup/restore instructions, the complete local workflow, and daily start/stop documentation. Interview-stage PR #6 still awaits explicit merge approval. The authoritative outline preserves the original future steps and tracks the personal finish checklist separately.
+The app binds to `127.0.0.1`; Docker publishes PostgreSQL only on `127.0.0.1:5433`. Interview-stage PR #6 was merged with explicit approval (19ecfed). Browser form-request protection is implemented without accounts; the remaining personal-release finish pass covers verified database backup/restore instructions, the complete local workflow, and daily start/stop documentation. The authoritative outline preserves the original future steps and tracks the personal finish checklist separately.
 
 ## Environment
 
@@ -128,3 +128,26 @@ Example create/update JSON:
 ```
 
 The API defaults an omitted outcome to `PENDING` on creation and preserves the existing outcome on update. Omitted/null time or notes clears that field on update. A scheduled time must include an offset; malformed times or unknown outcomes return HTTP 400. A missing parent or stage, including a stage belonging to a different application, returns HTTP 404. Deleting an application also deletes its stages. Page deletion requires a confirmation POST; opening the confirmation page alone changes nothing.
+
+## Request protection without accounts
+
+There is no login or default user/password. Normal browser use is unchanged: Thymeleaf includes a hidden CSRF token in every POST form. A stale, missing, or invalid token returns HTTP 403 before changing records. Reopen the form and try again if this happens after restarting the app or losing its session.
+
+API GET requests need no token. For POST, PUT, PATCH, or DELETE, first GET `/csrf`, retain its session cookie, and send the returned token using the returned header name. Keep the same host and port for both requests. API verification failures return JSON 403 with a `message`; fetch a fresh token with the same session and retry. Tokens are session-specific, not passwords or accounts.
+
+PowerShell example with a cookie-preserving web session:
+
+```powershell
+$csrf = Invoke-RestMethod 'http://127.0.0.1:8080/csrf' -SessionVariable trackerSession
+$headers = @{}
+$headers[$csrf.headerName] = $csrf.token
+$body = @{
+    company = 'Example Company'
+    position = 'Java Developer'
+    appliedDate = '2026-10-08'
+} | ConvertTo-Json
+Invoke-RestMethod -Method Post 'http://127.0.0.1:8080/applications' `
+    -WebSession $trackerSession -Headers $headers -ContentType 'application/json' -Body $body
+```
+
+In an API client, retain cookies from GET `/csrf`, copy the token into the `X-CSRF-TOKEN` header, then send the write request to the same host/port. CSRF protection remains enabled on both the page and JSON API write routes. Tests exercise the real token/cookie flow; no test-only bypass is configured.

@@ -1,6 +1,7 @@
 package com.ashraf.jobapptracker.application;
 
 import com.ashraf.jobapptracker.PostgresTestSupport;
+import com.ashraf.jobapptracker.CsrfTestClient;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -94,8 +95,9 @@ class ApplicationControllerTests extends PostgresTestSupport {
     }
 
     private HttpResponse<String> putApplication(String path, String json) throws Exception {
-        try (var client = HttpClient.newHttpClient()) {
-            var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+        try (var client = CsrfTestClient.newClient()) {
+            var request = CsrfTestClient.withCsrf(client,
+                    HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path)), port)
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(json)).build();
             return client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -205,8 +207,9 @@ class ApplicationControllerTests extends PostgresTestSupport {
     }
 
     private Map<?, ?> postApplication(String json) throws Exception {
-        try (var client = HttpClient.newHttpClient()) {
-            var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/applications"))
+        try (var client = CsrfTestClient.newClient()) {
+            var request = CsrfTestClient.withCsrf(client,
+                    HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/applications")), port)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
