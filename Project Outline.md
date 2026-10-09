@@ -218,7 +218,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Main and origin/main synced. Current feature branch: codex/postgresql-persistence. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). Step 6 persistence is ready for its own PR review; no merge approval for that feature yet.
+- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Main and origin/main synced. Current feature branch: codex/postgresql-persistence. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). [PR #5 — Persist job applications in PostgreSQL](https://github.com/aalatraqchi/Job-App-Tracker/pull/5) is open (implementation 8b7bef6). Assistant review found no issues in scope; all 42 tests pass. Await joint review and explicit merge approval.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 
