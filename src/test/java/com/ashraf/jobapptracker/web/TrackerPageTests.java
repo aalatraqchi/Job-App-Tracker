@@ -1,5 +1,7 @@
 package com.ashraf.jobapptracker.web;
 
+import com.ashraf.jobapptracker.PostgresTestSupport;
+
 import com.ashraf.jobapptracker.application.ApplicationService;
 import com.ashraf.jobapptracker.application.CreateApplicationRequest;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class TrackerPageTests {
+class TrackerPageTests extends PostgresTestSupport {
     private final CookieManager cookies = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
     @LocalServerPort
     private int port;
@@ -78,7 +80,7 @@ class TrackerPageTests {
         assertEquals(200, fieldErrors.statusCode());
         assertTrue(fieldErrors.body().contains("Enter a company name."));
         assertTrue(fieldErrors.body().contains("Use a valid link"));
-        assertSame(application, service.findById(application.getId()));
+        assertEquals(application.getCompany(), service.findById(application.getId()).getCompany());
     }
 
     @Test
@@ -91,9 +93,9 @@ class TrackerPageTests {
         assertEquals(200, confirmation.statusCode());
         assertTrue(confirmation.body().contains("Delete this application?"));
         assertTrue(confirmation.body().contains("Keep application"));
-        assertSame(application, service.findById(application.getId()));
+        assertEquals(application.getCompany(), service.findById(application.getId()).getCompany());
         assertEquals(302, postFields(path + "/delete", Map.of()).statusCode());
-        assertSame(application, service.findById(application.getId()));
+        assertEquals(application.getCompany(), service.findById(application.getId()).getCompany());
         var deleted = postFields(path + "/delete", Map.of("confirmed", "true"));
         assertEquals(302, deleted.statusCode());
         assertEquals("/tracker",

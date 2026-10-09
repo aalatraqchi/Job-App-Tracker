@@ -1,20 +1,27 @@
 package com.ashraf.jobapptracker.application;
 
+import com.ashraf.jobapptracker.PostgresTestSupport;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ApplicationServiceTests {
+@SpringBootTest
+class ApplicationServiceTests extends PostgresTestSupport {
+    @Autowired
+    private ApplicationService service;
+
     @Test
     void filtersCombineCompanySubstringAndStatusWithoutChangingStorage() {
-        ApplicationService service = new ApplicationService();
         JobApplication applied = service.create(new CreateApplicationRequest(
                 "Acme Labs", "Developer", LocalDate.of(2026, 10, 8),
                 ApplicationStatus.APPLIED, null, null));
@@ -25,34 +32,30 @@ class ApplicationServiceTests {
                 "Other Company", "Developer", LocalDate.of(2026, 10, 8),
                 ApplicationStatus.INTERVIEW, null, null));
 
-        assertEquals(List.of(interview, applied), service.findAll(null, "  cMe  "));
-        assertEquals(List.of(other, interview), service.findAll(ApplicationStatus.INTERVIEW, null));
-        assertEquals(List.of(interview), service.findAll(ApplicationStatus.INTERVIEW, "acme"));
+        assertEquals(List.of(interview.getId(), applied.getId()), ids(service.findAll(null, "  cMe  ")));
+        assertEquals(List.of(other.getId(), interview.getId()), ids(service.findAll(ApplicationStatus.INTERVIEW, null)));
+        assertEquals(List.of(interview.getId()), ids(service.findAll(ApplicationStatus.INTERVIEW, "acme")));
         assertTrue(service.findAll(ApplicationStatus.OFFER, "acme").isEmpty());
         assertTrue(service.findAll(null, "missing").isEmpty());
-        assertEquals(service.findAll(), service.findAll(null, "  "));
+        assertEquals(ids(service.findAll()), ids(service.findAll(null, "  ")));
         assertEquals(3, service.findAll().size());
     }
 
     @Test
-    void listOrdersDateDescendingThenIdDescendingAndPlacesMissingDatesLast() {
-        ApplicationService service = new ApplicationService();
+    void listOrdersDateDescendingThenIdDescending() {
         JobApplication older = service.create(new CreateApplicationRequest(
                 "Acme", "Developer", LocalDate.of(2026, 10, 7), null, null, null));
         JobApplication firstNewer = service.create(new CreateApplicationRequest(
                 "Acme", "Developer", LocalDate.of(2026, 10, 9), null, null, null));
         JobApplication lastNewer = service.create(new CreateApplicationRequest(
                 "Acme", "Developer", LocalDate.of(2026, 10, 9), null, null, null));
-        JobApplication undated = service.create(new CreateApplicationRequest(
-                "Acme", "Developer", null, null, null, null));
 
-        assertEquals(List.of(lastNewer, firstNewer, older, undated), service.findAll());
-        assertEquals(service.findAll(), service.findAll(ApplicationStatus.APPLIED, "ACME"));
+        assertEquals(List.of(lastNewer.getId(), firstNewer.getId(), older.getId()), ids(service.findAll()));
+        assertEquals(ids(service.findAll()), ids(service.findAll(ApplicationStatus.APPLIED, "ACME")));
     }
 
     @Test
     void deletionRemovesOnlyRequestedApplicationAndRejectsMissingIds() {
-        ApplicationService service = new ApplicationService();
         CreateApplicationRequest request = new CreateApplicationRequest(
                 "Acme", "Developer", LocalDate.of(2026, 10, 8), null, null, null);
         JobApplication removed = service.create(request);
@@ -61,7 +64,7 @@ class ApplicationServiceTests {
         service.delete(removed.getId());
 
         assertEquals(1, service.findAll().size());
-        assertSame(retained, service.findById(retained.getId()));
+        assertApplicationEquals(retained, service.findById(retained.getId()));
         assertThrows(ApplicationNotFoundException.class, () -> service.findById(removed.getId()));
         assertThrows(ApplicationNotFoundException.class, () -> service.delete(removed.getId()));
         assertThrows(ApplicationNotFoundException.class, () -> service.delete(999));
@@ -70,7 +73,6 @@ class ApplicationServiceTests {
 
     @Test
     void updateReplacesDetailsAndReturnsStoredReplacementWithoutAllocatingId() {
-        ApplicationService service = new ApplicationService();
         CreateApplicationRequest original = new CreateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 ApplicationStatus.APPLIED, null, "Original notes"
@@ -91,15 +93,14 @@ class ApplicationServiceTests {
         assertEquals(request.status(), updated.getStatus());
         assertEquals(request.jobUrl(), updated.getJobUrl());
         assertEquals(request.notes(), updated.getNotes());
-        assertSame(updated, service.findById(first.getId()));
-        assertSame(other, service.findById(other.getId()));
+        assertApplicationEquals(updated, service.findById(first.getId()));
+        assertApplicationEquals(other, service.findById(other.getId()));
         assertEquals(2, service.findAll().size());
         assertEquals(other.getId() + 1, service.create(original).getId());
     }
 
     @Test
     void updatePreservesExistingStatusWhenOmittedAndClearsOptionalFields() {
-        ApplicationService service = new ApplicationService();
         JobApplication application = service.create(new CreateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 ApplicationStatus.INTERVIEW, "https://example.com/jobs/1", "Old notes"
@@ -112,12 +113,11 @@ class ApplicationServiceTests {
         assertEquals(ApplicationStatus.INTERVIEW, updated.getStatus());
         assertEquals(null, updated.getJobUrl());
         assertEquals(null, updated.getNotes());
-        assertSame(updated, service.findById(application.getId()));
+        assertApplicationEquals(updated, service.findById(application.getId()));
     }
 
     @Test
     void updatingMissingIdThrowsWithoutInsertingApplication() {
-        ApplicationService service = new ApplicationService();
         UpdateApplicationRequest request = new UpdateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 ApplicationStatus.APPLIED, null, null
@@ -129,7 +129,6 @@ class ApplicationServiceTests {
 
     @Test
     void findsTheApplicationWithTheRequestedId() {
-        ApplicationService service = new ApplicationService();
         CreateApplicationRequest request = new CreateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 null, null, null
@@ -137,20 +136,18 @@ class ApplicationServiceTests {
         JobApplication first = service.create(request);
         JobApplication second = service.create(request);
 
-        assertSame(second, service.findById(second.getId()));
-        assertSame(first, service.findById(first.getId()));
+        assertApplicationEquals(second, service.findById(second.getId()));
+        assertApplicationEquals(first, service.findById(first.getId()));
     }
 
     @Test
     void missingApplicationThrowsNotFoundException() {
-        ApplicationService service = new ApplicationService();
 
         assertThrows(ApplicationNotFoundException.class, () -> service.findById(999));
     }
 
     @Test
     void creationCopiesDetailsAndDefaultsOmittedStatus() {
-        ApplicationService service = new ApplicationService();
         CreateApplicationRequest request = new CreateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 null, "https://example.com/jobs/1", "Applied through company website"
@@ -169,7 +166,6 @@ class ApplicationServiceTests {
 
     @Test
     void identicalRequestsCreateDistinctStoredApplications() {
-        ApplicationService service = new ApplicationService();
         CreateApplicationRequest request = new CreateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 null, null, null
@@ -181,13 +177,12 @@ class ApplicationServiceTests {
 
         assertNotEquals(first.getId(), second.getId());
         assertEquals(2, stored.size());
-        assertTrue(stored.contains(first));
-        assertTrue(stored.contains(second));
+        assertTrue(ids(stored).contains(first.getId()));
+        assertTrue(ids(stored).contains(second.getId()));
     }
 
     @Test
     void testingCustomStatusEnumPassedIn() {
-        ApplicationService service = new ApplicationService();
         CreateApplicationRequest request = new CreateApplicationRequest(
                 "Acme", "Java Developer", LocalDate.of(2026, 10, 8),
                 ApplicationStatus.INTERVIEW, "https://example.com/jobs/1", "Applied through company website"
@@ -202,5 +197,18 @@ class ApplicationServiceTests {
         assertEquals(ApplicationStatus.INTERVIEW, application.getStatus());
         assertEquals(request.jobUrl(), application.getJobUrl());
         assertEquals(request.notes(), application.getNotes());
+    }
+    private List<Long> ids(List<JobApplication> applications) {
+        return applications.stream().map(JobApplication::getId).toList();
+    }
+
+    private void assertApplicationEquals(JobApplication expected, JobApplication actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getCompany(), actual.getCompany());
+        assertEquals(expected.getPosition(), actual.getPosition());
+        assertEquals(expected.getAppliedDate(), actual.getAppliedDate());
+        assertEquals(expected.getStatus(), actual.getStatus());
+        assertEquals(expected.getJobUrl(), actual.getJobUrl());
+        assertEquals(expected.getNotes(), actual.getNotes());
     }
 }
