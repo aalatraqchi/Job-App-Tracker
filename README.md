@@ -36,6 +36,8 @@ docker compose stop database
 docker compose up -d --wait database
 ```
 
+Spring Boot and PostgreSQL run separately: IntelliJ's Stop button only stops the application. During development, leave PostgreSQL running while restarting the app. When finished for the day, stop the app, then optionally run `docker compose stop database` to free resources. Next time, start Docker Desktop, run the database start command above, then run the app. Stopping the database preserves its named-volume data; the app needs the database running to start and handle application records.
+
 For this learning milestone, `spring.jpa.hibernate.ddl-auto=update` creates/updates tables automatically. Versioned Flyway migrations are planned for step 10.
 
 ## Open in IntelliJ
