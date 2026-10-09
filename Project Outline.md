@@ -3,7 +3,7 @@
 ## Goal
 Build a small Java/Spring Boot application with a responsive Thymeleaf frontend for tracking job applications from applying through interviews to an offer or rejection. Use the project to ease back into Java through short, working milestones, adding one concept at a time.
 
-The finished first version will let an authenticated user create, view, update, filter, and delete their own applications; record interview stages and notes; and keep everything in PostgreSQL between restarts. Use the browser interface for everyday tracking, with JSON endpoints available for API practice and testing. Build each frontend capability alongside its service/API milestone.
+The current release target is personal use on Ashraf's own computer, without accounts or a login. It will create, view, update, filter, and delete applications; record interview stages and notes; and keep everything in PostgreSQL between restarts. Use the browser interface for everyday tracking, with JSON endpoints available for API practice and testing. The future multi-account version will add authentication and ownership through steps 8–9; those steps remain below, deferred rather than removed or marked complete.
 
 ## Tools
 - **Java 21:** the baseline from the project idea; refresh classes, enums, collections, exceptions, and date/time types as they become useful.
@@ -12,21 +12,21 @@ The finished first version will let an authenticated user create, view, update, 
 - **Maven:** manage dependencies and builds; use the generated Maven Wrapper so the project has a consistent build command.
 - **Spring Data JPA and PostgreSQL:** map Java objects to database tables and persist applications and interview records.
 - **Bean Validation:** check request fields and give useful errors.
-- **Spring Security:** authenticate users and enforce ownership once the application features work.
+- **Spring Security:** browser request protection for the personal release; authentication and ownership are deferred to the future multi-account release.
 - **JUnit and Spring Boot test support:** verify business rules, API behavior, rendered pages/forms, persistence, and user isolation.
 - **Git:** save completed milestones. Keep source and run instructions in `E:\Codex\Job App Tracker`; keep the roadmap and concise learning notes in this vault. Changes.md is retained as history and no longer updated.
 
 Use Spring Initializr to select Maven, Java 21, and a stable Spring Boot release compatible with Java 21. Record the chosen version in the project; let Spring Boot manage its dependency versions. Start with Spring Web and Validation, then add persistence and security at the relevant steps. Avoid preview Java features and snapshot framework versions.
 
-## First-Version Features
+## Tracking Features and Future Account Features
 - Create an application with company, position, application date, status, and optional job URL and notes.
-- List all of the current user's applications or retrieve one by ID.
+- List all personal applications or retrieve one by ID; scope to the current user when future ownership is added.
 - Edit details and change application status.
 - Filter by status or company, with both filters usable together.
 - Record multiple interview stages for an application, including stage name, scheduled time, outcome, and notes.
 - Delete an application and its interview records.
-- Persist data in PostgreSQL and restrict access to each user's own records.
-- Return clear responses for invalid input, missing records, and unauthenticated requests.
+- Persist data in PostgreSQL. Restrict records to individual owners in the future multi-account version.
+- Return clear responses for invalid input and missing records; add unauthenticated-request handling with future authentication.
 
 ## Simple Data Model
 Begin with a single application object. Company and position are text fields, so entering an application does not require creating separate company and job records.
@@ -35,7 +35,7 @@ Begin with a single application object. Company and position are text fields, so
 | --- | --- | --- |
 | JobApplication | ID, company, position, applied date, status, optional job URL and notes | Belongs to one user after authentication is added |
 | InterviewStage | ID, stage name, optional scheduled time, outcome, optional notes | Belongs to one application; an application may have many stages |
-| AppUser | ID, unique username, password hash | Owns many applications |
+| AppUser (deferred) | ID, unique username, password hash | Owns many applications in the future multi-account version |
 
 - Application statuses: `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`, and `WITHDRAWN`.
 - Interview outcomes: `PENDING`, `PASSED`, `FAILED`, and `CANCELLED`.
@@ -44,8 +44,30 @@ Begin with a single application object. Company and position are text fields, so
 - Use request/response DTOs (small objects representing API input/output) so database entities and password fields are not exposed directly.
 - Start with explicit constructors and methods rather than Lombok, so the Java refresher remains visible.
 
+## Personal Local Release Path — agreed 10/8/26
+
+Use one personal dataset without usernames, passwords, login/logout, user rows, or owner IDs. Keep steps 8–9 and their related UI/tests/account migrations as future work; unchecked deferred boxes are not blockers for this release. This scope does not authorize merging PR #6.
+
+| Roadmap area | Personal-release decision |
+| --- | --- |
+| Steps 1–7 | Tracking features are implemented; step 7 still needs joint review and explicit merge approval. The optional step 1 refresher does not block use. |
+| Step 4A login/navigation and step 8 accounts | Defer accounts, password handling, authentication, login/logout, and authentication tests. Retain browser form-request protection as a small account-free finish task. |
+| Step 9 ownership | Defer owner relationships, principal-based queries, and two-user isolation tests. Interview-to-application scoping remains implemented and required. |
+| Step 10 migrations | Defer Flyway for the initial personal release. Continue the current automatic schema updates; back up wanted data before later schema changes. Add user/owner migrations when those features are implemented. |
+| Steps 11–12 | Keep final local workflow checks, run/stop/test instructions, backup/restore, and concise documentation. Account-related parts stay deferred. |
+
+### Personal-use finish checklist
+- [x] Bind the app and database to this computer: `server.address=127.0.0.1` and Docker's `127.0.0.1:5433` mapping are configured.
+- [ ] Jointly review step 7 and merge PR #6 only after Ashraf explicitly approves.
+- [ ] Add/test browser form-request protection (CSRF) without requiring accounts or login. Keep API practice usable through a documented token flow; do not disable protection for browser-accessible write routes merely to simplify tests.
+- [ ] Document and verify a PostgreSQL backup/restore procedure. A persistent Docker volume retains data across restarts but is not a separate backup.
+- [ ] Verify the personal browser/API workflow: create application → add/edit interview → update application status → filter → restart → retrieve → delete only a disposable test record.
+- [ ] Finalize straightforward daily start/stop instructions and verify the packaged app runs from the documented project-root directory.
+
+The personal release is complete when this checklist is verified. Future account/migration checklists below remain available and unchecked until implemented. Local scope means use from this computer; revisit accounts and access controls before offering access to other people or machines.
+
 ## Implementation Order
-Complete and verify each step before moving to the next. Treat each numbered step as a separate milestone; short sessions are fine. Check a box only after its verification works.
+Follow the personal local release path above for the current target. The numbered roadmap preserves the fuller future version; explicitly deferred steps may be skipped for personal use. Treat each implemented step as a separate milestone and check a box only after verification works.
 
 ### 1. Optional refresher: core Java with the application model
 - [x] Confirm a JDK 21 installation and an IDE that can run Java. Java 21.0.2 and IntelliJ IDEA 2023.3.3 are already installed; Java compilation/build verified. The remaining refresher exercise is optional given prior Java/Spring Boot experience.
@@ -93,8 +115,8 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [x] Add deletion with a confirmation step after delete behavior is implemented.
 - [x] Add company/status filter controls, Apply/Clear actions, retained selections, and a no-match state.
 - [x] Add interview-stage views/forms: detail cards, add/edit forms, validation, and deletion confirmation; desktop/phone layouts verified.
-- [ ] Add login/logout and authenticated navigation in step 8.
-- [ ] Verify the complete browser workflow after persistence and ownership are added.
+- [ ] Add login/logout and authenticated navigation in step 8. **Deferred for personal use.**
+- [ ] Verify the complete browser workflow after persistence and ownership are added. **Future ownership version; verify the account-free workflow in the personal checklist now.**
 
 ### 5. Add application filters and initial automated tests
 - [x] Support optional `status` and `company` query parameters on the list endpoint.
@@ -120,6 +142,8 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [x] **Verify:** one application can retain multiple stages after restart; stages cannot be edited through another application's URL; deletion leaves no orphan stages.
 
 ### 8. Add authentication gradually
+**Deferred for the personal release.** Preserve all account work below for later. Browser form-request protection is tracked separately in the personal finish checklist and does not require login.
+
 - [ ] Add Spring Security and an `AppUser` table with unique usernames and encoded passwords.
 - [ ] Begin with two development accounts created through an explicit local setup procedure; no public registration endpoint is required for version one.
 - [ ] Use Spring Security's `PasswordEncoder` and session-based form login/logout for the browser. Decide whether API-client practice also needs HTTP Basic support.
@@ -128,6 +152,8 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [ ] **Verify:** browser login/logout works, protected pages require login, invalid credentials fail, and responses never expose password hashes. Verify JSON API authentication/error behavior separately.
 
 ### 9. Enforce ownership for every operation
+**Deferred for the personal release.** Keep the current single dataset; implement these checks when accounts are added.
+
 - [ ] Link each application to its owner. If practice data already exists, explicitly assign it to a development account before requiring an owner.
 - [ ] Determine the owner from the authenticated principal; never accept an owner ID from the request body.
 - [ ] Scope list, filter, retrieve, update, and delete operations to the current user. Apply the same restriction to interview stages through their parent application.
@@ -135,6 +161,8 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [ ] **Verify:** account A creates an application and interview; account B cannot list, retrieve, edit, or delete either record, including by guessing IDs.
 
 ### 10. Make database setup repeatable
+**Deferred for the initial personal release.** Flyway is still useful for later schema changes but is not required to start personal tracking. Preserve this checklist; user-table/account-seeding work depends on deferred steps 8–9.
+
 - [ ] Add Flyway versioned migrations for users, applications, interviews, foreign keys, and required constraints.
 - [ ] Turn off automatic schema updates and have JPA validate the migrated schema.
 - [ ] Plan the transition for the existing local database: export any wanted records, then either recreate the disposable database from migrations or deliberately baseline its matching schema.
@@ -142,6 +170,8 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [ ] **Verify:** a fresh empty database can be initialized successfully and the backend restarts without losing its saved records.
 
 ### 11. Verify the complete workflow
+For personal use, run the account-free workflow in the personal checklist. Authentication and two-user checks below remain deferred until steps 8–9.
+
 - [ ] Add focused PostgreSQL integration tests against a separate disposable test database for persistence, filtering, relationships, and deletion.
 - [ ] Add automated authentication and two-user isolation tests for applications and interview endpoints.
 - [ ] Run `.\mvnw.cmd verify`; make any test-database setup requirements explicit.
@@ -149,6 +179,8 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [ ] **Verify:** the complete workflow passes, failure responses are consistent, and tests never alter personal development data.
 
 ### 12. Document and finish version one
+Apply the run/test/documentation tasks to the personal release now. Account setup and the full multi-account first-version verification remain future work.
+
 - [ ] Write a README with prerequisites, exact chosen versions, database/account setup, environment variables, run/test commands, and example requests.
 - [ ] Save an API request collection or equivalent examples covering the main workflow and errors.
 - [ ] Review names and responsibilities; keep controllers small and add comments where a decision needs explanation.
@@ -189,6 +221,7 @@ Current flow: **browser/API request → page/REST controller → shared service 
 Keep this a local learning application with a basic Thymeleaf frontend. Leave public registration, JWT/OAuth, password-reset email, job scraping, resume uploads, notifications, analytics, cloud deployment, and microservices for later. Separate company/position tables, pagination, and status-history auditing are optional improvements after the first version is complete.
 
 ## Current Progress
+- Current release target: personal localhost use without accounts. Steps 8–9 and account-dependent UI/tests are deferred; step 10 migrations may wait. Follow the personal finish checklist above before treating the release as complete.
 - [x] Environment, Spring Boot starter, `/health`, `/about`, and starter exercises.
 - [x] Application model, DTOs, generated IDs, and in-memory create/list API.
 - [x] Application API CRUD, validation, filters, and corresponding responsive Thymeleaf pages.
@@ -196,7 +229,7 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 - [x] Step 7 interview entity, scoped nested API CRUD, validation, scheduled/unscheduled stages, and application-deletion cascade.
 - [x] Step 4A interview detail cards, add/edit forms, and deletion confirmation.
 - Verification: **49 tests pass and JAR packaging succeeds**. Real PostgreSQL tests verify interview CRUD, invalid input, wrong-parent URLs, cascade deletion without orphan stages, and multiple stages surviving a Spring-context restart. Browser creation/edit/save and desktop/390px layouts checked without horizontal overflow; automated HTTP tests verify confirmed deletion. Temporary preview records were removed.
-- Current note: [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]], using the files/changes/new-content format. Step 7 is implemented on `codex/interview-stages`; next is joint feature review and explicit merge approval. Step 8 authentication has not begun.
+- Current note: [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]], using the files/changes/new-content format. Step 7 is implemented on `codex/interview-stages`; next is joint feature review and explicit merge approval, followed by the personal-use finish checklist. Step 8 authentication is deferred.
 - Earlier feature PRs #3, #4, and #5 were merged with explicit user approval (5d9dd42, 05c25bf, and d31898c). Step 7 is not merged.
 - [PR #6 — Track interview stages for each application](https://github.com/aalatraqchi/Job-App-Tracker/pull/6) is open from `codex/interview-stages` into main; implementation 9c43630. Assistant review found no issues within step 7 scope. Await user review and explicit merge confirmation.
 - Part 8 and Part 9 concept boxes remain user self-assessment; implementation exercises were reviewed separately.
