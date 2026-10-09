@@ -1,11 +1,11 @@
 ## Files created
 
-| File | What changed |
-| --- | --- |
-| `src/main/java/com/ashraf/jobapptracker/application/ApplicationRepository.java` | Extends `JpaRepository<JobApplication, Long>` to provide database operations without writing SQL for basic CRUD. |
-| `compose.yaml` | Runs PostgreSQL 17 on localhost port 5433, checks readiness, and keeps data in a named volume. |
-| `scripts/setup-database.ps1` | Generates ignored local credentials once, starts the database, and waits for readiness. Run it after starting Docker Desktop. |
-| `src/test/java/com/ashraf/jobapptracker/PostgresTestSupport.java` | Starts a disposable PostgreSQL test database, supplies its connection settings, and clears only test records before each test. |
+| File                                                                               | What changed                                                                                                                   |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `src/main/java/com/ashraf/jobapptracker/application/ApplicationRepository.java`    | Extends `JpaRepository<JobApplication, Long>` to provide database operations without writing SQL for basic CRUD.               |
+| `compose.yaml`                                                                     | Runs PostgreSQL 17 on localhost port 5433, checks readiness, and keeps data in a named volume.                                 |
+| `scripts/setup-database.ps1`                                                       | Generates ignored local credentials once, starts the database, and waits for readiness. Run it after starting Docker Desktop.  |
+| `src/test/java/com/ashraf/jobapptracker/PostgresTestSupport.java`                  | Starts a disposable PostgreSQL test database, supplies its connection settings, and clears only test records before each test. |
 | `src/test/java/com/ashraf/jobapptracker/application/PostgresPersistenceTests.java` | Creates an application, closes the Spring context, restarts it, and verifies all fields, filters, and continued ID generation. |
 
 ## Files edited
@@ -24,17 +24,21 @@ Java paths below are under `src/main/java/com/ashraf/jobapptracker/`.
 
 ## New content
 
-| Use | Purpose |
-| --- | --- |
-| `@Entity` / `@Table(name = "job_applications")` | Map `JobApplication` objects to rows in the chosen database table. |
-| `@Id` / `@GeneratedValue(strategy = GenerationType.IDENTITY)` | Mark the row's identity and let PostgreSQL generate it when saved. New objects start with ID `0`; callers still never supply IDs in create requests. |
-| `@Column(nullable = false, length = 200)` | Require a stored value and limit its length. Request validation still gives useful errors before saving. |
-| `@Enumerated(EnumType.STRING)` | Store readable status names such as `INTERVIEW` rather than enum positions that could change if reordered. |
-| `protected JobApplication()` | Provide the no-argument constructor JPA needs when loading stored records. |
-| `JpaRepository<JobApplication, Long>` | Supply CRUD methods for this entity and its ID type. `save()` persists changes, `findById()` returns an optional result, and `delete()` removes a row. |
-| `@Transactional` | Keep an operation's database changes together: commit when it succeeds or roll back on failure. Read methods use `readOnly = true`; create/update/delete override it. |
-| `spring.datasource.*` / `${DB_PASSWORD}` | Configure the database connection using local configuration or environment variables without committing a password. |
-| `spring.jpa.hibernate.ddl-auto=update` | Create/update tables while learning. Versioned migrations replace it in step 10. |
-| `spring.jpa.open-in-view=false` | Finish database work in the service rather than leaving a database session available while rendering HTML. |
-| Docker Compose named volume | Keep PostgreSQL's files independently of the running app/container so records survive restarts. |
-| Testcontainers / `@DynamicPropertySource` | Run tests against a separate real PostgreSQL instance and supply its temporary URL/credentials automatically. Docker Desktop must be running. |
+| Use                                                           | Purpose                                                                                                                                                               |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@Entity` / `@Table(name = "job_applications")`               | Map `JobApplication` objects to rows in the chosen database table.                                                                                                    |
+| `@Id` / `@GeneratedValue(strategy = GenerationType.IDENTITY)` | Mark the row's identity and let PostgreSQL generate it when saved. New objects start with ID `0`; callers still never supply IDs in create requests.                  |
+| `@Column(nullable = false, length = 200)`                     | Require a stored value and limit its length. Request validation still gives useful errors before saving.                                                              |
+| `@Enumerated(EnumType.STRING)`                                | Store readable status names such as `INTERVIEW` rather than enum positions that could change if reordered.                                                            |
+| `protected JobApplication()`                                  | Provide the no-argument constructor JPA needs when loading stored records.                                                                                            |
+| `JpaRepository<JobApplication, Long>`                         | Supply CRUD methods for this entity and its ID type. `save()` persists changes, `findById()` returns an optional result, and `delete()` removes a row.                |
+| `@Transactional`                                              | Keep an operation's database changes together: commit when it succeeds or roll back on failure. Read methods use `readOnly = true`; create/update/delete override it. |
+| `spring.datasource.*` / `${DB_PASSWORD}`                      | Configure the database connection using local configuration or environment variables without committing a password.                                                   |
+| `spring.jpa.hibernate.ddl-auto=update`                        | Create/update tables while learning. Versioned migrations replace it in step 10.                                                                                      |
+| `spring.jpa.open-in-view=false`                               | Finish database work in the service rather than leaving a database session available while rendering HTML.                                                            |
+| Docker Compose named volume                                   | Keep PostgreSQL's files independently of the running app/container so records survive restarts.                                                                       |
+| Testcontainers / `@DynamicPropertySource`                     | Run tests against a separate real PostgreSQL instance and supply its temporary URL/credentials automatically. Docker Desktop must be running.                         |
+| Docker Desktop | Runs the Docker engine that manages PostgreSQL's container. Start it before starting the database. |
+| Independent app/database processes | IntelliJ starts/stops Spring Boot on port 8080. Docker separately starts/stops PostgreSQL, reached by the app on localhost:5433. Stopping one does not stop the other. |
+| `docker compose up -d --wait database` | Start the database in the background (`-d`) and wait until it is ready (`--wait`). Run from the project root before starting the app. The setup script also runs this command. |
+| `docker compose stop database` | Stop PostgreSQL when finished for the day. The named volume keeps saved records. Leaving it running between app restarts is also fine. |
