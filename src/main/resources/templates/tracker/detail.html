@@ -15,6 +15,35 @@
             <a class="button secondary danger-link" th:href="@{/tracker/{id}/delete(id=${job.id})}">Delete application</a>
         </div>
     </section>
+    <section class="panel detail-panel interview-panel">
+        <div class="interview-heading">
+            <div>
+                <h2>Interview stages</h2>
+                <p class="muted small">Outcomes are tracked separately from application status.</p>
+            </div>
+            <a class="button" th:href="@{/tracker/{id}/interviews/new(id=${job.id})}">Add stage</a>
+        </div>
+        <p class="muted" th:if="${#lists.isEmpty(stages)}">No interview stages yet. Add your first conversation.</p>
+        <article class="interview-card" th:each="stage : ${stages}">
+            <div class="interview-heading">
+                <h3 th:text="${stage.stageName}"></h3>
+                <span class="badge" th:text="${stage.outcome}"></span>
+            </div>
+            <p class="muted small" th:if="${stage.scheduledAt == null}">Not scheduled</p>
+            <p class="muted small" th:if="${stage.scheduledAt != null}">
+                <time th:datetime="${stage.scheduledAt}"
+                      th:text="${#temporals.format(stage.scheduledAt, 'MMM d, yyyy · HH:mm:ss XXX')}"></time>
+                <span> (UTC offset shown)</span>
+            </p>
+            <p class="notes" th:if="${!#strings.isEmpty(stage.notes)}" th:text="${stage.notes}"></p>
+            <div class="action-row">
+                <a class="text-link"
+                   th:href="@{/tracker/{id}/interviews/{stageId}/edit(id=${job.id},stageId=${stage.id})}">Edit stage</a>
+                <a class="text-link danger-link"
+                   th:href="@{/tracker/{id}/interviews/{stageId}/delete(id=${job.id},stageId=${stage.id})}">Delete stage</a>
+            </div>
+        </article>
+    </section>
 </main>
 <footer th:replace="~{tracker/fragments :: footer}"></footer>
 </body>

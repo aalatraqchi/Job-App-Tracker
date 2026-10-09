@@ -9,6 +9,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import com.ashraf.jobapptracker.interview.InterviewStage;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "job_applications")
@@ -31,6 +36,9 @@ public class JobApplication {
     private String jobUrl;
     @Column(length = 5000)
     private String notes;
+
+    @OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
+    private List<InterviewStage> interviews = new ArrayList<>();
 
     protected JobApplication() {
     }

@@ -634,6 +634,34 @@ input:focus, select:focus, textarea:focus {
     gap: 12px;
 }
 
+.interview-panel {
+    margin-top: 24px;
+}
+
+.interview-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.interview-heading h2, .interview-heading h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.interview-card {
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    margin-top: 24px;
+    overflow-wrap: anywhere;
+}
+
+.text-link.danger-link {
+    color: #b42340;
+}
+
 .button.danger {
     background: #b42340;
 }

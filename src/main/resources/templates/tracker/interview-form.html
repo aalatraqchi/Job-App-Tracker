@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head(${editing ? 'Edit interview stage' : 'Add interview stage'})}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <a class="text-link back-link" th:href="@{/tracker/{id}(id=${job.id})}">← Application details</a>
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow" th:text="${job.company + ' · ' + job.position}"></p>
+            <h1 th:text="${editing ? 'Edit interview stage' : 'Add interview stage'}"></h1>
+            <p class="muted">Keep track of each conversation and its outcome.</p>
+        </div>
+    </section>
+    <form class="panel form-panel" th:action="@{${formAction}}" th:object="${form}" method="post">
+        <div class="notice error" role="alert" th:if="${#fields.hasErrors('*')}">
+            Check the highlighted fields and try again.
+        </div>
+        <div class="form-grid">
+            <div class="field full-width">
+                <label for="stageName">Stage name <span class="required">*</span></label>
+                <input id="stageName" th:field="*{stageName}" th:errorclass="invalid"
+                       required maxlength="200" placeholder="e.g. Technical interview">
+                <p class="field-error" th:errors="*{stageName}"></p>
+            </div>
+            <div class="field">
+                <label for="scheduledAt">Date and time <span class="optional">optional</span></label>
+                <input type="datetime-local" id="scheduledAt" th:field="*{scheduledAt}"
+                       th:errorclass="invalid" step="1" aria-describedby="schedule-help">
+                <p class="muted small" id="schedule-help">Leave empty if not scheduled yet.</p>
+                <p class="field-error" th:errors="*{scheduledAt}"></p>
+            </div>
+            <div class="field">
+                <label for="utcOffset">UTC offset <span class="required">*</span></label>
+                <input id="utcOffset" th:field="*{utcOffset}" th:errorclass="invalid"
+                       required maxlength="6" placeholder="-04:00" aria-describedby="offset-help">
+                <p class="muted small" id="offset-help">
+                    Applies to the time entered. Use -04:00 for Eastern daylight time,
+                    -05:00 for Eastern standard time, or +00:00 for UTC.
+                </p>
+                <p class="field-error" th:errors="*{utcOffset}"></p>
+            </div>
+            <div class="field full-width">
+                <label for="outcome">Outcome <span class="required">*</span></label>
+                <select id="outcome" th:field="*{outcome}" th:errorclass="invalid" required>
+                    <option th:each="outcome : ${outcomes}" th:value="${outcome}"
+                            th:text="${#strings.capitalize(#strings.toLowerCase(outcome.name()))}"></option>
+                </select>
+                <p class="field-error" th:errors="*{outcome}"></p>
+            </div>
+            <div class="field full-width">
+                <label for="notes">Notes <span class="optional">optional</span></label>
+                <textarea id="notes" th:field="*{notes}" th:errorclass="invalid" rows="5"
+                          maxlength="5000" placeholder="People, topics, and anything to follow up on…"></textarea>
+                <p class="field-error" th:errors="*{notes}"></p>
+            </div>
+        </div>
+        <div class="form-actions">
+            <span class="muted small">* Required fields</span>
+            <div>
+                <a class="button secondary" th:href="@{/tracker/{id}(id=${job.id})}">Cancel</a>
+                <button class="button" type="submit"
+                        th:text="${editing ? 'Save changes' : 'Save stage'}"></button>
+            </div>
+        </div>
+    </form>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>

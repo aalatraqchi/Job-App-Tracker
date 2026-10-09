@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{tracker/fragments :: head('Delete interview stage')}"></head>
+<body>
+<header th:replace="~{tracker/fragments :: header}"></header>
+<main class="shell main-content narrow">
+    <a class="text-link back-link" th:href="@{/tracker/{id}(id=${job.id})}">← Application details</a>
+    <section class="panel detail-panel">
+        <p class="eyebrow">REMOVE AN INTERVIEW STAGE</p>
+        <h1>Delete this interview stage?</h1>
+        <p>You are about to delete <strong th:text="${stage.stageName}"></strong>
+            for <strong th:text="${job.company}"></strong>.</p>
+        <p class="muted">The application and other stages will remain. This action cannot be undone.</p>
+        <form class="action-row detail-section" method="post"
+              th:action="@{/tracker/{id}/interviews/{stageId}/delete(id=${job.id},stageId=${stage.id})}">
+            <input type="hidden" name="confirmed" value="true">
+            <a class="button secondary" th:href="@{/tracker/{id}(id=${job.id})}">Keep stage</a>
+            <button class="button danger" type="submit">Yes, delete stage</button>
+        </form>
+    </section>
+</main>
+<footer th:replace="~{tracker/fragments :: footer}"></footer>
+</body>
+</html>
