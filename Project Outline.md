@@ -92,7 +92,7 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [x] Add an edit form using the verified update service.
 - [x] Add deletion with a confirmation step after delete behavior is implemented.
 - [x] Add company/status filter controls, Apply/Clear actions, retained selections, and a no-match state.
-- [ ] Add interview-stage views/forms when step 7 is ready.
+- [x] Add interview-stage views/forms: detail cards, add/edit forms, validation, and deletion confirmation; desktop/phone layouts verified.
 - [ ] Add login/logout and authenticated navigation in step 8.
 - [ ] Verify the complete browser workflow after persistence and ownership are added.
 
@@ -113,11 +113,11 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [x] **Verify:** create an application, restart the backend, and retrieve it again. Existing API tests still pass after adapting their setup.
 
 ### 7. Track interview stages
-- [ ] Add an `InterviewStage` entity, DTOs, repository, and service linked to an application.
-- [ ] Add nested endpoints to create/list stages and update/delete a particular stage.
-- [ ] Validate stage names and outcomes; allow an unscheduled stage without a date/time.
-- [ ] Require a stage ID to belong to the application named in the URL; deleting an application also deletes its stages.
-- [ ] **Verify:** one application can retain multiple stages after restart; stages cannot be edited through another application's URL; deletion leaves no orphan stages.
+- [x] Add an `InterviewStage` entity, DTOs, repository, and service linked to an application.
+- [x] Add nested endpoints to create/list stages and update/delete a particular stage.
+- [x] Validate stage names and outcomes; allow an unscheduled stage without a date/time.
+- [x] Require a stage ID to belong to the application named in the URL; deleting an application also deletes its stages.
+- [x] **Verify:** one application can retain multiple stages after restart; stages cannot be edited through another application's URL; deletion leaves no orphan stages.
 
 ### 8. Add authentication gradually
 - [ ] Add Spring Security and an `AppUser` table with unique usernames and encoded passwords.
@@ -152,7 +152,7 @@ Current CRUD interface complete. User confirmed that filters, interviews, login,
 - [ ] Write a README with prerequisites, exact chosen versions, database/account setup, environment variables, run/test commands, and example requests.
 - [ ] Save an API request collection or equivalent examples covering the main workflow and errors.
 - [ ] Review names and responsibilities; keep controllers small and add comments where a decision needs explanation.
-- [ ] Mark verified milestones complete here and summarize the work under the appropriate date in [[Changes]].
+- [ ] Mark verified milestones complete here and keep the relevant learning breakdown and README current. Changes.md remains historical only.
 - [ ] **Verify:** follow the README from a fresh checkout and database, then confirm every first-version feature works.
 
 ## Endpoint Plan
@@ -191,16 +191,16 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 ## Current Progress
 - [x] Environment, Spring Boot starter, `/health`, `/about`, and starter exercises.
 - [x] Application model, DTOs, generated IDs, and in-memory create/list API.
-- [x] Retrieve by ID and consistent missing-ID JSON 404.
-- [x] Thymeleaf list/add/detail interface, form errors, responsive styling, and UI/API integration checks.
-- [x] User's update DTO/service exercise reviewed and verified; old-versus-new-object return issue corrected by the user.
-- Verification: **42 tests pass and JAR packaging succeeds**. Step 6 PostgreSQL persistence is verified by a Spring-context restart test and a manual application/database restart. Tests use an isolated disposable PostgreSQL database. Step 5 filter combinations, ordering, no matches, and invalid status JSON/HTML 400 are verified. Full API CRUD, rejected input without storage changes, edit forms, and confirmed deletion are verified. Chrome edit/save and desktop/phone layouts checked; automated HTTP tests verify confirmed deletion.
-- [x] Step 4 API completion and current step 4A edit/delete UI. Future-dependent UI items remain unchecked as explicitly agreed.
-- PR #3 merged with explicit user approval on 10/8/26 (5d9dd42); GitHub confirms merged. PR #4 merged with explicit user approval (05c25bf). Steps 5 and 6 are complete; PostgreSQL persistence is on codex/postgresql-persistence.
-- Current note: [[Job Apps Tracker/Learning/Part 12 - PostgreSQL persistence|Part 12]], using the files/changes/new-content format. Step 6 merged with explicit approval (d31898c). Current session explains database/container lifecycle; step 7 interview stages remains pending until requested.
-- Part 8 and Part 9 concept boxes are user self-assessment; implementation exercises are recorded separately as reviewed.
-- PostgreSQL is running through Docker Compose on localhost:5433. Start Docker Desktop and run `.\scripts\setup-database.ps1` when needed, then run the app from the project root in IntelliJ or the terminal. Records survive app/database restarts. Assistant preview on 8081 is stopped; the existing process on 8080 was left alone.
-- Keep this outline current. Changes.md is now historical only; do not add further entries.
+- [x] Application API CRUD, validation, filters, and corresponding responsive Thymeleaf pages.
+- [x] PostgreSQL persistence, including application/database restart verification.
+- [x] Step 7 interview entity, scoped nested API CRUD, validation, scheduled/unscheduled stages, and application-deletion cascade.
+- [x] Step 4A interview detail cards, add/edit forms, and deletion confirmation.
+- Verification: **49 tests pass and JAR packaging succeeds**. Real PostgreSQL tests verify interview CRUD, invalid input, wrong-parent URLs, cascade deletion without orphan stages, and multiple stages surviving a Spring-context restart. Browser creation/edit/save and desktop/390px layouts checked without horizontal overflow; automated HTTP tests verify confirmed deletion. Temporary preview records were removed.
+- Current note: [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]], using the files/changes/new-content format. Step 7 is implemented on `codex/interview-stages`; next is joint feature review and explicit merge approval. Step 8 authentication has not begun.
+- Earlier feature PRs #3, #4, and #5 were merged with explicit user approval (5d9dd42, 05c25bf, and d31898c). Step 7 is not merged.
+- Part 8 and Part 9 concept boxes remain user self-assessment; implementation exercises were reviewed separately.
+- PostgreSQL is running through Docker Compose on localhost:5433. Start Docker Desktop and run `.\scripts\setup-database.ps1` when needed, then run the app from the project root. Assistant preview on 8081 is stopped; other application processes were left alone.
+- Keep this outline current. Changes.md is historical only; do not add further entries.
 
 ## References
 - [Spring Quickstart](https://spring.io/quickstart/) — Java and Initializr setup.
@@ -211,14 +211,14 @@ Keep this a local learning application with a basic Thymeleaf frontend. Leave pu
 
 ## Learning Approach
 - This is a portfolio project and a Java/Spring Boot refresher. Prioritize understanding and small working features over completing the roadmap quickly.
-- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 12 - PostgreSQL persistence|Part 12]] is the current persistence breakdown.
+- Explain new concepts in separate numbered notes in the Learning folder (Part 1, Part 2, etc.), using current project examples and explaining the reasons behind the design. Create a new descriptive Part note when a new topic or milestone begins. Future notes contain only files created/edited, changes per file, and a Use → Purpose table for concepts not already covered. No exercises or capability checklists unless requested. [[Job Apps Tracker/Learning/Part 1 - Project structure and running the app|Part 1]] contains the completed starter lesson. [[Job Apps Tracker/Learning/Part 2 - Modeling a job application|Part 2]] covers modeling; [[Job Apps Tracker/Learning/Part 13 - Interview stages|Part 13]] is the current interview-stage breakdown.
 - Implement agreed increments directly with the brief breakdown format. When the user requests an exercise or submits an attempt, review it and offer hints before replacing code.
 - Starter checkpoint completed: capability checklists, request mapping, random test ports, /about endpoint, and separate endpoint tests. User attempts were reviewed; user reported two passing tests. Step 3 is complete; Part 4 explicit-status test and Part 5 GET exercise are reviewed. Part 6 lookup test and Part 9 service update exercise are also complete and reviewed.
 
 ## Version Control
 - Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker).
 - Main tracks origin/main; DTO PR #1 and create/list PR #2 were merged with explicit approval (0d3628c and 51830be).
-- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Main and origin/main synced. Current branch: main. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). [PR #5 — Persist job applications in PostgreSQL](https://github.com/aalatraqchi/Job-App-Tracker/pull/5) merged with explicit user approval (d31898c). All 42 tests and packaging passed before merging. Main and origin/main synced.
+- [PR #3 — Complete application CRUD and Thymeleaf tracker](https://github.com/aalatraqchi/Job-App-Tracker/pull/3) merged with explicit approval (5d9dd42). Current branch: `codex/interview-stages` for step 7. [PR #4 — Filter applications by company and status](https://github.com/aalatraqchi/Job-App-Tracker/pull/4) merged with explicit approval (05c25bf). [PR #5 — Persist job applications in PostgreSQL](https://github.com/aalatraqchi/Job-App-Tracker/pull/5) merged with explicit user approval (d31898c). All 42 tests and packaging passed before merging PR #5. Step 7 has 49 passing tests and awaits a separate review/merge approval.
 - Assistant handles staging, commits, pushes, and PRs, reporting each action. Joint review and explicit user confirmation are required before each merge. No new merge approved.
 - Vault notes are authoritative; source snapshots are copied deliberately. Changes.md is no longer maintained.
 

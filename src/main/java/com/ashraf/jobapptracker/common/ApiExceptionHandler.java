@@ -1,6 +1,7 @@
 package com.ashraf.jobapptracker.common;
 
 import com.ashraf.jobapptracker.application.ApplicationNotFoundException;
+import com.ashraf.jobapptracker.interview.InterviewNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,8 +16,8 @@ import java.util.TreeMap;
 
 @RestControllerAdvice(annotations = RestController.class)
 public class ApiExceptionHandler {
-    @ExceptionHandler(ApplicationNotFoundException.class)
-    public ResponseEntity<Map<String, String>> applicationNotFound(ApplicationNotFoundException exception) {
+    @ExceptionHandler({ApplicationNotFoundException.class, InterviewNotFoundException.class})
+    public ResponseEntity<Map<String, String>> applicationNotFound(RuntimeException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("message", exception.getMessage()));
     }
@@ -42,6 +43,8 @@ public class ApiExceptionHandler {
             return ResponseEntity.badRequest().body(Map.of(
                     "message", "Choose a valid status: APPLIED, INTERVIEW, OFFER, REJECTED, WITHDRAWN."));
         }
-        return ResponseEntity.badRequest().body(Map.of("message", "Provide a valid numeric application ID."));
+        String message = "interviewId".equals(exception.getName())
+                ? "Provide a valid numeric interview ID." : "Provide a valid numeric application ID.";
+        return ResponseEntity.badRequest().body(Map.of("message", message));
     }
 }
