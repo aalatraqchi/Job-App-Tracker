@@ -1,6 +1,12 @@
 # Job Application Tracker
 
-A gradual Java/Spring Boot learning project with a Thymeleaf interface for adding, listing, viewing, editing, deleting, and filtering job applications. The pages and JSON API share a service backed by PostgreSQL. Forty-two tests cover the current service, validation, filters, HTTP behavior, and persistence after restarting the application.
+A gradual Java/Spring Boot learning project with a Thymeleaf interface for managing job applications and their interview stages. The pages and JSON API share services backed by PostgreSQL. Forty-nine tests cover CRUD, validation, filters, interview relationships, HTTP behavior, and persistence after restarting the application.
+
+## Current release target
+
+Personal use on this computer with one dataset and no accounts or login. Account creation, password handling, login/logout, ownership, and two-user tests remain in the roadmap for a future multi-account version. Flyway migrations may also wait for a later milestone; the current setup uses automatic schema updates.
+
+The app binds to `127.0.0.1`; Docker publishes PostgreSQL only on `127.0.0.1:5433`. The remaining personal-release finish pass covers account-free browser form-request protection, verified database backup/restore instructions, the complete local workflow, and daily start/stop documentation. Interview-stage PR #6 still awaits explicit merge approval. The authoritative outline preserves the original future steps and tracks the personal finish checklist separately.
 
 ## Environment
 
@@ -78,7 +84,7 @@ Docker Desktop must be running for tests. Testcontainers starts a separate dispo
 
 The first run downloads Maven, dependencies, and the PostgreSQL image; it needs Internet access. Build output goes to ignored `target/`. No credentials should be committed; local `.env` and `application-local.properties` files are ignored.
 
-The roadmap and learning notes live in the Obsidian Job Apps Tracker folder. Basic API CRUD, corresponding Thymeleaf pages, company/status filters, ordering, and PostgreSQL persistence are complete. Interview stages and authentication remain future milestones. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy. Changes.md is historical only.
+The roadmap and learning notes live in the Obsidian Job Apps Tracker folder. Basic API CRUD, corresponding Thymeleaf pages, company/status filters, ordering, PostgreSQL persistence, and interview stages are complete. Authentication and user ownership remain future milestones. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy. Changes.md is historical only.
 
 ## Version control
 
@@ -89,10 +95,36 @@ Use the run command above, then open <http://127.0.0.1:8080/>.
 
 The Thymeleaf UI lists applications, adds them through a form, shows details, edits them, and deletes them after confirmation. HTML pages use `/tracker`; the JSON API uses `/applications`. Both use the same PostgreSQL-backed service. Records survive application and database restarts.
 
-Both forms and JSON requests validate required company/position/date, text lengths, and optional HTTP(S) job URLs. API errors include a `message`, with field-validation errors also including an `errors` map. DELETE returns HTTP 204; missing records return HTTP 404. Interviews and authentication remain pending.
+Both forms and JSON requests validate required company/position/date, text lengths, and optional HTTP(S) job URLs. API errors include a `message`, with field-validation errors also including an `errors` map. DELETE returns HTTP 204; missing records return HTTP 404. Authentication remains pending.
 
 Edit a record at `/tracker/{id}/edit`. `/tracker/{id}/delete` shows confirmation; merely opening it does not delete data. Ordinary HTML forms submit POST to these page routes; API clients use PUT/DELETE at `/applications/{id}`.
 
 Templates: `src/main/resources/templates/tracker/`. Styles: `src/main/resources/static/css/tracker.css`. Page controller/form: `src/main/java/com/ashraf/jobapptracker/web/`.
 
 Filter the API with optional status/company query parameters, for example /applications?status=INTERVIEW&company=acme. Company matching is case-insensitive and partial; both filters combine with AND. Lists sort by applied date descending, then ID descending. Empty/blank filters mean no restriction; unknown statuses return HTTP 400. The browser list offers the same filters with Apply/Clear controls and a no-match state. Summary cards always count all records.
+
+## Interview stages
+
+Open an application's detail page to add, view, edit, or delete its interview stages. Each stage has a required name (up to 200 characters), an optional scheduled time, an outcome, and optional notes (up to 5000 characters). Outcomes are `PENDING`, `PASSED`, `FAILED`, and `CANCELLED`; they do not automatically change the application's status. Stages appear in creation order.
+
+The browser form takes a date/time plus a UTC offset, such as `-05:00` for Eastern standard time. Leave the date/time empty for an unscheduled stage. PostgreSQL retains the scheduled instant, normalizing it to UTC; detail/edit pages may therefore show the equivalent UTC time and `Z` offset rather than the originally entered offset.
+
+| Method | Path | Result |
+| --- | --- | --- |
+| POST | `/applications/{applicationId}/interviews` | Create a stage; HTTP 201. |
+| GET | `/applications/{applicationId}/interviews` | List this application's stages; HTTP 200. |
+| PUT | `/applications/{applicationId}/interviews/{interviewId}` | Replace editable details; HTTP 200. |
+| DELETE | `/applications/{applicationId}/interviews/{interviewId}` | Delete this stage; HTTP 204. |
+
+Example create/update JSON:
+
+```json
+{
+  "stageName": "Technical interview",
+  "scheduledAt": "2026-11-10T14:30:00-05:00",
+  "outcome": "PENDING",
+  "notes": "Discuss Java and Spring Boot experience."
+}
+```
+
+The API defaults an omitted outcome to `PENDING` on creation and preserves the existing outcome on update. Omitted/null time or notes clears that field on update. A scheduled time must include an offset; malformed times or unknown outcomes return HTTP 400. A missing parent or stage, including a stage belonging to a different application, returns HTTP 404. Deleting an application also deletes its stages. Page deletion requires a confirmation POST; opening the confirmation page alone changes nothing.

@@ -10,7 +10,7 @@
         <h1>Delete this application?</h1>
         <p>You are about to delete <strong th:text="${job.position}"></strong>
             at <strong th:text="${job.company}"></strong>.</p>
-        <p class="muted">This removes the application and its notes. This action cannot be undone.</p>
+        <p class="muted">This removes the application, its notes, and all its interview stages. This action cannot be undone.</p>
         <form class="action-row detail-section" method="post"
               th:action="@{/tracker/{id}/delete(id=${job.id})}">
             <input type="hidden" name="confirmed" value="true">

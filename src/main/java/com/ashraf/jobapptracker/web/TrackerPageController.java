@@ -5,6 +5,7 @@ import com.ashraf.jobapptracker.application.ApplicationService;
 import com.ashraf.jobapptracker.application.ApplicationStatus;
 import com.ashraf.jobapptracker.application.CreateApplicationRequest;
 import com.ashraf.jobapptracker.application.UpdateApplicationRequest;
+import com.ashraf.jobapptracker.interview.InterviewService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -26,9 +27,11 @@ import java.time.LocalDate;
 @Controller
 public class TrackerPageController {
     private final ApplicationService service;
+    private final InterviewService interviews;
 
-    public TrackerPageController(ApplicationService service) {
+    public TrackerPageController(ApplicationService service, InterviewService interviews) {
         this.service = service;
+        this.interviews = interviews;
     }
 
     @GetMapping({"/", "/tracker"})
@@ -131,6 +134,7 @@ public class TrackerPageController {
         var application = service.findById(id);
         model.addAttribute("job", application);
         model.addAttribute("safeJobUrl", safeJobUrl(application.getJobUrl()));
+        model.addAttribute("stages", interviews.findAll(id));
         return "tracker/detail";
     }
 

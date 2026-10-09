@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{tracker/fragments :: head('Application not found')}"></head>
+<head th:replace="~{tracker/fragments :: head(${errorTitle ?: 'Application not found'})}"></head>
 <body>
 <header th:replace="~{tracker/fragments :: header}"></header>
-<main class="shell main-content"><section class="panel empty-state"><p class="eyebrow">404 · NOT FOUND</p><h1>Application not found</h1><p class="muted">This application doesn't exist in your current workspace. It may have been cleared when the app restarted.</p><a class="button" th:href="@{/tracker}">Back to applications</a></section></main>
+<main class="shell main-content">
+    <section class="panel empty-state">
+        <p class="eyebrow">404 · NOT FOUND</p>
+        <h1 th:text="${errorTitle ?: 'Application not found'}">Application not found</h1>
+        <p class="muted">This record doesn't exist in this application. It may have been deleted.</p>
+        <a class="button" th:href="@{/tracker}">Back to applications</a>
+    </section>
+</main>
 <footer th:replace="~{tracker/fragments :: footer}"></footer>
 </body>
 </html>
