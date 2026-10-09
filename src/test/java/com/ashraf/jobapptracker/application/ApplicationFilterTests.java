@@ -1,5 +1,7 @@
 package com.ashraf.jobapptracker.application;
 
+import com.ashraf.jobapptracker.PostgresTestSupport;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class ApplicationFilterTests {
+class ApplicationFilterTests extends PostgresTestSupport {
     @LocalServerPort
     private int port;
     @Autowired

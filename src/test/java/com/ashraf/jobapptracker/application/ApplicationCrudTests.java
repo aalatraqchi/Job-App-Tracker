@@ -1,5 +1,7 @@
 package com.ashraf.jobapptracker.application;
 
+import com.ashraf.jobapptracker.PostgresTestSupport;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -16,7 +18,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ApplicationCrudTests {
+class ApplicationCrudTests extends PostgresTestSupport {
     @LocalServerPort
     private int port;
     private final JsonMapper mapper = new JsonMapper();
