@@ -1,6 +1,7 @@
 package com.ashraf.jobapptracker.application;
 
 import com.ashraf.jobapptracker.PostgresTestSupport;
+import com.ashraf.jobapptracker.CsrfTestClient;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -155,8 +156,9 @@ class ApplicationCrudTests extends PostgresTestSupport {
     }
 
     private HttpResponse<String> send(String method, String path, String body) throws Exception {
-        try (var client = HttpClient.newHttpClient()) {
+        try (var client = CsrfTestClient.newClient()) {
             var builder = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path));
+            if (!method.equals("GET")) { CsrfTestClient.withCsrf(client, builder, port); }
             if (body != null) {
                 builder.header("Content-Type", "application/json");
             }
