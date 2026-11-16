@@ -13,6 +13,6 @@ public class HealthController {
 
     @GetMapping("/about")
     public Map<String, String> about() {
-        return Map.of("project", "Job Application Tracker", "purpose", "Relearning Java and Spring Boot");
+        return Map.of("project", "Job Application Tracker", "purpose", "Track job applications and interview stages");
     }
 }
