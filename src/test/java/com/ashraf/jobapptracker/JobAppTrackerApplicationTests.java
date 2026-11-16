@@ -35,7 +35,7 @@ class JobAppTrackerApplicationTests extends PostgresTestSupport {
 			assertEquals(200, response.statusCode());
 			assertTrue(response.headers().firstValue("Content-Type").orElse("").contains("application/json"));
 			assertTrue(response.body().contains("\"project\":\"Job Application Tracker\""));
-			assertTrue(response.body().contains("\"purpose\":\"Relearning Java and Spring Boot\""));
+			assertTrue(response.body().contains("\"purpose\":\"Track job applications and interview stages\""));
 		}
 	}
 
