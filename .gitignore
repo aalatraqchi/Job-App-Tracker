@@ -40,3 +40,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local AI-assistant notes ###
+AGENTS.md
