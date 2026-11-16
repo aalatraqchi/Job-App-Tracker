@@ -1,250 +1,156 @@
 # Job Application Tracker
 
-A gradual Java/Spring Boot learning project with a Thymeleaf interface for managing job applications and their interview stages. The pages and JSON API share services backed by PostgreSQL. Fifty-four tests cover CRUD, validation, filters, interview relationships, request protection, HTTP behavior, and persistence after restarting the application.
+[![CI](https://github.com/aalatraqchi/Job-App-Tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/aalatraqchi/Job-App-Tracker/actions/workflows/ci.yml)
+![Java 21](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot 4.1](https://img.shields.io/badge/Spring%20Boot-4.1-6db33f)
+![PostgreSQL 17](https://img.shields.io/badge/PostgreSQL-17-336791)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Current release target
+A full-stack Java web application for tracking job applications from first submission through interviews to an offer. It has a server-rendered Thymeleaf interface and a JSON REST API, both built on the same service layer and persisted in PostgreSQL.
 
-Personal use on this computer with one dataset and no accounts or login. Account creation, password handling, login/logout, ownership, and two-user tests remain in the roadmap for a future multi-account version. Flyway migrations may also wait for a later milestone; the current setup uses automatic schema updates.
+![Applications dashboard](docs/screenshots/dashboard.png)
 
-The personal version is ready to use locally: application CRUD, filters, interview tracking, PostgreSQL persistence, request protection, and backup/restore are verified. The final check used a clean source export and a fresh, isolated database, including browser/API operations and app/database restarts. The app binds to `127.0.0.1`; Docker publishes the everyday database only on `127.0.0.1:5433`. Future account/ownership/migration steps remain in the authoritative outline.
+## Features
 
-## Daily use
+- **Application CRUD.** Record company, position, applied date, status, job URL and notes. Browse, edit and delete applications, with a confirmation step before anything is deleted.
+- **Interview stages.** Attach any number of interview stages to an application, each with a scheduled time (time-zone aware), an outcome and notes. Deleting an application removes its stages.
+- **Filtering and ordering.** Filter by status and by partial, case-insensitive company name, or combine both. Results are sorted newest first, and summary cards show totals, interviews and offers.
+- **REST API.** The same operations are available as JSON endpoints, with consistent 400, 403 and 404 error bodies and field-level validation messages.
+- **Request protection.** Spring Security CSRF protection covers every write, in both the HTML forms and the JSON API.
+- **Backup and restore.** PowerShell scripts take checksummed `pg_dump` archives and restore them into a new, separate database, so a restore never overwrites live data. See [docs/backup-and-restore.md](docs/backup-and-restore.md).
+- **Themes.** Five color themes (dark, light, ocean, forest and sunset), saved per browser.
 
-Use the **Theme** selector in the page header to choose Dark (the default), Light, Ocean, Forest, or Sunset. Your choice is saved in this browser for the same address and port; it does not change your application records. If browser storage is blocked, switching still works on the current page.
-
-1. Double-click **Start Job Application Tracker** on the desktop (or `Start Tracker.cmd` in this folder). It starts Docker Desktop if necessary, prepares PostgreSQL, builds the app when source files change, waits for the website, and opens your default browser at <http://127.0.0.1:8080/>.
-2. Use the website normally. The app runs in the background; you can close the launch window. Clicking Start again opens the existing app instead of starting a duplicate. After code changes, click Stop, then Start to rebuild.
-3. When finished, double-click **Stop Job Application Tracker** (or `Stop Tracker.cmd`). It stops the managed Java process first, then this project's database container. Records stay in PostgreSQL's volume. Closing the browser alone leaves the app running. Docker Desktop remains available for other projects.
-
-The first start may take longer to download dependencies or wait for Docker. When a rebuild is needed, Start uses `clean package` with tests skipped for daily convenience; normal starts reuse the package. Run `mvnw.cmd verify` when validating code changes, after stopping the app. Runtime state and logs are local/ignored under `.tracker/`. If startup fails, the window stays open with a useful message; check `build.log`, `app.log`, or `app-error.log` there. Keep the project folder in place; rerun `scripts/install-shortcuts.ps1` after moving it. The scripts use the installed JDK 21 and work in Windows PowerShell 5.1.
-
-The shortcuts only manage the app they started. If an IntelliJ/manual app occupies port 8080, stop it in that terminal/IDE before using them. Stop refuses an unrelated listener or mismatched process identity. Finish active saves before stopping: the Windows launcher terminates its Java process, then stops PostgreSQL; it does not send a graceful Spring shutdown request. No system execution-policy setting is changed; the command wrappers allow just these local script invocations.
-
-To recreate the desktop shortcuts:
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-shortcuts.ps1
-```
-
-### Manual development alternatives
-
-For an IntelliJ session or a foreground terminal, start Docker Desktop, then open PowerShell in the project folder:
-
-   ```powershell
-   Set-Location 'path\to\Job-App-Tracker'
-   $env:JAVA_HOME = 'path\to\jdk-21'
-   .\scripts\setup-database.ps1
-   .\mvnw.cmd spring-boot:run
-   ```
-
-Wait for the started message, then open <http://127.0.0.1:8080/>. Leave that terminal open. You can instead run `JobAppTrackerApplication` in IntelliJ after starting the database; use one app launch method at a time. Stop the app with **Ctrl+C in its terminal**, or IntelliJ's Stop button if IntelliJ started it, then optionally run `docker compose stop database`.
-
-For personal tracking without starting IntelliJ, build once after code changes, then run the packaged app from the project root:
-
-```powershell
-.\mvnw.cmd verify
-& "$env:JAVA_HOME\bin\java.exe" -jar .\target\job-app-tracker-0.0.1-SNAPSHOT.jar
-```
-
-On later days, start the database and run just the `java.exe -jar` command. Rebuild after source changes; an existing JAR keeps its earlier code. Use the same Ctrl+C shutdown. [API examples](docs/API%20Examples.md) cover the account-free request flow and expected errors; [backup and restore](#back-up-and-restore-your-records) covers recovering your data.
-
-## Environment
-
-- JDK 21 (existing installation: `path\to\jdk-21`).
-- Spring Boot 4.1.1, generated by Spring Initializr with Spring Web and Validation.
-- Maven Wrapper 3.3.4 downloads Maven 3.9.16; a global Maven installation is not needed.
-- IntelliJ IDEA 2023.3.3 is already installed.
-- Docker Desktop with its Linux engine running. Docker Compose runs PostgreSQL 17 locally; no separate PostgreSQL installation is needed.
-
-## Prepare the database
-
-Start Docker Desktop, then run from PowerShell:
-
-```powershell
-Set-Location 'path\to\Job-App-Tracker'
-.\scripts\setup-database.ps1
-```
-
-The script creates a random local password, starts PostgreSQL, and waits until it is ready. It can be rerun without replacing existing credentials. The database is `job_app_tracker`, the user is `job_app_tracker`, and the connection is `127.0.0.1:5433`. Port 5433 avoids using the usual PostgreSQL port on this computer.
-
-Credentials are written to ignored `.env` (Docker Compose) and `src/main/resources/application-local.properties` (Spring Boot). The local properties file is also excluded from the packaged JAR. Keep both files local. Run the app with the project root as its working directory so Spring can import that file.
-
-| Environment variable | Purpose / default |
+| Application detail with interview stages | Add / edit form |
 | --- | --- |
-| `DB_URL` | JDBC connection; defaults to `jdbc:postgresql://127.0.0.1:5433/job_app_tracker`. |
-| `DB_USERNAME` | Database user; defaults to `job_app_tracker`. |
-| `DB_PASSWORD` | Database password; loaded from ignored local configuration for normal development, or supplied as an environment variable. |
+| ![Application detail page](docs/screenshots/detail.png) | ![Application form](docs/screenshots/form.png) |
 
-The Docker named volume `job-app-tracker_application-data` retains records when the application or database container stops. To stop/start the database without removing its data:
+## Tech stack
 
-```powershell
-docker compose stop database
+| Layer | Technology |
+| --- | --- |
+| Language | Java 21 |
+| Framework | Spring Boot 4.1 (Spring Web MVC, Spring Data JPA, Bean Validation, Spring Security) |
+| UI | Thymeleaf, HTML, CSS and a little vanilla JavaScript |
+| Database | PostgreSQL 17 (run with Docker Compose) |
+| Testing | JUnit 5, Spring Boot Test, Testcontainers |
+| Build and CI | Maven Wrapper, GitHub Actions |
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser -->|HTML forms| Pages[Page controllers<br/>web/]
+    Client[API client] -->|JSON| Api[REST controllers<br/>application/, interview/]
+    Pages --> Services[Services<br/>validation and business rules]
+    Api --> Services
+    Services --> Repos[Spring Data JPA repositories]
+    Repos --> DB[(PostgreSQL)]
+```
+
+The code is organized by feature rather than by layer:
+
+```text
+src/main/java/com/ashraf/jobapptracker/
+├── application/   JobApplication entity, DTOs, service, repository and REST controller
+├── interview/     InterviewStage entity, DTOs, service, repository and REST controller
+├── web/           Thymeleaf page controllers and form objects
+├── security/      CSRF and request-protection configuration
+└── common/        Shared exception handling and URL validation
+```
+
+Design decisions worth noting:
+
+- **One service layer for two front ends.** The page controllers and the REST controllers call the same services, so validation and business rules live in one place.
+- **DTOs at the boundary.** Request and response records keep JPA entities out of the API, which makes the API contract explicit and easy to change.
+- **Real-database tests.** Integration tests run against a disposable PostgreSQL container started by Testcontainers instead of an in-memory substitute. One test closes and reopens the Spring context to prove that data survives a restart.
+- **Secure by default for local use.** The app and database bind to `127.0.0.1` only. Database credentials are generated locally and never committed.
+
+## Getting started
+
+### Prerequisites
+
+- JDK 21
+- Docker (Docker Desktop on Windows or macOS)
+
+The Maven Wrapper downloads Maven on first use, so no separate Maven installation is needed.
+
+### Run locally (macOS, Linux or Git Bash)
+
+```bash
+# 1. Create a local database password. .env is git-ignored.
+echo "DB_PASSWORD=$(openssl rand -hex 32)" > .env
+
+# 2. Start PostgreSQL on 127.0.0.1:5433
 docker compose up -d --wait database
+
+# 3. Start the app with the same password
+export $(cat .env) && ./mvnw spring-boot:run
 ```
 
-Spring Boot and PostgreSQL run separately: IntelliJ's Stop button only stops the application. During development, leave PostgreSQL running while restarting the app. When finished for the day, stop the app, then optionally run `docker compose stop database` to free resources. Next time, start Docker Desktop, run the database start command above, then run the app. Stopping the database preserves its named-volume data; the app needs the database running to start and handle application records.
+Then open <http://127.0.0.1:8080/>. The health check is at <http://127.0.0.1:8080/health>.
 
-For this learning milestone, `spring.jpa.hibernate.ddl-auto=update` creates/updates tables automatically. Versioned Flyway migrations are planned for step 10.
-
-## Back up and restore your records
-
-Start Docker Desktop and the database first. The app may stay running for a backup; stop it before switching to a restored database. Run from the project root:
+### Run locally (Windows PowerShell)
 
 ```powershell
-$backup = .\scripts\backup-database.ps1
-```
-
-This saves a timestamped `.dump` archive and matching `.dump.sha256` checksum in `backups/`. It includes the schema, application/interview records, and ID sequence values. Both files stay out of Git. Keep them together; copy them to a private backup location on another drive if you want protection from losing this computer's drive. Archives contain your tracking data and are not encrypted. They do not include database passwords or global PostgreSQL roles; on a fresh setup, run `setup-database.ps1` first to create the database/user and local credentials.
-
-Restore into a **new, separate database**:
-
-```powershell
-# For an older backup, replace $backup with the full path to its .dump file.
-$restored = .\scripts\restore-database.ps1 -BackupFile $backup
-```
-
-The script verifies the checksum and archive, creates a uniquely named `job_app_tracker_restore_...` database, then restores it in one transaction. It refuses the working database name and any existing destination. Your original database remains available. A failed restore rolls back its changes and leaves the new database for inspection.
-
-To use the restored data, stop the current app, then start it in this PowerShell session:
-
-```powershell
-$env:DB_URL = "jdbc:postgresql://127.0.0.1:5433/$restored"
+.\scripts\setup-database.ps1   # generates local credentials and starts PostgreSQL
 .\mvnw.cmd spring-boot:run
 ```
 
-Check your applications/interviews in the browser before making further changes. In IntelliJ, set the same `DB_URL` value in the run configuration's environment variables. Subsequent backups of this recovered dataset need `-Database $restored`; the backup script otherwise uses the original `job_app_tracker` database. Keep that setting for future app starts while using the recovered database.
+Windows also has one-click Start and Stop launchers that manage the app and database together. See [docs/windows-launcher.md](docs/windows-launcher.md).
 
-To return to the original dataset, stop the app, remove the override, and start it again:
+### Configuration
 
-```powershell
-Remove-Item Env:DB_URL -ErrorAction SilentlyContinue
-.\mvnw.cmd spring-boot:run
+| Environment variable | Default |
+| --- | --- |
+| `DB_URL` | `jdbc:postgresql://127.0.0.1:5433/job_app_tracker` |
+| `DB_USERNAME` | `job_app_tracker` |
+| `DB_PASSWORD` | No default. Read from the environment or from the ignored `application-local.properties` file. |
+
+## Running the tests
+
+```bash
+./mvnw verify
 ```
 
-To repeat the backup/restore verification, stop app writes and run:
+Docker must be running. Testcontainers starts a throwaway PostgreSQL instance on a random port, so tests never touch your development data. The suite has 54 tests covering service rules, REST endpoints, Thymeleaf pages, validation, filtering, interview relationships, CSRF handling and persistence across restarts. GitHub Actions runs it on every push and pull request.
 
-```powershell
-.\scripts\test-database-backup.ps1
-```
+## REST API
 
-This retains a real personal backup, checks its restored application/interview data, and uses disposable databases to verify Unicode, dates, nulls, relationships, ID sequences, and rejection of overwrites/corrupt files. It drops only the temporary databases it created. Existing development data is checked for changes and is never a restore destination. These script checks are separate from the 54 Java tests; no new Java behavior was added in this milestone.
-
-The scripts use the PostgreSQL 17 tools already inside the container: [pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html) and [pg_restore](https://www.postgresql.org/docs/17/app-pgrestore.html). No separate PostgreSQL client installation is needed.
-
-## Open in IntelliJ
-
-1. Open IntelliJ and select **Open**.
-2. Select `path\to\Job-App-Tracker\pom.xml` and open it as a project. Trust this local project if prompted.
-3. Under **File → Project Structure → Project**, select JDK 21. If absent, add the JDK at `path\to\jdk-21`.
-4. Let the Maven import finish. Under **Settings → Build, Execution, Deployment → Build Tools → Maven**, use the Maven Wrapper and JDK 21 for Maven importing/running.
-5. Prepare the database above, then run `JobAppTrackerApplication` using the green run button, or use the terminal commands below. Set the run configuration's working directory to the project root.
-
-## Run from PowerShell
-
-```powershell
-Set-Location 'path\to\Job-App-Tracker'
-$env:JAVA_HOME = 'path\to\jdk-21'
-.\mvnw.cmd spring-boot:run
-```
-
-Open <http://localhost:8080/> for the tracker, or <http://localhost:8080/health> for the health check. Expected health JSON:
-
-```json
-{"status":"UP","application":"job-app-tracker"}
-```
-
-Stop the app with Ctrl+C. The starter binds to localhost for local development. If port 8080 is occupied, use:
-
-```powershell
-.\mvnw.cmd spring-boot:run '-Dspring-boot.run.arguments=--server.port=8081'
-```
-
-## Build and test
-
-Stop the shortcut-managed app before building or testing.
-
-```powershell
-.\mvnw.cmd verify
-```
-
-Docker Desktop must be running for tests. Testcontainers starts a separate disposable PostgreSQL database on a random port; tests clear only that database, leaving development records alone. The restart test closes one Spring context and opens another against the same test database.
-
-Launcher verification (run with the tracker stopped):
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-tracker-launchers.ps1
-```
-
-On October 9, 2026, Windows PowerShell 5.1 checks passed for concurrent/duplicate starts, repeated stops, wrong-process and occupied-port rejection, stale PID recovery, cached builds, changed/deleted resources, and unchanged saved records across restarts. The exact command wrappers and repeatable desktop shortcut creation passed; the launched app rendered correctly in Chrome. All 54 Java tests also passed in this milestone. The checks used an already running Docker engine; the automatic Docker Desktop cold-launch path was not exercised. Verification finishes with the app and project database stopped.
-
-Personal-release verification on October 8, 2026: a clean Git export passed `clean verify` (54 tests and packaging), and fresh database setup generated its own local credentials. A separate Docker project/volume and random loopback database port kept the check isolated. The packaged app passed browser create/interview-edit/status/filter checks, preserved fields after both app and database restarts, and served the same data through the API. The API examples and 400/403/404 responses were checked; confirmed deletion removed only disposable records and left no orphan interviews. Temporary processes/resources were removed, development data remained unchanged, and the JAR was checked to exclude local credentials.
-
-The first run downloads Maven, dependencies, and the PostgreSQL image; it needs Internet access. Build output goes to ignored `target/`. No credentials should be committed; local `.env` and `application-local.properties` files are ignored.
-
-The roadmap and learning notes live in the Obsidian Job Apps Tracker folder. Basic API CRUD, corresponding Thymeleaf pages, company/status filters, ordering, PostgreSQL persistence, and interview stages are complete. Authentication and user ownership remain future milestones. The `Learning/` folder holds lesson snapshots; the Obsidian vault is the authoritative copy. Changes.md is historical only.
-
-## Version control
-
-Private repository: [aalatraqchi/Job-App-Tracker](https://github.com/aalatraqchi/Job-App-Tracker). Main tracks `origin/main`. Use a feature branch for new work, review the staged diff, run verification, commit and push, then review a pull request before merging. `Learning/Part 3 - Git and GitHub workflow.md` explains the workflow and commands. Learning notes are copied from the vault deliberately; changes are not synchronized automatically.
-## Browser interface
-
-Use the run command above, then open <http://127.0.0.1:8080/>.
-
-The Thymeleaf UI lists applications, adds them through a form, shows details, edits them, and deletes them after confirmation. HTML pages use `/tracker`; the JSON API uses `/applications`. Both use the same PostgreSQL-backed service. Records survive application and database restarts.
-
-Both forms and JSON requests validate required company/position/date, text lengths, and optional HTTP(S) job URLs. API errors include a `message`, with field-validation errors also including an `errors` map. DELETE returns HTTP 204; missing records return HTTP 404. Authentication remains pending.
-
-Edit a record at `/tracker/{id}/edit`. `/tracker/{id}/delete` shows confirmation; merely opening it does not delete data. Ordinary HTML forms submit POST to these page routes; API clients use PUT/DELETE at `/applications/{id}`.
-
-Templates: `src/main/resources/templates/tracker/`. Styles: `src/main/resources/static/css/tracker.css`. Page controller/form: `src/main/java/com/ashraf/jobapptracker/web/`.
-
-Filter the API with optional status/company query parameters, for example /applications?status=INTERVIEW&company=acme. Company matching is case-insensitive and partial; both filters combine with AND. Lists sort by applied date descending, then ID descending. Empty/blank filters mean no restriction; unknown statuses return HTTP 400. The browser list offers the same filters with Apply/Clear controls and a no-match state. Summary cards always count all records.
-
-## Interview stages
-
-Open an application's detail page to add, view, edit, or delete its interview stages. Each stage has a required name (up to 200 characters), an optional scheduled time, an outcome, and optional notes (up to 5000 characters). Outcomes are `PENDING`, `PASSED`, `FAILED`, and `CANCELLED`; they do not automatically change the application's status. Stages appear in creation order.
-
-The browser form takes a date/time plus a UTC offset, such as `-05:00` for Eastern standard time. Leave the date/time empty for an unscheduled stage. PostgreSQL retains the scheduled instant, normalizing it to UTC; detail/edit pages may therefore show the equivalent UTC time and `Z` offset rather than the originally entered offset.
-
-| Method | Path | Result |
+| Method | Path | Description |
 | --- | --- | --- |
-| POST | `/applications/{applicationId}/interviews` | Create a stage; HTTP 201. |
-| GET | `/applications/{applicationId}/interviews` | List this application's stages; HTTP 200. |
-| PUT | `/applications/{applicationId}/interviews/{interviewId}` | Replace editable details; HTTP 200. |
-| DELETE | `/applications/{applicationId}/interviews/{interviewId}` | Delete this stage; HTTP 204. |
+| `GET` | `/applications?status=&company=` | List applications, optionally filtered |
+| `POST` | `/applications` | Create an application (201) |
+| `GET` | `/applications/{id}` | Get one application |
+| `PUT` | `/applications/{id}` | Replace an application's details |
+| `DELETE` | `/applications/{id}` | Delete an application and its interviews (204) |
+| `GET` | `/applications/{id}/interviews` | List an application's interview stages |
+| `POST` | `/applications/{id}/interviews` | Add an interview stage (201) |
+| `PUT` | `/applications/{id}/interviews/{interviewId}` | Update an interview stage |
+| `DELETE` | `/applications/{id}/interviews/{interviewId}` | Delete an interview stage (204) |
+| `GET` | `/csrf` | Get a CSRF token for write requests |
+| `GET` | `/health` | Health check |
 
-Example create/update JSON:
+Example request body for `POST /applications`:
 
 ```json
 {
-  "stageName": "Technical interview",
-  "scheduledAt": "2026-11-10T14:30:00-05:00",
-  "outcome": "PENDING",
-  "notes": "Discuss Java and Spring Boot experience."
+  "company": "Example Corp",
+  "position": "Software Engineer",
+  "appliedDate": "2026-10-08",
+  "status": "APPLIED",
+  "jobUrl": "https://example.com/careers/123",
+  "notes": "Referred by a former colleague."
 }
 ```
 
-The API defaults an omitted outcome to `PENDING` on creation and preserves the existing outcome on update. Omitted/null time or notes clears that field on update. A scheduled time must include an offset; malformed times or unknown outcomes return HTTP 400. A missing parent or stage, including a stage belonging to a different application, returns HTTP 404. Deleting an application also deletes its stages. Page deletion requires a confirmation POST; opening the confirmation page alone changes nothing.
+Write requests need a CSRF token. Call `GET /csrf`, keep the session cookie it returns, and send the token in the `X-CSRF-TOKEN` header. [docs/api-examples.md](docs/api-examples.md) walks through a complete create, update and delete flow.
 
-## Request protection without accounts
+## Roadmap
 
-There is no login or default user/password. Normal browser use is unchanged: Thymeleaf includes a hidden CSRF token in every POST form. A stale, missing, or invalid token returns HTTP 403 before changing records. Reopen the form and try again if this happens after restarting the app or losing its session.
+- [ ] User accounts with login and logout, and per-user ownership of applications
+- [ ] Versioned schema migrations with Flyway, replacing `ddl-auto=update`
+- [ ] Containerised deployment of the app itself
 
-API GET requests need no token. For POST, PUT, PATCH, or DELETE, first GET `/csrf`, retain its session cookie, and send the returned token using the returned header name. Keep the same host and port for both requests. API verification failures return JSON 403 with a `message`; fetch a fresh token with the same session and retry. Tokens are session-specific, not passwords or accounts.
+## License
 
-PowerShell example with a cookie-preserving web session:
-
-```powershell
-$csrf = Invoke-RestMethod 'http://127.0.0.1:8080/csrf' -SessionVariable trackerSession
-$headers = @{}
-$headers[$csrf.headerName] = $csrf.token
-$body = @{
-    company = 'Example Company'
-    position = 'Java Developer'
-    appliedDate = '2026-10-08'
-} | ConvertTo-Json
-Invoke-RestMethod -Method Post 'http://127.0.0.1:8080/applications' `
-    -WebSession $trackerSession -Headers $headers -ContentType 'application/json' -Body $body
-```
-
-In an API client, retain cookies from GET `/csrf`, copy the token into the `X-CSRF-TOKEN` header, then send the write request to the same host/port. CSRF protection remains enabled on both the page and JSON API write routes. Tests exercise the real token/cookie flow; no test-only bypass is configured.
+[MIT](LICENSE)
